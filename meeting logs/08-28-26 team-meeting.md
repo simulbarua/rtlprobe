@@ -1,7 +1,7 @@
 **Meeting Type:** Team-Only
-**Date:** [FILL]
-**Start–End Time:** [TBD]
-**Location/Mode:** [In-person / Zoom]
+**Date:** 08-28-26
+**Start–End Time:** 10:00-11:00am
+**Location/Mode:** In-person
 
 **Attendees:**
 - Simul Barua
@@ -10,11 +10,8 @@
 
 ---
 
-### 1) Accomplished Since Last Meeting
 
-- [FILL — individual reading or preliminary work done before this meeting]
-
-### 2) Accomplished During This Meeting
+### Accomplished During This Meeting
 
 - Agreed the project direction: a multimodal machine learning approach to RTL debugging and bug localization.
 - Defined the problem: when a test fails, engineers manually correlate simulation logs, waveforms, and linting reports to trace the failure back to the responsible RTL, which is slow and expert-intensive.
@@ -26,20 +23,18 @@
   - **Dipti** — model exploration across modalities, literature review, meeting documentation
 - Drafted the project abstract for presentation.
 
-### 3) Issues / Blockers
+### Issues / Blockers
 
 - Scope of the four information sources not yet bounded — which are built first and which are deferred.
 - No labelled dataset of RTL bugs available; fault injection needed to generate ground truth.
 - Evaluation approach not yet defined.
 - Tool access and licensing constraints still to be confirmed.
 
-### 4) Action Items
+### Action Items
 
-- Action: Draft and finalise the project abstract for presentation | Owner: Simul | Due: [TBD]
-- Action: [FILL] | Owner: Sriram | Due: [TBD]
-- Action: [FILL] | Owner: Dipti | Due: [TBD]
+- Action: Draft and finalise the project abstract for presentation
 
-### 5) Plans / Goals for Next Meeting
+### Plans / Goals for Next Meeting
 
 - Present the abstract and gather feedback.
 - Begin identifying open-source RTL repositories suitable for dataset construction.
