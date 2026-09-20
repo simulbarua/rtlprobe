@@ -1,0 +1,50 @@
+**Meeting Type:** Advisor
+**Date:** 2026-09-17 [CONFIRM]
+**Start–End Time:** 9:30 – [TBD]
+**Location/Mode:** [In-person / Zoom]
+
+**Attendees:**
+- Prof. Sharan Bhaskar (Advisor)
+- Simul Barua
+- Sriram Sridhar
+- Dipti Ghiya
+
+---
+
+### 1) Accomplished Since Last Meeting
+
+- Compiled a spreadsheet of candidate RTL designs for prototype training and evaluation, including PicoRV32/PicoSoC.
+- Confirmed the dataset approach: mutation-based fault injection into open-source RTL, giving ground-truth bug locations for supervised training.
+- Began surveying candidate model architectures for each information source (RTL code, logs, structure, coverage).
+
+### 2) Accomplished During This Meeting
+
+- Presented the dataset structure — spreadsheet columns, repository list, and how mutants and their ground-truth locations will be recorded.
+- Presented the initial methodology: inject known faults into open-source RTL, simulate, and use the resulting logs, waveforms, and coverage as training data for ranking suspect RTL locations.
+- Walked through the toolchain decision (open-source simulation with Icarus Verilog, Python automation) and the cross-platform waveform constraint.
+- Discussed the division of work across dataset preparation, simulation infrastructure, and model exploration.
+- [FILL — advisor's feedback and any direction given]
+
+### 3) Issues / Blockers
+
+- Localization granularity (module / block / line) not yet decided.
+- Number of test cases needed per design not yet bounded.
+
+### 4) Action Items
+
+- Action: Continue dataset collection and define mutation criteria for fault injection | Owner: Simul 
+- Action: Complete the automated simulation pipeline (logs + VCD output) | Owner: Sriram 
+- Action: Document comparison of candidate models per modality | Owner: Dipti 
+
+### 5) Plans / Goals for Next Meeting (next 2 weeks)
+
+- **Dataset:** first batch of mutated designs generated, with ground-truth fault locations recorded.
+- **Simulation:** pipeline running end to end on PicoRV32 — automated mutant simulation producing logs, waveforms, and coverage.
+- **Model exploration:** comparison note covering, for each option, its source/licence, inputs, statement-scoring method, resource needs, limitations, test status, and recommendation. Current shortlist:
+  - RTL source — compare general-code encoders (CodeBERT, UniXcoder) against a Verilog-pretrained encoder (DeepRTL / CodeT5+); first trial frozen, no fine-tuning
+  - Logs — identifier overlap first, then TF-IDF or embedding similarity
+  - Structure — dependency distance first, then graph neural networks (GraphSAGE / GAT / GIN)
+  - Coverage — spectrum-based scoring, Ochiai preferred over Tarantula
+  - Fusion — equal-weight rank aggregation as the baseline, learned fusion as the next step
+
+- **Literature:** review closest prior work in RTL fault localization to sharpen the contribution statement.
