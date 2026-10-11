@@ -1,0 +1,18 @@
+# Keep datasets and generated output out of the repo.
+# Datasets are cloned locally (see DATASETS.md); results are produced by runs.
+
+# Cloned datasets
+picorv32/
+sha256/
+serv/
+
+# Pipeline output
+results/
+
+# Waveforms and compiled simulations, wherever they end up
+*.vcd
+*.fst
+*.vvp
+
+# macOS
+.DS_Store
