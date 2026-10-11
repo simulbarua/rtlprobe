@@ -56,8 +56,21 @@ git -C serv checkout f200eb2ed7b69ac1c6b8eddd47654522aeee5ce8
 * Result: lint, synthesis and AST PASS (4,233 cells); compile FAIL, so no
   simulation yet.
 * Notes: the testbench needs files from several folders plus vlog_tb_utils,
-  which isn't in the repo (FINDINGS items 6 to 9). Next step: try running it
-  through FuseSoC using the repo's own file list, servant.core.
+  which isn't in the repo (FINDINGS items 6 to 9).
+
+Running it through FuseSoC instead (works). Open a shell in the container
+from this folder, then run:
+
+```
+docker run -it --rm -v "$PWD":/workspace rtlprobe-tools
+pip install --break-system-packages fusesoc
+fusesoc library add serv ./serv
+fusesoc library add vlog_tb_utils https://github.com/fusesoc/vlog_tb_utils
+fusesoc run --target=sim award-winning:serv:servant
+```
+
+* Result: simulation runs and prints "Hi, I'm Servant!" and "Test complete".
+  FuseSoC's file list is saved under build/ (FINDINGS item 9).
 
 ## Adding a dataset
 

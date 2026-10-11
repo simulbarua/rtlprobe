@@ -15,8 +15,9 @@ servile, bench) plus one file that isn't in the repo at all. Grabbing whole
 folders breaks too, because folders can hold unrelated files (SERV's servant/
 folder has about 25 FPGA board files). Some repos already list their exact
 files (SERV's FuseSoC servant.core), so the pipeline could read that list
-instead of guessing. Question for Simul: do the repos in his catalog come
-with file lists like that? Details in items 1, 6, 7, 8 and 9.
+instead of guessing. Tested on Oct 11: FuseSoC ran SERV's simulation in
+our container (item 9). Question for Simul: do the repos in his catalog
+come with file lists like that? Details in items 1, 6, 7, 8 and 9.
 
 ## 1. Designs can be split across multiple files
 Status: IMPLEMENTED (folder approach)
@@ -128,9 +129,13 @@ Status: LOGGED (not implemented)
   build manager (servant.core says: depend fusesoc:utils:vlog_tb_utils).
 * Options: fetch such dependencies separately, or install FuseSoC in the
   Docker image and let it resolve them.
+* Tested (Oct 11): FuseSoC fetched it from
+  https://github.com/fusesoc/vlog_tb_utils with one `fusesoc library add`.
+  The big shared library (fusesoc-cores) only has an older copy under a
+  different name, so it is not enough on its own.
 
 ## 9. The repo may already list its own files (SERV)
-Status: LOGGED (idea to evaluate)
+Status: TESTED (works for SERV; not part of the pipeline yet)
 
 * What happened: SERV ships FuseSoC .core files (serv.core, servile.core,
   servant.core). servant.core lists exactly which files the simulation needs
@@ -143,5 +148,24 @@ Status: LOGGED (idea to evaluate)
   PicoRV32 no RISC-V compiler is needed. The testbench loads hello_uart.hex
   from the working folder, and that program prints text over a UART rather
   than a pass or fail message (same issue as item 4).
+* Tested (Oct 11), inside the rtlprobe-tools container:
+  ```
+  pip install --break-system-packages fusesoc
+  fusesoc library add serv ./serv
+  fusesoc library add vlog_tb_utils https://github.com/fusesoc/vlog_tb_utils
+  fusesoc run --target=sim award-winning:serv:servant
+  ```
+  Result: compiled and simulated with our pinned Icarus 12.0, printed
+  "Hi, I'm Servant!" and "Test complete", finished cleanly.
+* FuseSoC writes the list it used to
+  build/award-winning_serv_servant_1.4.0/sim-icarus/*.scr: 32 Verilog
+  files (only the 5 needed servant/ files, no FPGA board files), plus the
+  defines and parameters. It also records the testbench top module
+  (servant_tb) and the test program (hello_uart.hex). This is exactly the
+  information our pipeline was missing.
+* Possible way to use it later: let FuseSoC produce the file list, then
+  have our pipeline run its own stages (lint, synthesis, AST, logs) from
+  that list. FuseSoC is not in the Docker image yet; it was installed by
+  hand for this test.
 * For Simul: do the repos in his catalog have FuseSoC .core files, Makefiles
   or file lists we could read?

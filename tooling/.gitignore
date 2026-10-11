@@ -16,3 +16,8 @@ results/
 
 # macOS
 .DS_Store
+
+# FuseSoC working files (created when running a design through FuseSoC)
+build/
+fusesoc_libraries/
+fusesoc.conf
