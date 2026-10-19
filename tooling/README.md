@@ -12,11 +12,17 @@ Built for the RTLProbe capstone project's dataset/tooling workstream.
 
 ## One-time setup
 
-From the folder containing `Dockerfile`, `run_pipeline.sh`, and
-`pipeline.sh`:
+The Dockerfile is at the repository root; both pipeline scripts remain in
+`tooling/`. From the repository root, build the image:
 
 ```
 docker build -t rtlprobe-tools .
+```
+
+If your shell is already in `tooling/`, the equivalent build command is:
+
+```sh
+docker build -f ../Dockerfile -t rtlprobe-tools .
 ```
 
 First build takes several minutes since it compiles Verilator from source.
@@ -24,6 +30,12 @@ Only rebuild this when the Dockerfile itself changes (a tool version
 changes); rebuilding is not needed when you just edit `run_pipeline.sh`.
 
 ## Running the pipeline
+
+After building from the root, enter `tooling/` to use the unchanged launcher:
+
+```sh
+cd tooling
+```
 
 **Your RTL design and testbench files must be in the same folder as
 `run_pipeline.sh` and `pipeline.sh`** (or a subfolder underneath, referenced
