@@ -7,15 +7,17 @@
 # a single results directory per run.
 #
 # Usage:
-#   ./run_pipeline.sh <design.v | design_folder> <testbench.v> <top_module> [output_dir]
+#   ./tooling/run_pipeline.sh <design.v | design_folder> <testbench.v> <top_module> [output_dir]
 #
-#   The design can be a single .v file (e.g. picorv32/picorv32.v) or a
+#   The design can be a single .v file (e.g. vendor/design/top.v) or a
 #   folder, in which case every .v file in that folder is used
-#   (e.g. sha256/src/rtl for a design split across several files).
+#   (e.g. vendor/design/rtl for a design split across several files).
 #
-# Meant to run INSIDE the rtlprobe-tools container, e.g.:
-#   docker run --rm -v "$PWD":/workspace rtlprobe-tools \
-#       ./run_pipeline.sh picorv32.v testbench.v picorv32
+# Meant to run from /workspace INSIDE the rtlprobe-tools container. From the
+# repository root on the host:
+#   ./tooling/pipeline.sh vendor/design/rtl vendor/design/tb.v top
+# Relative paths (including firmware paths used by a bench) resolve from the
+# repository root. Testbench-specific runtime preparation is still required.
 
 set -uo pipefail
 
@@ -37,7 +39,7 @@ TB_BASE="$(basename "$TESTBENCH" .v)"
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
 # Results folder: named after the top module (not the design path), so a
 # folder like sha256/src/rtl doesn't produce a generic name such as "rtl".
-OUTDIR="${4:-results/${TOP}__tb-${TB_BASE}__${TIMESTAMP}}"
+OUTDIR="${4:-outputs/${TOP}__tb-${TB_BASE}__${TIMESTAMP}}"
 
 mkdir -p "$OUTDIR"/{src,logs,ast,synth,coverage,waveform}
 
@@ -113,7 +115,7 @@ else
     record "yosys_synth" "FAIL"
 fi
 
-echo "==> Extracting AST (Yosys-native, default — see VERSIONS.md)"
+echo "==> Extracting AST (Yosys-native; see tooling/README.md#known-open-items)"
 # Default choice pending a final decision with Dipti on AST format; this
 # is the lowest-friction option since Yosys is already in the toolchain.
 # Swap this block for Verible or Pyverilog output here if the team decides

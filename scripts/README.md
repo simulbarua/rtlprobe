@@ -10,5 +10,6 @@ environment/configuration outside version control.
 
 This directory currently contains no executable helpers. The existing pipeline
 scripts remain in [`../tooling/`](../tooling/README.md); the Dockerfile is at the
-repository root. Build from the root, then use the launcher from `tooling/` as
-documented in the tooling guide.
+repository root. Build from the root, then invoke `./tooling/pipeline.sh` as
+documented in the tooling guide. The launcher resolves all relative paths from
+the repository root, including when called from another directory.

@@ -12,6 +12,8 @@ bundles and record fresh execution separately from historical evidence reuse.
 Mark unsupported or uncollected modalities explicitly. Lint logs are not coverage,
 and simulator completion alone is not a functional PASS.
 
-This is the destination for future integrated execution. The unchanged scripts
-under `tooling/` still write to their existing `results/` location unless an
-explicit output argument is supplied.
+The scripts under `tooling/` now default to this directory. The launcher resolves
+all relative paths from the repository root; an explicit fourth argument can
+choose another output directory. Historical `tooling/results/` evidence is
+preserved in place. The current scripts do not yet implement all evidence and
+validation policies described above.

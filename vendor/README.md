@@ -10,5 +10,7 @@ reproduction instructions and reviewed patches rather than downloaded repository
 trees. Keep upstream sources unchanged and apply controlled mutations in isolated
 run workspaces.
 
-The existing scripts under `tooling/` retain their documented input paths. This
-new directory does not automatically change or fetch their dependencies.
+Pass repository-relative input paths such as `vendor/<repository>/rtl` to the
+launcher under `tooling/`, regardless of the host's current directory. The
+launcher mounts the repository root; this directory does not automatically fetch
+or prepare dependencies.

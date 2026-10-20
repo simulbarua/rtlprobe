@@ -1,10 +1,13 @@
 # Datasets Tried
 
-Open source RTL designs we have run through the pipeline. Clone them into
-this folder (next to pipeline.sh); they are not stored in the repo.
+Open source RTL designs previously run through the pipeline. Clone them under
+the root `vendor/` directory; they are not stored in the repo.
 
 Each clone is pinned to the exact commit we tested, so everyone runs the
-same code. Run the commands from this folder.
+same code. Run the updated commands below from the repository root. Results
+describe historical runs, before the launcher/path update; they are not fresh
+validation of the current environment. Historical evidence remains in its original
+location; new runs default to `outputs/`.
 
 ## PicoRV32 (RISC-V CPU core)
 
@@ -13,9 +16,10 @@ same code. Run the commands from this folder.
 * Layout: whole design in one file, picorv32.v; testbenches next to it.
 
 ```
-git clone https://github.com/YosysHQ/picorv32.git
-git -C picorv32 checkout ef203c2b0a3fb793280f5114941416c425c5b461
-./pipeline.sh picorv32/picorv32.v picorv32/testbench_ez.v picorv32
+mkdir -p vendor
+git clone https://github.com/YosysHQ/picorv32.git vendor/picorv32
+git -C vendor/picorv32 checkout ef203c2b0a3fb793280f5114941416c425c5b461
+./tooling/pipeline.sh vendor/picorv32/picorv32.v vendor/picorv32/testbench_ez.v picorv32
 ```
 
 * Result: all stages PASS.
@@ -30,9 +34,10 @@ git -C picorv32 checkout ef203c2b0a3fb793280f5114941416c425c5b461
 * Layout: 4 design files in src/rtl, testbenches in src/tb.
 
 ```
-git clone https://github.com/secworks/sha256.git
-git -C sha256 checkout 837c5cc396f001d18f2c765721c585716eb439ae
-./pipeline.sh sha256/src/rtl sha256/src/tb/tb_sha256.v sha256
+mkdir -p vendor
+git clone https://github.com/secworks/sha256.git vendor/sha256
+git -C vendor/sha256 checkout 837c5cc396f001d18f2c765721c585716eb439ae
+./tooling/pipeline.sh vendor/sha256/src/rtl vendor/sha256/src/tb/tb_sha256.v sha256
 ```
 
 * Result: all stages PASS (waveform NOT_PRODUCED); testbench prints
@@ -48,9 +53,10 @@ git -C sha256 checkout 837c5cc396f001d18f2c765721c585716eb439ae
   and helpers in bench/, prebuilt test programs in sw/.
 
 ```
-git clone https://github.com/olofk/serv.git
-git -C serv checkout f200eb2ed7b69ac1c6b8eddd47654522aeee5ce8
-./pipeline.sh serv/rtl serv/bench/servant_tb.v serv_rf_top
+mkdir -p vendor
+git clone https://github.com/olofk/serv.git vendor/serv
+git -C vendor/serv checkout f200eb2ed7b69ac1c6b8eddd47654522aeee5ce8
+./tooling/pipeline.sh vendor/serv/rtl vendor/serv/bench/servant_tb.v serv_rf_top
 ```
 
 * Result: lint, synthesis and AST PASS (4,233 cells); compile FAIL, so no
@@ -59,18 +65,21 @@ git -C serv checkout f200eb2ed7b69ac1c6b8eddd47654522aeee5ce8
   which isn't in the repo (FINDINGS items 6 to 9).
 
 Running it through FuseSoC instead (works). Open a shell in the container
-from this folder, then run:
+from the repository root, then run:
 
 ```
-docker run -it --rm -v "$PWD":/workspace rtlprobe-tools
+docker run -it --rm -v "$PWD":/workspace -w /workspace rtlprobe-tools
+mkdir -p outputs/serv-fusesoc
+cd outputs/serv-fusesoc
 pip install --break-system-packages fusesoc
-fusesoc library add serv ./serv
+fusesoc library add serv /workspace/vendor/serv
 fusesoc library add vlog_tb_utils https://github.com/fusesoc/vlog_tb_utils
 fusesoc run --target=sim award-winning:serv:servant
 ```
 
-* Result: simulation runs and prints "Hi, I'm Servant!" and "Test complete".
-  FuseSoC's file list is saved under build/ (FINDINGS item 9).
+* Historical result: simulation ran and printed "Hi, I'm Servant!" and
+  "Test complete". With the updated working-directory recipe, FuseSoC's file list
+  would be saved under outputs/serv-fusesoc/build/ (FINDINGS item 9).
 
 ## Adding a dataset
 

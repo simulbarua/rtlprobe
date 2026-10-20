@@ -14,6 +14,7 @@ Project under development.
 rtlprobe/
 ├── README.md
 ├── .gitignore
+├── .dockerignore   Docker build-context exclusions
 ├── Dockerfile      Hardware-tool environment
 ├── rtlprobe/       Python pipeline and research implementation
 ├── targets/        RTL target configurations and reproduction instructions
@@ -38,10 +39,15 @@ The Dockerfile is at the repository root. Build the image from that directory:
 docker build -t rtlprobe-tools .
 ```
 
-Both pipeline scripts remain under `tooling/`. Run the existing launcher from
-that directory using the [tooling instructions](tooling/README.md). It still
-mounts the current directory; moving the Dockerfile does not change its input
-paths, output locations, or execution behavior.
+Both pipeline scripts remain under `tooling/`. The launcher mounts the repository
+root at `/workspace` and sets that as the container's working directory. All
+relative input/output paths are repository-relative, regardless of the host's
+current directory. Runs default to `outputs/`; downloaded sources belong in
+`vendor/`. See the [tooling instructions](tooling/README.md) for examples.
+
+The root `.dockerignore` excludes downloaded sources, generated evidence, local
+environments, and Git metadata from image builds. These exclusions do not affect
+the repository bind mount used when running the pipeline.
 
 Agent implementations, model prompts, and provider integrations belong in a
 separate repository. RTLProbe's execution and research implementation should be
