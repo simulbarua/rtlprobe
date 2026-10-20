@@ -1,0 +1,38 @@
+# Version control and local assistant state
+**/.git
+**/.codex
+**/.agents
+
+# Local environments, dependencies, and caches
+**/.venv*
+**/venv
+**/node_modules
+**/__pycache__
+**/*.py[cod]
+**/.pytest_cache
+**/*.egg-info
+
+# Local configuration and credentials
+**/.env
+**/.env.*
+!**/.env.example
+**/.DS_Store
+
+# Downloaded RTL and generated experiment data are mounted at runtime.
+vendor/
+outputs/
+data/raw/
+data/processed/
+data/state/
+
+# Historical tooling checkouts and generated output
+tooling/picorv32/
+tooling/sha256/
+tooling/serv/
+tooling/results/
+tooling/build/
+tooling/fusesoc_libraries/
+tooling/fusesoc.conf
+**/*.vcd
+**/*.fst
+**/*.vvp

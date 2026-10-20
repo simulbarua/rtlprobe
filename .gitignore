@@ -1,0 +1,27 @@
+# Local Python environments and caches
+.venv*/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+.DS_Store
+
+# Downloaded upstream sources: keep the directory guide in Git.
+/vendor/*
+!/vendor/README.md
+
+# Generated run evidence: retain separately; keep the guide in Git.
+/outputs/*
+!/outputs/README.md
+
+# Curated metadata is eligible for tracking; bulk/runtime data is local.
+/data/raw/
+/data/processed/
+/data/state/
+
+# Historical tooling has its own ignore rules under tooling/.

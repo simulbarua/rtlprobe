@@ -12,11 +12,17 @@ Built for the RTLProbe capstone project's dataset/tooling workstream.
 
 ## One-time setup
 
-From the folder containing `Dockerfile`, `run_pipeline.sh`, and
-`pipeline.sh`:
+The Dockerfile is at the repository root; both pipeline scripts remain in
+`tooling/`. From the repository root, build the image:
 
 ```
 docker build -t rtlprobe-tools .
+```
+
+If your shell is already in `tooling/`, the equivalent build command is:
+
+```sh
+docker build -f ../Dockerfile -t rtlprobe-tools ..
 ```
 
 First build takes several minutes since it compiles Verilator from source.
@@ -25,28 +31,44 @@ changes); rebuilding is not needed when you just edit `run_pipeline.sh`.
 
 ## Running the pipeline
 
-**Your RTL design and testbench files must be in the same folder as
-`run_pipeline.sh` and `pipeline.sh`** (or a subfolder underneath, referenced
-by relative path). The container only sees whatever folder you're standing
-in when you run it.
+From the repository root:
 
-```
-./pipeline.sh <design.v> <testbench.v> <top_module_name>
+```sh
+./tooling/pipeline.sh <design.v-or-folder> <testbench.v> <design_top> [output_dir]
 ```
 
-Example, if your files are in a `picorv32/` subfolder:
+The launcher locates the repository from its own path, mounts the entire root at
+`/workspace`, and explicitly runs there. **Relative paths always refer to the
+repository root**, even when you invoke the launcher from `tooling/` or another
+directory. Keep inputs within the mounted repository; host absolute paths outside
+it are not available inside the container.
 
-```
-./pipeline.sh picorv32/picorv32.v picorv32/testbench_ez.v picorv32
+For example, with a checkout under `vendor/picorv32/`:
+
+```sh
+./tooling/pipeline.sh vendor/picorv32/picorv32.v vendor/picorv32/testbench_ez.v picorv32
 ```
 
-`pipeline.sh` is a thin convenience wrapper around:
+From `tooling/`, the same inputs are still repository-relative:
 
-```
-docker run --rm -v "$PWD":/workspace rtlprobe-tools ./run_pipeline.sh <args>
+```sh
+./pipeline.sh vendor/picorv32/picorv32.v vendor/picorv32/testbench_ez.v picorv32
 ```
 
-Either form works, `pipeline.sh` just saves typing.
+The equivalent direct Docker command, run from the repository root, is:
+
+```sh
+docker run --rm -v "$PWD":/workspace -w /workspace rtlprobe-tools ./tooling/run_pipeline.sh <args>
+```
+
+The root `.dockerignore` keeps local environments, Git metadata, downloaded RTL,
+and generated results out of the image build context. Runtime bind mounts still
+expose `vendor/`, `targets/`, and `outputs/`. Rebuild from the repository root (or
+use the `..` context above) so this ignore policy is applied consistently.
+
+Simulation also runs from the repository root. A testbench that opens relative
+firmware or memory paths still needs those runtime inputs prepared at its expected
+location; this launcher change does not resolve testbench dependencies.
 
 ## What it does
 
@@ -61,14 +83,12 @@ Either form works, `pipeline.sh` just saves typing.
 ## Output
 
 Results land in
-`results/<design>__tb-<testbench>__top-<top_module>__<timestamp>/` inside
-the same folder you ran the command from (not lost when the container
-exits, `--rm` only removes the container, not the mounted files). The
-folder name itself tells you which design, testbench, and top module
-produced it, e.g.:
+`outputs/<top_module>__tb-<testbench>__<timestamp>/` under the repository root.
+Results survive container removal because the repository is bind-mounted. The
+folder name identifies the design top and testbench, e.g.:
 
 ```
-results/picorv32__tb-testbench_ez__top-picorv32__20260923_015926/
+outputs/picorv32__tb-testbench_ez__<timestamp>/
 ├── status.txt        ← PASS / FAIL / SKIPPED per stage
 ├── src/               ← copy of the RTL + testbench used
 ├── logs/               ← one log per tool
@@ -77,12 +97,14 @@ results/picorv32__tb-testbench_ez__top-picorv32__20260923_015926/
 └── coverage/          ← placeholder, not wired up yet (see below)
 ```
 
-Each run gets its own folder, so running the same design against
-different testbenches, or the same combination twice, never overwrites
-a previous result.
+The default name includes a timestamp with one-second resolution. Use distinct
+explicit output directories for runs started in the same second, and do not reuse
+an existing output directory. Collision protection remains future work.
 
 You can override the folder name entirely with a 4th argument:
-`./pipeline.sh design.v testbench.v top_module my_custom_name`.
+`./tooling/pipeline.sh design.v testbench.v top_module outputs/my_custom_name`.
+Relative overrides are also resolved from the repository root. Historical
+`tooling/results/` evidence is left in place.
 
 ## Testbenches confirmed working (PicoRV32)
 
@@ -95,20 +117,24 @@ You can override the folder name entirely with a 4th argument:
 - **`testbench_wb.v`** (different top module: `picorv32_wb`) — compiles
   fine, also needs a firmware image to simulate.
 
-All three, plus the design file itself, have been confirmed to pass
-Icarus, Verilator, and Yosys end to end on an actual team machine (not
-just in testing).
+These are historical team-machine observations, not fresh validation of this
+launcher or environment. See [datasets tried](DATASETS.md) and
+[pipeline findings](FINDINGS.md) for the observed limitations, including missing
+firmware and the difference between simulation completion and functional PASS.
 
-## Pinned tool versions
+## Toolchain declarations
 
 | Tool           | Version | Source                       |
 |----------------|---------|-------------------------------|
-| Icarus Verilog | 12.0    | apt (exact match on Ubuntu 24.04) |
-| Yosys          | 0.33    | apt                            |
+| Icarus Verilog | 12.0    | apt package `12.0-2build2` |
+| Yosys          | 0.33    | apt package `0.33-5build2` |
 | Verilator      | 5.038   | built from source (git tag `v5.038`) |
-| Python         | 3.12.3  | apt (Ubuntu 24.04 default)     |
+| Python         | Not explicitly pinned | Ubuntu apt package `python3` |
 
-Full rationale in `VERSIONS.md`.
+The [root Dockerfile](../Dockerfile) is the source of these declarations. The
+Ubuntu base tag and remaining apt dependencies are not locked by digest or a
+package snapshot. Record the actual image identity, architecture, and tool
+versions for experiments; these declarations alone are not a fresh build result.
 
 ## Known open items
 
@@ -126,18 +152,18 @@ Full rationale in `VERSIONS.md`.
 
 ## Troubleshooting
 
-**`stat ./run_pipeline.sh: no such file or directory`** — you're not
-standing in the folder the script is actually in. Run `pwd` and `ls` to
-check, then `cd` to the right folder, or `mv` the script there.
+**`stat ./run_pipeline.sh: no such file or directory`** — an old direct Docker
+command may be using the previous script path. Mount the root, set `-w /workspace`,
+and invoke `./tooling/run_pipeline.sh`, or use the launcher shown above.
 
 **`cp: cannot stat 'design.v': No such file or directory`** — same idea,
-but for your RTL files specifically. If they're in a subfolder, include
-that subfolder in the path you pass to the script (e.g.
-`picorv32/picorv32.v`, not just `picorv32.v`).
+but for your RTL files specifically. Supply repository-relative paths, such as
+`vendor/picorv32/picorv32.v`, regardless of the directory you launch from.
 
 **`zsh: permission denied: ./pipeline.sh`** — the executable bit didn't
 carry over (common after downloading a fresh copy of the script). Run
-`chmod +x pipeline.sh run_pipeline.sh` once and try again.
+`chmod +x tooling/pipeline.sh tooling/run_pipeline.sh` from the repository root
+once and try again.
 
 **Verilator warnings that end in `%Error: Exiting due to N warning(s)`**
 — this is Verilator's own policy of treating lint warnings as fatal by
