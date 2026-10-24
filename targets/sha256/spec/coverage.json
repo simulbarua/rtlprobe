@@ -1,0 +1,236 @@
+{
+  "basis": "Union of requirement RTL regions in the pinned original snapshot; inclusive physical lines, including enclosed comments and blank lines. This is source mapping, not measured execution coverage.",
+  "snapshot": "/Users/simulbarua/Work/ml_projects/RTLProbe/local/rtlprobe-data/outputs/sha256/qualification/fbe1e8a54d45-20261020T010201669067Z/original",
+  "files": {
+    "src/rtl/sha256_core.v": {
+      "total_lines": 554,
+      "covered_ranges": [
+        "42-55",
+        "70-77",
+        "79",
+        "81-83",
+        "89-123",
+        "125-129",
+        "131-133",
+        "135-137",
+        "143-151",
+        "153-154",
+        "156",
+        "158-159",
+        "161",
+        "167-170",
+        "173-183",
+        "189",
+        "191-192",
+        "194",
+        "203-263",
+        "271-322",
+        "330-342",
+        "350-362",
+        "371-436",
+        "445-461",
+        "469-548"
+      ],
+      "covered_line_count": 408,
+      "uncovered_ranges": [
+        {
+          "lines": "1-41",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "56-60",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "61-68",
+          "reason": "SHA-224 initial constants; the testbench holds mode at SHA-256."
+        },
+        {
+          "lines": "69",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "78",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "80",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "84-88",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "124",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "130",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "134",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "138-142",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "152",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "155",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "157",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "160",
+          "reason": "Unused w_round declaration; round selection is connected directly to t_ctr_reg."
+        },
+        {
+          "lines": "162-166",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "171-172",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "184-188",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "190",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "193",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "195-202",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "264-270",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "323-329",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "343-349",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "363-370",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "437-444",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "462-468",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "549-554",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        }
+      ],
+      "uncovered_line_count": 146,
+      "scope_note": "Whole mapped blocks include unexercised branches and initialization assignments. Mapping does not establish independent checking of every enclosed statement."
+    },
+    "src/rtl/sha256_w_mem.v": {
+      "total_lines": 241,
+      "covered_ranges": [
+        "42-52",
+        "58-75",
+        "81-82",
+        "88",
+        "97-129",
+        "138-144",
+        "153-236"
+      ],
+      "covered_line_count": 156,
+      "uncovered_ranges": [
+        {
+          "lines": "1-41",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "53-57",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "76-80",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "83-87",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "89-96",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "130-137",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "145-152",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "237-241",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        }
+      ],
+      "uncovered_line_count": 85,
+      "scope_note": "Whole mapped blocks include unexercised branches and initialization assignments. Mapping does not establish independent checking of every enclosed statement."
+    },
+    "src/rtl/sha256_k_constants.v": {
+      "total_lines": 134,
+      "covered_ranges": [
+        "41-44",
+        "49",
+        "55",
+        "61-129"
+      ],
+      "covered_line_count": 75,
+      "uncovered_ranges": [
+        {
+          "lines": "1-40",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "45-48",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "50-54",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "56-60",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "130-134",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        }
+      ],
+      "uncovered_line_count": 59,
+      "scope_note": "Whole mapped blocks include unexercised branches and initialization assignments. Mapping does not establish independent checking of every enclosed statement."
+    }
+  }
+}

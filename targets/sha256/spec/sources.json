@@ -6,9 +6,46 @@
     "publisher": "NIST",
     "license": "US Government work; public domain in the United States",
     "redistributable": true,
-    "retrieval_date": null,
-    "sha256": null,
-    "sections_of_interest": ["4.1.2 SHA-224 and SHA-256 Functions", "4.2.2 SHA-224 and SHA-256 Constants", "5.3.3 SHA-256 initial hash value", "6.2 SHA-256", "6.2.1 preprocessing", "6.2.2 hash computation"],
-    "status": "sources identified; sections not yet extracted; retrieval date and hash to be filled when extracted"
+    "retrieval_date": "2026-10-23",
+    "sha256": "0455b406d89648d20cbde375561e19c245b9815e894164c2670772e3d54deb82",
+    "sections_of_interest": [
+      "4.1.2 SHA-224 and SHA-256 Functions",
+      "4.2.2 SHA-224 and SHA-256 Constants",
+      "5.3.3 SHA-256 initial hash value",
+      "6.2 SHA-256",
+      "6.2.1 preprocessing",
+      "6.2.2 hash computation"
+    ],
+    "status": "retrieved; six sections extracted and equations checked against page images"
+  },
+  "upstream-readme": {
+    "title": "secworks/sha256 README.md",
+    "url": "https://github.com/secworks/sha256/blob/837c5cc396f001d18f2c765721c585716eb439ae/README.md",
+    "version": "837c5cc396f001d18f2c765721c585716eb439ae",
+    "publisher": "Secworks",
+    "license": "BSD-2-Clause",
+    "redistributable": true,
+    "classification_of_claims": "repository_claim",
+    "retrieval_date": "2026-10-23",
+    "retrieval_method": "read from pinned original qualification snapshot",
+    "path": "/Users/simulbarua/Work/ml_projects/RTLProbe/local/rtlprobe-data/outputs/sha256/qualification/fbe1e8a54d45-20261020T010201669067Z/original/README.md",
+    "sha256": "194d0241c7bfdf869bfc516ea31be9adcd5c65f90d07eb4664e9330cfc98f20e"
+  },
+  "original-rtl-and-testbench": {
+    "title": "Pinned original SHA-256 RTL and testbench",
+    "url": "https://github.com/secworks/sha256/tree/837c5cc396f001d18f2c765721c585716eb439ae",
+    "version": "837c5cc396f001d18f2c765721c585716eb439ae",
+    "license": "BSD-2-Clause",
+    "redistributable": true,
+    "classification_of_claims": "inferred_from_rtl_and_checker",
+    "retrieval_date": "2026-10-23",
+    "retrieval_method": "read with numbered lines from pinned original qualification snapshot",
+    "path": "/Users/simulbarua/Work/ml_projects/RTLProbe/local/rtlprobe-data/outputs/sha256/qualification/fbe1e8a54d45-20261020T010201669067Z/original",
+    "files": [
+      "src/rtl/sha256_core.v",
+      "src/rtl/sha256_w_mem.v",
+      "src/rtl/sha256_k_constants.v",
+      "src/tb/tb_sha256_core.v"
+    ]
   }
 }
