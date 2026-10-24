@@ -36,8 +36,15 @@ class BackendTests(unittest.TestCase):
             c = config(); del c['admitted_tests'][0][key]
             with self.subTest(key=key), self.assertRaises(ValueError):
                 target.validate(c)
+        # same_csr_outstanding was excluded from rv_timer on 2026-10-24 (nondeterministic
+        # under Verilator); the scoreboard-override rule is exercised on a synthetic
+        # admitted entry that runs upstream with the scoreboard off.
         c = config()
-        next(t for t in c['admitted_tests'] if t['id']=='same_csr_outstanding')['run_options'].append('+en_scb=1')
+        synthetic = dict(c['admitted_tests'][0], id='synthetic_scb_off', sequence='rv_timer_common_vseq',
+                         oracle_kind='sequence_tl_compare', run_options=list(c['admitted_tests'][0]['run_options'])+['+en_scb=0'])
+        c['admitted_tests'].append(synthetic)
+        self.assertEqual(target.validate(c), c)
+        synthetic['run_options'].append('+en_scb=1')
         with self.assertRaises(ValueError):
             target.validate(c)
 
@@ -58,8 +65,10 @@ class BackendTests(unittest.TestCase):
         self.assertEqual(classify('', config=c)['outcome'],'infrastructure_error')
         self.assertEqual(classify((FIX/'uvm-truncated.log').read_text(),config=c)['outcome'],'infrastructure_error')
         self.assertEqual(classify((FIX/'uvm-timeout.log').read_text(),timed_out=True,config=c)['outcome'],'timeout_unclassified')
+        # The duplicate-finish fixture came from the excluded same_csr_outstanding run; the
+        # classification does not depend on test identity, so an admitted id is used.
         duplicate = classify((FIX/'uvm-duplicate-finish.log').read_text(),
-                             config=dict(c, test_id='same_csr_outstanding'))
+                             config=dict(c, test_id='rv_timer_random'))
         self.assertEqual(duplicate['outcome'], 'infrastructure_error')
         self.assertEqual([entry['source'] for entry in duplicate['failures']], ['other', 'other'])
 
