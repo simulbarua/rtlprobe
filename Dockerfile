@@ -1,39 +1,73 @@
 # RTLProbe tooling pipeline environment
 #
-# Historical: these pins (Icarus 12.0, Yosys 0.33, Verilator 5.038) are not the
-# toolchain that qualified the accepted cases. See README.md, "Which toolchain
-# is authoritative", before building or relying on this image.
+# Pinned to the native toolchain that qualified every accepted case, as
+# recorded in the agents repository's environment/toolchain-versions-mac-2026-09.txt:
 #
-# Base: Ubuntu 24.04 (Noble). Chosen deliberately: Ubuntu 24.04's apt repo
-# ships Icarus Verilog 12.0-2build2, which is an EXACT match for the
-# required 12.0 — no source build needed for that tool. Verilator's pinned
-# patch version (5.038) isn't in apt (noble ships 5.020) or in current
-# Homebrew (5.050 as of Sep 2026), so it's built from its exact git tag
-# regardless of host OS — doing that once here means every team member,
-# on macOS or Linux, gets an identical binary.
+#   Icarus Verilog 13.0   built from git tag v13_0
+#   Verilator 5.046       built from git tag v5.046
+#   Yosys 0.69            built from git tag v0.69 (the Mac binary reports
+#                         "0.69+post": one merge commit ahead of the tag with
+#                         no source change beyond it)
+#
+# None of these versions is in Ubuntu 24.04's apt (which ships 12.0, 5.020 and
+# 0.33), so all three are built from their tags. Override a pin at build time
+# with --build-arg IVERILOG_TAG=... VERILATOR_TAG=... YOSYS_TAG=...
+#
+# The runner's environment fingerprint hashes each tool's version banner,
+# which includes the compiler and git sha, so this image never reproduces the
+# Mac fingerprint even at identical versions. Qualify fresh on the image
+# (scripts/rtlprobe.py qualify) before generating cases with it.
 FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
+ARG IVERILOG_TAG=v13_0
+ARG VERILATOR_TAG=v5.046
+ARG YOSYS_TAG=v0.69
 
-# --- Icarus Verilog 12.0 + Yosys (pinned exact apt package versions) ---
+# Build dependencies for all three tools, plus the small utilities the runner's
+# fingerprint records (git, patch) and Python for the runner itself.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        iverilog=12.0-2build2 \
-        yosys=0.33-5build2 \
-        git build-essential help2man perl make autoconf g++ flex bison \
-        ccache libgoogle-perftools-dev numactl libfl2 libfl-dev \
-        zlib1g zlib1g-dev \
+        ca-certificates git patch \
+        build-essential g++ clang lld make cmake autoconf \
+        gperf flex bison gawk help2man perl perl-doc pkg-config \
         python3 python3-pip python3-venv \
-        ca-certificates \
+        ccache libgoogle-perftools-dev numactl libfl2 libfl-dev \
+        libreadline-dev tcl-dev libffi-dev libbz2-dev zlib1g zlib1g-dev \
+        libboost-system-dev libboost-python-dev libboost-filesystem-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# --- Verilator 5.038 (pinned git tag — not available via apt on any distro) ---
-RUN git clone --depth 1 --branch v5.038 https://github.com/verilator/verilator.git /opt/verilator-src \
+# --- Icarus Verilog (iverilog, vvp) ---
+# The tag ships a generated configure; running autoconf.sh would dirty the
+# tree and make the version banner read "v13_0-dirty".
+RUN git clone --depth 1 --branch "${IVERILOG_TAG}" https://github.com/steveicarus/iverilog.git /opt/iverilog-src \
+    && cd /opt/iverilog-src \
+    && ./configure \
+    && make -j"$(nproc)" \
+    && make install \
+    && cd / && rm -rf /opt/iverilog-src
+
+# --- Verilator ---
+RUN git clone --depth 1 --branch "${VERILATOR_TAG}" https://github.com/verilator/verilator.git /opt/verilator-src \
     && cd /opt/verilator-src \
     && autoconf \
     && ./configure \
     && make -j"$(nproc)" \
     && make install \
     && cd / && rm -rf /opt/verilator-src
+
+# --- Yosys (CMake build since 0.6x; abc and the other libraries are submodules) ---
+RUN git clone --depth 1 --branch "${YOSYS_TAG}" --recurse-submodules --shallow-submodules \
+        https://github.com/YosysHQ/yosys.git /opt/yosys-src \
+    && cd /opt/yosys-src \
+    && cmake -B build . -DCMAKE_BUILD_TYPE=Release -DYOSYS_ENABLE_UNIT_TESTS=OFF \
+    && cmake --build build --config Release --parallel "$(nproc)" \
+    && cmake --install build --strip \
+    && cd / && rm -rf /opt/yosys-src
+
+# Record the versions actually built into the image, for comparison with the
+# native toolchain record and with the runner's fingerprint.
+RUN { iverilog -V 2>&1 | head -1; vvp -V 2>&1 | head -1; verilator --version; yosys -V; } \
+        | tee /etc/rtlprobe-toolchain-versions.txt
 
 WORKDIR /workspace
 CMD ["/bin/bash"]

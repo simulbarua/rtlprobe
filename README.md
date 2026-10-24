@@ -44,13 +44,22 @@ not arbitrary-repository automation or a trained localizer.
 ### Which toolchain is authoritative
 
 Every accepted case was qualified and executed with the native Mac toolchain
-recorded in the agents repository's `environment/toolchain-versions-mac-2026-09.txt`
-(Icarus Verilog 13.0, Verilator 5.046, Yosys 0.69+post). The root `Dockerfile` and the
-`tooling/` pipeline pin a different set (Icarus 12.0, Yosys 0.33, Verilator 5.038)
-and produced none of the accepted evidence. They are the historical tooling
-workstream, kept for raw artifact collection; a new host must qualify against the
-runner's fingerprint, not against the image. Realigning or retiring the image is
-an open item in the project change log.
+recorded in the agents repository's `environment/toolchain-versions-mac-2026-09.txt`:
+Icarus Verilog 13.0, Verilator 5.046, Yosys 0.69. Since October 23, 2026 the
+root `Dockerfile` builds those same three versions from their upstream tags
+(`v13_0`, `v5.046`, `v0.69`), replacing the earlier image pins (Icarus 12.0,
+Yosys 0.33, Verilator 5.038) that had produced none of the accepted evidence.
+The image was built and smoke-tested on that date on linux/arm64 (Colima on the
+development Mac): the three version banners, an Icarus simulation, a Verilator
+lint, and a Yosys synthesis of a small counter all passed; the versions the
+image reports are recorded inside it at `/etc/rtlprobe-toolchain-versions.txt`.
+
+Identical versions do not mean an identical environment fingerprint: the
+runner hashes each tool's full version banner, which includes the compiler and
+git sha, and the Mac's Yosys is a Homebrew build one merge commit past the tag
+(`0.69+post`). A new host or the image must therefore run
+`scripts/rtlprobe.py qualify` for each target before producing cases. The
+`tooling/` pipeline remains the historical raw-artifact workflow.
 
 The Dockerfile is at the repository root. Build the image from that directory:
 

@@ -1,6 +1,6 @@
 # RTLProbe Tooling Pipeline
 
-> Historical tooling workstream. Its toolchain pins differ from the native toolchain that produced every accepted case; see the root README, "Which toolchain is authoritative".
+> Historical tooling workstream. Since 2026-10-23 the image pins the same tool versions as the native toolchain that produced every accepted case; see the root README, "Which toolchain is authoritative". The image's version banners still differ from the Mac's, so it never reproduces the Mac fingerprint.
 
 Containerized environment plus automation script for compiling, simulating,
 linting, and synthesizing RTL designs with a pinned, reproducible toolchain.
@@ -27,7 +27,7 @@ If your shell is already in `tooling/`, the equivalent build command is:
 docker build -f ../Dockerfile -t rtlprobe-tools ..
 ```
 
-First build takes several minutes since it compiles Verilator from source.
+First build takes a long time since it compiles Icarus, Verilator, and Yosys from source.
 Only rebuild this when the Dockerfile itself changes (a tool version
 changes); rebuilding is not needed when you just edit `run_pipeline.sh`.
 
@@ -128,9 +128,9 @@ firmware and the difference between simulation completion and functional PASS.
 
 | Tool           | Version | Source                       |
 |----------------|---------|-------------------------------|
-| Icarus Verilog | 12.0    | apt package `12.0-2build2` |
-| Yosys          | 0.33    | apt package `0.33-5build2` |
-| Verilator      | 5.038   | built from source (git tag `v5.038`) |
+| Icarus Verilog | 13.0    | built from source (git tag `v13_0`) |
+| Yosys          | 0.69    | built from source (git tag `v0.69`, CMake) |
+| Verilator      | 5.046   | built from source (git tag `v5.046`) |
 | Python         | Not explicitly pinned | Ubuntu apt package `python3` |
 
 The [root Dockerfile](../Dockerfile) is the source of these declarations. The
