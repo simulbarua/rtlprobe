@@ -1,0 +1,11 @@
+--- a/lowrisc_dv_tl_agent_0/tl_seq_item.sv
++++ b/lowrisc_dv_tl_agent_0/tl_seq_item.sv
+@@ -187,7 +187,7 @@
+ 
+   // Return the data that is being written by this transaction on the A channel. This is the
+   // contents of a_data, but masked by zeroing the bytes where a_mask is false.
+-  extern function automatic logic [DataWidth-1:0] get_written_data();
++  extern function logic [DataWidth-1:0] get_written_data();
+ 
+   // Return true if the A channel for this item is a PutFullData message and the a_mask field is not
+   // high for all the active byte lanes.

@@ -1,0 +1,11 @@
+--- a/lowrisc_dv_sec_cm_0/sec_cm_base_if_proxy.sv
++++ b/lowrisc_dv_sec_cm_0/sec_cm_base_if_proxy.sv
+@@ -18,6 +18,6 @@
+ 
+   `uvm_object_new
+ 
+-  pure virtual task automatic inject_fault();
+-  pure virtual task automatic restore_fault();
++  pure virtual task inject_fault();
++  pure virtual task restore_fault();
+ endclass

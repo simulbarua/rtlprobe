@@ -1,0 +1,13 @@
+--- a/src/base/uvm_traversal.svh
++++ b/src/base/uvm_traversal.svh
+@@ -268,6 +268,10 @@
+   endfunction
+ 
+   virtual function void visit(NODE node);
++`ifdef UVM_NO_DPI
++    // TRIAL PATCH: the regex name check needs DPI; without it every name "fails". Skip the check.
++    return;
++`endif
+     // dont check the root component
+     if(_root != node) begin
+       if ( ! uvm_is_match( get_name_constraint(), node.get_name() ) ) begin

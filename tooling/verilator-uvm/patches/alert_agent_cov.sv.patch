@@ -1,0 +1,14 @@
+--- a/lowrisc_dv_alert_agent_0/alert_agent_cov.sv
++++ b/lowrisc_dv_alert_agent_0/alert_agent_cov.sv
+@@ -10,7 +10,11 @@
+   option.per_instance = 1;
+ 
+   cp_handshake_complete: coverpoint handshake_status {
++`ifdef DV_VERILATOR_UVM  // TRIAL PATCH: constant bin bounds (coverage only); Verilator needs constants
++    bins complete = {[0:$]};
++`else
+     bins complete = {complete_status};
++`endif
+   }
+ endgroup : handshake_complete_cg
+ 

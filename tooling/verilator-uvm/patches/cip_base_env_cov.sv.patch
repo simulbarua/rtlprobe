@@ -1,0 +1,38 @@
+--- a/lowrisc_dv_cip_lib_0/cip_base_env_cov.sv
++++ b/lowrisc_dv_cip_lib_0/cip_base_env_cov.sv
+@@ -9,7 +9,11 @@
+                                                               bit intr_en,
+                                                               bit intr_state);
+   cp_intr: coverpoint intr {
++`ifdef DV_VERILATOR_UVM  // TRIAL PATCH: constant bin bounds (coverage only); Verilator needs constants
++    bins all_values[] = {[0:255]};
++`else
+     bins all_values[] = {[0:num_interrupts-1]};
++`endif
+   }
+   cp_intr_en: coverpoint intr_en;
+   cp_intr_state: coverpoint intr_state;
+@@ -21,7 +25,11 @@
+                                                                    bit intr_en,
+                                                                    bit intr_state);
+   cp_intr: coverpoint intr {
++`ifdef DV_VERILATOR_UVM  // TRIAL PATCH: constant bin bounds (coverage only); Verilator needs constants
++    bins all_values[] = {[0:255]};
++`else
+     bins all_values[] = {[0:num_interrupts-1]};
++`endif
+   }
+   cp_intr_test: coverpoint intr_test;
+   cp_intr_en: coverpoint intr_en;
+@@ -35,7 +43,11 @@
+ covergroup intr_pins_cg (uint num_interrupts) with function sample(uint intr_pin,
+                                                                    bit  intr_pin_value);
+   cp_intr_pin: coverpoint intr_pin {
++`ifdef DV_VERILATOR_UVM  // TRIAL PATCH: constant bin bounds (coverage only); Verilator needs constants
++    bins all_pins[] = {[0:255]};
++`else
+     bins all_pins[] = {[0:num_interrupts-1]};
++`endif
+   }
+   cp_intr_pin_value: coverpoint intr_pin_value {
+     bins values[] = {0, 1};

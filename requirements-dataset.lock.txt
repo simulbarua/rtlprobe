@@ -11,3 +11,5 @@ referencing==0.37.0
 rpds-py==2026.6.3
 typing_extensions==4.16.0
 vcdvcd==2.6.0
+pyslang==12.0.0
+nanobind-backend==1.0.0

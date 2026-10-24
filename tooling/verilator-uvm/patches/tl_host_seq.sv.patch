@@ -1,0 +1,15 @@
+--- a/lowrisc_dv_tl_agent_0/seq_lib/tl_host_seq.sv
++++ b/lowrisc_dv_tl_agent_0/seq_lib/tl_host_seq.sv
+@@ -85,7 +85,11 @@
+   // `tl_host_base_seq::finish_item()` instead, to facilitate late randomization when accesses are
+   // initiated from UVM RAL.
+   virtual function void randomize_req(REQ req, int idx);
+-    if (!(req.randomize() with {
++    // TRIAL PATCH: Verilator 5.053 devel internal error (REFDTYPE 'REQ' not linked to type) on an
++    // inline constraint through the type-parameter handle; randomize via the concrete base type.
++    tl_seq_item req_c;
++    `DV_CHECK_FATAL($cast(req_c, req))
++    if (!(req_c.randomize() with {
+         a_valid_delay inside {[min_req_delay:max_req_delay]};})) begin
+       `uvm_fatal(`gfn, "Cannot randomize req")
+     end

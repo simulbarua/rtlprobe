@@ -1,54 +1,124 @@
 {
-  "registry_version": "pilot-2",
-  "operators": [
-    {
-      "id": "unsigned32_root_add_to_sub",
-      "version": "1.0",
-      "status": "approved",
-      "approval_scope": "implementation allowlist for this pilot; not human acceptance of any dataset case",
-      "review": "Assistant code review and executable positive/negative fixture tests; human case review remains mandatory and separately pending.",
-      "family": "datapath_arithmetic",
-      "implementation": "rtlprobe/mutation.py:apply",
-      "preconditions": [
-        "one AST-located blocking assignment on one line",
-        "unsigned 32-bit uniquely declared operands and target",
-        "RHS root Plus with identifier right operand",
-        "RHS contains only Plus and Identifier nodes",
-        "exact source hash and token span match"
-      ],
-      "edit": "Replace exactly the root addition token with subtraction, keeping width and all surrounding source unchanged.",
-      "exclusions": [
-        "signed or unknown-width operands",
-        "macros or multiline statements",
-        "compound/select RHS operands",
-        "ambiguous declarations",
-        "comment or string edits",
-        "no-op replacements"
-      ],
-      "fixture_tests": "tests/test_pilot.py"
-    },
-    {
-      "id": "literal_lsb_flip32",
-      "version": "1.0",
-      "status": "approved",
-      "approval_scope": "pilot implementation allowlist; individual cases require human review",
-      "review": "Assistant implementation review and positive/negative fixture tests; not human dataset acceptance",
-      "family": "constant_or_boundary",
-      "implementation": "rtlprobe/mutation.py:apply_constant",
-      "preconditions": [
-        "AST-located localparam or unsigned 32-bit blocking assignment",
-        "single-line literal RHS",
-        "exact source hash and span",
-        "32-bit hex or nonnegative unsized decimal below 2^31; representation preserved"
-      ],
-      "edit": "Flip numeric least-significant bit without changing declared width, base or signedness.",
-      "exclusions": [
-        "unknown or signed-sized literals",
-        "expressions or width declarations",
-        "multiline or macro-derived sites",
-        "ambiguous nodes"
-      ],
-      "fixture_tests": "tests/test_batch.py"
-    }
-  ]
+ "registry_version": "december-3",
+ "operators": [
+  {
+   "id": "unsigned32_root_add_to_sub",
+   "version": "1.0",
+   "status": "approved",
+   "approval_scope": "implementation allowlist for this pilot; not human acceptance of any dataset case",
+   "review": "Assistant code review and executable positive/negative fixture tests; human case review remains mandatory and separately pending.",
+   "family": "datapath_arithmetic",
+   "implementation": "rtlprobe/mutation.py:apply",
+   "preconditions": [
+    "one AST-located blocking assignment on one line",
+    "unsigned 32-bit uniquely declared operands and target",
+    "RHS root Plus with identifier right operand",
+    "RHS contains only Plus and Identifier nodes",
+    "exact source hash and token span match"
+   ],
+   "edit": "Replace exactly the root addition token with subtraction, keeping width and all surrounding source unchanged.",
+   "exclusions": [
+    "signed or unknown-width operands",
+    "macros or multiline statements",
+    "compound/select RHS operands",
+    "ambiguous declarations",
+    "comment or string edits",
+    "no-op replacements"
+   ],
+   "fixture_tests": "tests/test_pilot.py"
+  },
+  {
+   "id": "literal_lsb_flip32",
+   "version": "1.0",
+   "status": "approved",
+   "approval_scope": "pilot implementation allowlist; individual cases require human review",
+   "review": "Assistant implementation review and positive/negative fixture tests; not human dataset acceptance",
+   "family": "constant_or_boundary",
+   "implementation": "rtlprobe/mutation.py:apply_constant",
+   "preconditions": [
+    "AST-located localparam or unsigned 32-bit blocking assignment",
+    "single-line literal RHS",
+    "exact source hash and span",
+    "32-bit hex or nonnegative unsized decimal below 2^31; representation preserved"
+   ],
+   "edit": "Flip numeric least-significant bit without changing declared width, base or signedness.",
+   "exclusions": [
+    "unknown or signed-sized literals",
+    "expressions or width declarations",
+    "multiline or macro-derived sites",
+    "ambiguous nodes"
+   ],
+   "fixture_tests": "tests/test_batch.py"
+  },
+  {
+   "id": "relational_operator_replace",
+   "version": "1.0",
+   "status": "approved",
+   "approval_scope": "Implementation allowlist approved by the user on 2026-10-24 (tracker D-09) after the regression gate (15/15 accepted patches byte-identical on the pyslang front end) and fixture tests; not acceptance of any dataset case.",
+   "review": "Codex implementation (session 3, 2026-10-24) with positive/negative fixture tests; Claude re-ran the regression gate and tests; user approved the allowlist. Human case review remains mandatory per decision 5a.",
+   "implementation": "rtlprobe/mutation.py:locate_operator, apply",
+   "fixture_tests": "tests/test_operators.py",
+   "family": "comparison_boundary",
+   "preconditions": [
+    "One AST-located binary comparison on one line; exactly one comparison at the site.",
+    "Operands are identifiers, selects or literals with known integral widths.",
+    "Exact source hash, path and token span match."
+   ],
+   "edit": "Swap one token: >= with >, <= with <, or == with !=. Reference: OpenTitan timer_core.sv:39 >= to >.",
+   "exclusions": [
+    "=== and !==",
+    "Unknown-width operands, including signed operands of unknown width",
+    "Macro-derived, multiline, string or comment sites; generate conditions",
+    "Generated *_reg_top.sv and *_reg_pkg.sv files",
+    "Ambiguous sites; no-op edits"
+   ]
+  },
+  {
+   "id": "condition_invert",
+   "version": "1.0",
+   "status": "approved",
+   "approval_scope": "Implementation allowlist approved by the user on 2026-10-24 (tracker D-09) after the regression gate (15/15 accepted patches byte-identical on the pyslang front end) and fixture tests; not acceptance of any dataset case. condition_invert is not usable for cases until the candidate rule includes if and ternary conditions (T-19).",
+   "review": "Codex implementation (session 3, 2026-10-24) with positive/negative fixture tests; Claude re-ran the regression gate and tests; user approved the allowlist. Human case review remains mandatory per decision 5a.",
+   "implementation": "rtlprobe/mutation.py:locate_operator, apply",
+   "fixture_tests": "tests/test_operators.py",
+   "family": "control",
+   "preconditions": [
+    "One AST-located if condition or ternary selector, a single expression on one line.",
+    "Exact source hash, path, reset identifier policy and token span match.",
+    "Dependency: the separately adopted candidate rule must include if and ternary conditions before any case uses this operator.",
+    "One edit per case; source hash prevents stacking edits."
+   ],
+   "edit": "Wrap the condition in !(...) or remove its existing outer ! token, preserving other bytes. Reference: if (enable) becomes if (!(enable)).",
+   "exclusions": [
+    "rst_ni, rst_n, reset_n (existing crypto reset), and manifest reset_identifiers",
+    "Conditions already mutated in the case (source-hash mismatch)",
+    "Macro-derived, multiline or generate sites; pattern conditions",
+    "Generated *_reg_top.sv and *_reg_pkg.sv files",
+    "Ambiguous sites"
+   ]
+  },
+  {
+   "id": "logic_operator_swap",
+   "version": "1.0",
+   "status": "approved",
+   "approval_scope": "Implementation allowlist approved by the user on 2026-10-24 (tracker D-09) after the regression gate (15/15 accepted patches byte-identical on the pyslang front end) and fixture tests; not acceptance of any dataset case.",
+   "review": "Codex implementation (session 3, 2026-10-24) with positive/negative fixture tests; Claude re-ran the regression gate and tests; user approved the allowlist. Human case review remains mandatory per decision 5a.",
+   "implementation": "rtlprobe/mutation.py:locate_operator, apply",
+   "fixture_tests": "tests/test_operators.py",
+   "family": "logic",
+   "preconditions": [
+    "Exactly one AST-located binary bitwise/logical operator at the site on one line.",
+    "Both operand widths are known integral widths.",
+    "Exact source hash, path and token span match."
+   ],
+   "edit": "Swap one token: & with |, or && with ||. Reference: assign y = a & b becomes assign y = a | b.",
+   "exclusions": [
+    "Unary reduction operators",
+    "Macro-derived, multiline, string or comment sites; generate constructs",
+    "Assert or cover properties",
+    "Generated *_reg_top.sv and *_reg_pkg.sv files",
+    "Ambiguous sites; no-op edits"
+   ]
+  }
+ ]
 }

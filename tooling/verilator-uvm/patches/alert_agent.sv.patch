@@ -1,0 +1,19 @@
+--- a/lowrisc_dv_alert_agent_0/alert_agent.sv
++++ b/lowrisc_dv_alert_agent_0/alert_agent.sv
+@@ -13,6 +13,16 @@
+     .MONITOR_T       (alert_monitor),
+     .COV_T           (alert_agent_cov)
+   );
++
++  // TRIAL PATCH: Verilator 5.053 devel cannot use a type parameter inherited from a parameterized
++  // base class as a parameter of another class; local typedefs with the concrete types shadow them.
++  typedef alert_agent_cfg      CFG_T;
++  typedef alert_base_driver    DRIVER_T;
++  typedef alert_sender_driver  HOST_DRIVER_T;
++  typedef alert_receiver_driver DEVICE_DRIVER_T;
++  typedef alert_sequencer      SEQUENCER_T;
++  typedef alert_monitor        MONITOR_T;
++  typedef alert_agent_cov      COV_T;
+ 
+   `uvm_component_utils(alert_agent)
+ 

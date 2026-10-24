@@ -1,0 +1,87 @@
+--- a/lowrisc_dv_cip_lib_0/cip_base_scoreboard.sv
++++ b/lowrisc_dv_cip_lib_0/cip_base_scoreboard.sv
+@@ -96,24 +96,44 @@
+       if (cfg.en_tl_err_cov) begin
+         tl_errors_cgs_wrap[ral_name] = new($sformatf("tl_errors_cgs_wrap[%0s]", ral_name));
+         if (!has_csr) begin
++`ifndef DV_VERILATOR_UVM  // TRIAL PATCH: covergroup option access unsupported by Verilator 5.053 devel
+           tl_errors_cgs_wrap[ral_name].tl_errors_cg.cp_csr_size_err.option.weight = 0;
++`endif
++`ifndef DV_VERILATOR_UVM  // TRIAL PATCH: covergroup option access unsupported by Verilator 5.053 devel
+           tl_errors_cgs_wrap[ral_name].tl_errors_cg.cp_csr_size_err.option.at_least = 0;
++`endif
+         end
+         if (!has_unmapped) begin
++`ifndef DV_VERILATOR_UVM  // TRIAL PATCH: covergroup option access unsupported by Verilator 5.053 devel
+           tl_errors_cgs_wrap[ral_name].tl_errors_cg.cp_unmapped_err.option.weight = 0;
++`endif
++`ifndef DV_VERILATOR_UVM  // TRIAL PATCH: covergroup option access unsupported by Verilator 5.053 devel
+           tl_errors_cgs_wrap[ral_name].tl_errors_cg.cp_unmapped_err.option.at_least = 0;
++`endif
+         end
+         if (!has_mem_byte_access_err) begin
++`ifndef DV_VERILATOR_UVM  // TRIAL PATCH: covergroup option access unsupported by Verilator 5.053 devel
+           tl_errors_cgs_wrap[ral_name].tl_errors_cg.cp_mem_byte_access_err.option.weight = 0;
++`endif
++`ifndef DV_VERILATOR_UVM  // TRIAL PATCH: covergroup option access unsupported by Verilator 5.053 devel
+           tl_errors_cgs_wrap[ral_name].tl_errors_cg.cp_mem_byte_access_err.option.at_least = 0;
++`endif
+         end
+         if (!has_wo_mem) begin
++`ifndef DV_VERILATOR_UVM  // TRIAL PATCH: covergroup option access unsupported by Verilator 5.053 devel
+           tl_errors_cgs_wrap[ral_name].tl_errors_cg.cp_mem_wo_err.option.weight = 0;
++`endif
++`ifndef DV_VERILATOR_UVM  // TRIAL PATCH: covergroup option access unsupported by Verilator 5.053 devel
+           tl_errors_cgs_wrap[ral_name].tl_errors_cg.cp_mem_wo_err.option.at_least = 0;
++`endif
+         end
+         if (!has_ro_mem) begin
++`ifndef DV_VERILATOR_UVM  // TRIAL PATCH: covergroup option access unsupported by Verilator 5.053 devel
+           tl_errors_cgs_wrap[ral_name].tl_errors_cg.cp_mem_ro_err.option.weight = 0;
++`endif
++`ifndef DV_VERILATOR_UVM  // TRIAL PATCH: covergroup option access unsupported by Verilator 5.053 devel
+           tl_errors_cgs_wrap[ral_name].tl_errors_cg.cp_mem_ro_err.option.at_least = 0;
++`endif
+         end
+ 
+       end
+@@ -125,8 +145,12 @@
+ 
+         tl_intg_err_cgs_wrap[ral_name] = new($sformatf("tl_intg_err_cgs_wrap[%0s]", ral_name));
+         if (!has_mem || !has_csr) begin
++`ifndef DV_VERILATOR_UVM  // TRIAL PATCH: covergroup option access unsupported by Verilator 5.053 devel
+           tl_intg_err_cgs_wrap[ral_name].tl_intg_err_cg.cp_is_mem.option.weight = 0;
++`endif
++`ifndef DV_VERILATOR_UVM  // TRIAL PATCH: covergroup option access unsupported by Verilator 5.053 devel
+           tl_intg_err_cgs_wrap[ral_name].tl_intg_err_cg.cp_is_mem.option.at_least = 0;
++`endif
+         end
+       end
+     end
+@@ -410,6 +434,9 @@
+   local task check_alert_triggered(string     alert_name,
+                                    output bit alert_due_to_ping,
+                                    output bit seen_reset);
++    // TRIAL PATCH: Verilator forbids writing a task output inside a fork after a timing control;
++    // collect in a local and copy after the join.
++    bit seen_reset_l;
+     alert_agent_cfg agent_cfg = cfg.m_alert_agent_cfgs[alert_name];
+ 
+     // A snapshot of the number of ping requests that have been seen when this task starts.
+@@ -442,7 +469,7 @@
+           wait_slower_n_cycles(max_cycles_til_alert,
+                                cfg.clk_rst_vif,
+                                agent_cfg.vif);
+-          seen_reset = !(cfg.clk_rst_vif.rst_n && agent_cfg.vif.rst_n);
++          seen_reset_l = !(cfg.clk_rst_vif.rst_n && agent_cfg.vif.rst_n);
+         end
+         forever begin
+           @(negedge agent_cfg.vif.clk);
+@@ -451,6 +478,7 @@
+       join_any
+       disable fork;
+     end join
++    seen_reset = seen_reset_l;
+ 
+     // Is the agent under an alert handshake? If so, it was asserted in time
+     if (under_alert_handshake[alert_name]) return;

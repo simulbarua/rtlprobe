@@ -39,7 +39,7 @@ configured external root. See [execution layout and script interface](docs/execu
 Human acceptance, automatic promotion, sampling, and separate acceptance counts are documented in [case curation](docs/execution-layout.md#case-curation).
 The SHA-256 and ChaCha targets have real pilot evidence. Other targets need a compatible manifest,
 existing testbench, trusted checker adapter, and fresh qualification. The backend is
-currently Icarus/Verilator/Yosys with two narrow 32-bit mutation operators; this is
+currently Icarus/Verilator/Yosys with two approved and three proposed mutation operators; this is
 not arbitrary-repository automation or a trained localizer.
 
 ### Which toolchain is authoritative
@@ -82,3 +82,66 @@ the repository bind mount used when running the pipeline.
 Agent implementations, model prompts, and provider integrations belong in a
 separate repository. RTLProbe's execution and research implementation should be
 usable through ordinary configuration files and commands.
+
+## Execution backends
+
+Target manifests select `backend: icarus` (the default), `verilator_predv`, or
+`verilator_uvm`. Existing SHA-256 and ChaCha manifests and checker adapters are
+unchanged. Both Verilator variants bind each fresh build to the exact source
+hashes and refuse execution after a source or binary change.
+
+OpenTitan targets currently support **original-only proof**, with each control
+recorded as `pending: front end`. `qualify` runs every admitted test, saves an
+`original-proof.json` and sealed manifest, and never writes a qualified design
+dossier. These proofs do not enable case generation. Control/restored-PASS,
+structural admission, specification stores, and host qualification remain gates.
+
+See [backend operation](docs/verilator-backends.md) for pinned tools, reproduction,
+checker contracts, limitations, and deployment follow-ups.
+
+## Mutation operators and candidate syntax
+
+Mutation mapping uses `pyslang==12.0.0` for both Verilog and SystemVerilog.
+`unsigned32_root_add_to_sub` and `literal_lsb_flip32` retain IDs, versions
+and approval status. Historical proposal mapper strings remain provenance;
+all other target fields must match a fresh pyslang derivation. The read-only
+accepted-case patch gate matched all 15 accepted cases on October 24, 2026.
+Pyverilog remains pinned for the experimental localization dependency graph,
+not for mutation location or editing.
+
+The `december-3` registry adds `relational_operator_replace`,
+`condition_invert` (family `control`) and `logic_operator_swap`, all **proposed**.
+Fixture success does not approve them. `apply` refuses proposed registry entries.
+The existing runner proposal schema now admits their families and deletion of
+an outer `!`. New targets bind their repository-relative path and the manifest's
+`reset_identifiers` list; `rst_n`, `rst_ni`, and the crypto targets’ `reset_n` are always excluded for condition
+inversion. Only one hash-checked edit may be applied to the original snapshot.
+
+`rtlprobe.candidates.extract_candidates` is a source-only successor to the
+pilot's candidate enumeration. It includes assignments, parameters, binary
+comparison/logic expressions, and `if`/ternary conditions, with exact token
+spans. It does not import the mutation registry or case labels. The pilot
+`baseline.extract` integrates these candidates where its existing dependency
+extractor succeeds. Functions, generate blocks, parameter overrides and
+instance arrays are inventoried by the syntax extractor, but still unsupported
+by the pilot dependency graph; parse failures and rejected sites are explicit.
+The separate study candidate-rule order must adopt `if`/ternary inclusion
+before condition inversion can be used for cases. No study rule is frozen here.
+
+Read-only checks (run from this checkout):
+
+```sh
+python scripts/operator_regression.py --data-root /absolute/live-data-root
+python scripts/operator_sites.py --manifest targets/sha256/config.json --source-root /absolute/original-source-root
+```
+
+Both print JSON and write no files. The gate checks sealed originals and patches
+for every accepted index entry; mismatches include diffs. The site inventory uses
+standalone source and default parameter values, reports per-file failures, and
+must not be read as complete when `status` is `partial`. Include/package context
+is not supplied by this API: the October 24 OpenTitan inventory cannot parse
+`rv_timer.sv`, `uart.sv` or `uart_core.sv` in isolation. No directives are stripped
+or stubbed. The CRC table's function-return assignments are outside the existing
+literal operator's register/localparam domain, so that proposed control is
+unreachable. See [site inventory](docs/operator-sites-2026-10-24.json) and
+[implementation report](docs/RTLProbe_Operators_Report_2026-10-24.md).

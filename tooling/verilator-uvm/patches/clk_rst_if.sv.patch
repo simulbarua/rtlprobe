@@ -1,0 +1,45 @@
+--- a/lowrisc_dv_common_ifs_0/clk_rst_if.sv
++++ b/lowrisc_dv_common_ifs_0/clk_rst_if.sv
+@@ -17,13 +17,12 @@
+   inout rst_n
+ );
+ 
+-`ifndef VERILATOR
++// TRIAL PATCH: guard removed so the UVM includes load under a UVM-capable Verilator
+   // include macros and import pkgs
+   `include "dv_macros.svh"
+   `include "uvm_macros.svh"
+   import uvm_pkg::*;
+   import common_ifs_pkg::*;
+-`endif
+ 
+   // Enables clock to be generated and driven by this interface.
+   bit drive_clk;
+@@ -40,6 +39,10 @@
+   // This event is used to start the initial block driving the clock after set_active sets
+   // the values of drive_clk and drive_rst_n.
+   event set_active_called;
++  // TRIAL PATCH: level-sensitive companion to the event. Verilator runs the testbench initial block
++  // (which calls set_active) before this interface's initial block, so the event fires before
++  // anyone waits on it and the clock never starts.
++  bit set_active_done;
+ 
+   // Applies clock gating.
+   bit clk_gate = 1'b0;
+@@ -188,6 +191,7 @@
+     drive_clk = drive_clk_val;
+     drive_rst_n = drive_rst_n_val;
+     -> set_active_called;
++    set_active_done = 1'b1;
+   endfunction
+ 
+   // set the clk period in ps
+@@ -316,7 +320,7 @@
+     // wait a whole number of clock periods, which means it's possible for the clock to synchronise
+     // with the "expected" timestamps.
+     bit done;
+-    @set_active_called;
++    wait (set_active_done);  // TRIAL PATCH: was @set_active_called (see declaration)
+     if (drive_clk) begin
+       fork
+         begin

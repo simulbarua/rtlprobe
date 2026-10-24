@@ -34,6 +34,12 @@ def inputs(config):
     if revision != config["revision"] or dirty.strip():
         raise ValueError("Upstream checkout must be clean and match the pinned revision")
     paths = config["rtl"] + [config["testbench"]] + config["collateral"]
+    if config.get('backend') == 'verilator_uvm':
+        # FuseSoC generators need the pinned project and vendored dependencies.
+        # Unrelated symlink assets are omitted; none may be a selected source.
+        tracked = subprocess.check_output(['git', '-C', str(vendor), 'ls-files', '-z']).decode().split('\0')
+        paths = [p for p in tracked if p and not (vendor/p).is_symlink()]
+
     for path in paths:
         safe_path(path)
         if (vendor/path).is_symlink():
@@ -48,6 +54,10 @@ def fingerprint(config):
     code[str(adapter.relative_to(CODE_ROOT))] = filehash(adapter)
     record = {"config": config, "files": inputs(config), "environment": environment(),
               "implementation": code, "lock_sha256": filehash(CODE_ROOT/"requirements-dataset.lock.txt")}
+    from .backends.common import fingerprint as backend_fingerprint
+    record['environment']['backend'] = config.get('backend', 'icarus')
+    if config.get('backend', 'icarus') != 'icarus':
+        record['environment']['execution_backend'] = backend_fingerprint(config)
     return {"sha256": identity(record), "inputs": record}
 
 
@@ -57,27 +67,18 @@ def snapshot(config, destination):
         dst = destination/path
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT/config["vendor"]/path, dst)
+        if config.get('backend', 'icarus') != 'icarus':
+            shutil.copymode(ROOT/config['vendor']/path, dst)
 
 
 def compile_design(runner, config, name, source):
-    binary = runner.out/(name+".vvp")
-    runner.require(name+"_compile", ["iverilog", *config["compile_flags"], "-s", config["test_top"],
-                   "-o", binary, *config["rtl"], config["testbench"]], source, config["limits"]["compile_seconds"])
-    return binary
+    from .backends import select
+    return select(config).build(runner, config, name, source)
 
 
 def simulate(runner, config, name, source, binary):
-    hashes = treehashes(source)
-    executable = filehash(binary)
-    run = runner.run(name, ["vvp", "-N", binary], source, config["limits"]["simulation_seconds"])
-    result = classify((runner.out/run["stdout"]).read_text(), (runner.out/run["stderr"]).read_text(),
-                      run["returncode"], run["timed_out"], config=config)
-    if hashes != treehashes(source) or executable != filehash(binary):
-        raise ValueError("Source or executable changed during simulation")
-    result.update(run_id=name, source_hashes=hashes, executable_sha256=executable,
-                  test_id=config["test_id"], seed=config["seed"])
-    save(runner.out/(name+".json"), result)
-    return result
+    from .backends import select
+    return select(config).run(runner, config, name, source, binary)
 
 
 def structure(runner, config, name, source):
@@ -107,6 +108,9 @@ def new_output(kind, tag, config=None):
 
 def qualify():
     config = target.configuration(CONFIG)
+    if config.get('backend', 'icarus') != 'icarus':
+        from .backends.proof import qualify_original
+        return qualify_original(config)
     fp = fingerprint(config)
     out = new_output("qualification", fp["sha256"][:12], config)
     runner = Runner(out, config["limits"])
@@ -160,6 +164,8 @@ def qualify():
 
 def qualified():
     target.configuration(CONFIG)  # Fail clearly when no target has been selected.
+    if target.configuration(CONFIG).get('control', {}).get('pending'):
+        raise ValueError('Original-only proof is not qualification: control and restored PASS remain pending')
     design = load(DESIGN/"design.json")
     schema(design, "design")
     config = target.configuration(CONFIG)

@@ -1,0 +1,32 @@
+UVM_INFO /Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/dl/uvm/1800.2-2017-1.0/src/base/uvm_root.svh(449) @ 0: reporter [UVM/RELNOTES] 
+  ***********       IMPORTANT RELEASE NOTES         ************
+
+  This implementation of the UVM Library deviates from the 1800.2-2017
+  standard.  See the DEVIATIONS.md file contained in the release
+  for more details.
+
+  You are using a version of the UVM library that has been compiled
+  with `UVM_ENABLE_DEPRECATED_API defined.
+  See https://accellera.mantishub.io/view.php?id=5072 for more details.
+
+----------------------------------------------------------------
+Accellera:1800.2-2017:UVM:1.0
+
+All copyright owners for this kit are listed in NOTICE.txt
+All Rights Reserved Worldwide
+----------------------------------------------------------------
+
+      (Specify +UVM_NO_RELNOTES to turn off this notice)
+
+UVM_INFO /Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/dl/uvm/1800.2-2017-1.0/src/base/uvm_root.svh(517) @ 0 ps: reporter [NO_DPI_TSTNAME] UVM_NO_DPI defined--getting UVM_TESTNAME directly, without DPI
+UVM_INFO @ 0 ps: reporter [RNTST] Running test rv_timer_base_test...
+UVM_INFO /Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/dl/uvm/1800.2-2017-1.0/src/base/uvm_component.svh(2191) @ 0 ps: reporter [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::build method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::build_phase().
+UVM_INFO @         0 ps: (uvm_component.svh:2213) uvm_test_top.env.m_alert_agent_fatal_fault.driver.m_pending_alert_rsps.analysis_export [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::connect method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::connect_phase().
+UVM_INFO @         0 ps: (uvm_component.svh:2227) uvm_test_top.env.m_alert_agent_fatal_fault.driver.m_pending_alert_rsps.analysis_export [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::end_of_elaboration method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::end_of_elaboration_phase().
+UVM_INFO @         0 ps: (uvm_traversal.svh:293) [UVM/COMP/NAMECHECK] This implementation of the component name checks requires DPI to be enabled
+UVM_INFO @         0 ps: (uvm_component.svh:2220) uvm_test_top.env.m_alert_agent_fatal_fault.driver.m_pending_alert_rsps.analysis_export [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::start_of_simulation method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::start_of_simulation_phase().
+UVM_INFO @         0 ps: (uvm_component.svh:2234) uvm_test_top.env.m_alert_agent_fatal_fault.driver.m_pending_alert_rsps.analysis_export [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::run method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::run_phase().
+UVM_INFO @   1672064 ps: (rv_timer_cfg_update_on_fly_vseq.sv:40) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.rv_timer_cfg_update_on_fly_vseq] Running test iteration 1/4
+UVM_INFO @  36538381 ps: (rv_timer_cfg_update_on_fly_vseq.sv:106) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.rv_timer_cfg_update_on_fly_vseq] Updating timer and compare reg
+UVM_INFO @ 3207951111 ps: (rv_timer_cfg_update_on_fly_vseq.sv:106) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.rv_timer_cfg_update_on_fly_vseq] Updating timer and compare reg
+UVM_INFO @ 7196644557 ps: (rv_timer_rv_timer_cfg_update_on_fly exit=142

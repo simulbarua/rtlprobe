@@ -13,7 +13,7 @@ from .evidence import (ROOT, CommandError, Runner, filehash, identity, load, man
                        save, treehashes, verify_manifest, workspace_lock, write_once)
 from .lifecycle import (complete_attempt, existing_cases, mutation_key, publish,
                         reserve_attempt, verify_index)
-from .mutation import apply, safe_path, sha
+from .mutation import NEW_OPERATORS, apply, safe_path, sha
 
 
 def operator_for(proposal):
@@ -29,6 +29,12 @@ def preflight(proposal, config, fp):
     path = str(safe_path(proposal["path"]))
     if path not in config["rtl"]:
         raise ValueError("Mutation must target declared RTL, never the testbench")
+    if proposal['operator']['id'] in NEW_OPERATORS:
+        target = proposal['target']
+        if target.get('path') != path:
+            raise ValueError('Operator target path differs from proposal path')
+        if target.get('reset_identifiers') != sorted(set(config.get('reset_identifiers', []))):
+            raise ValueError('Operator reset policy differs from manifest')
     before = (ROOT/config["vendor"]/path).read_bytes()
     after = apply(before, proposal["target"], operator_for(proposal))
     key = mutation_key(config, fp["inputs"]["files"], path, sha(after))
@@ -139,6 +145,12 @@ def execute(proposal, config, fp, design, key, before, after, out, remaining):
     record["cost"] = {"command_elapsed_seconds": sum(c["elapsed_seconds"] for c in runner.records),
                       "child_cpu_seconds": sum(c["cpu_seconds"] for c in runner.records),
                       "human_review_minutes": None}
+    if config.get('backend', 'icarus') != 'icarus':
+        record['cost']['verilator_builds'] = {
+            p.parent.name: load(p)['walltime_seconds'] for p in out.glob('*_build/build.json')}
+        record['cost']['simulation_wall_seconds'] = {
+            r['run_id']: r['run_wall_seconds'] for r in
+            [record['original'], *record['mutants'], record['restored']] if r is not None}
     pilot.schema(record, "case")
     save(out/"case.json", record)
     (out/"REVIEW.md").write_text(review_text(record))

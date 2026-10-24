@@ -123,7 +123,7 @@ class Runner:
         self.cpu_start = resource.getrusage(resource.RUSAGE_CHILDREN)
         self.records = []
 
-    def run(self, name, command, cwd, timeout):
+    def run(self, name, command, cwd, timeout, *, env_extra=None):
         elapsed = time.monotonic() - self.started
         cpu = resource.getrusage(resource.RUSAGE_CHILDREN)
         used_cpu = cpu.ru_utime + cpu.ru_stime - self.cpu_start.ru_utime - self.cpu_start.ru_stime
@@ -137,15 +137,24 @@ class Runner:
         directory.mkdir(parents=True, exist_ok=False)
         command = [str(x) for x in command]
         env = {"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "LC_ALL": "C", "TZ": "UTC"}
+        if env_extra:
+            if set(env_extra) - {'SDKROOT', 'CC', 'CXX', 'PYTHONDONTWRITEBYTECODE'}:
+                raise ValueError('Unsupported build environment key')
+            env.update(env_extra)
         start = time.monotonic()
         started_at = datetime.now(timezone.utc).isoformat()
         before = resource.getrusage(resource.RUSAGE_CHILDREN)
         save(directory/"started.json", {"id": name, "command": command, "cwd": str(cwd),
                                        "started_at": started_at, "timeout_seconds": limit})
         # Each command is its own process group, so timeouts terminate tool children too.
+        memory = self.limits.get('memory_bytes')
+        memory_supported = sys.platform.startswith('linux') and hasattr(resource, 'RLIMIT_AS')
+        def limit_memory():
+            resource.setrlimit(resource.RLIMIT_AS, (memory, memory))
         with (directory/"stdout.log").open("wb") as stdout, (directory/"stderr.log").open("wb") as stderr:
             proc = subprocess.Popen(command, cwd=cwd, stdout=stdout, stderr=stderr,
-                                    env=env, start_new_session=True)
+                                    env=env, start_new_session=True,
+                                    preexec_fn=limit_memory if memory and memory_supported else None)
             save(directory/"process.json", {"pid": proc.pid})
             timed_out = False
             interrupted = False
@@ -169,6 +178,9 @@ class Runner:
                   "stderr": str((directory/"stderr.log").relative_to(self.out)),
                   "stdout_sha256": filehash(directory/"stdout.log"),
                   "stderr_sha256": filehash(directory/"stderr.log")}
+        if memory is not None:
+            record['memory_limit'] = {'bytes': memory, 'enforced': memory_supported,
+                                      'scope': 'per-process virtual address space' if memory_supported else 'unavailable on this host'}
         record["interrupted"] = interrupted
         save(directory/"run.json", record)
         self.records.append(record)
@@ -177,8 +189,8 @@ class Runner:
             raise KeyboardInterrupt("Command interrupted; logs and process outcome preserved")
         return record
 
-    def require(self, name, command, cwd, timeout):
-        record = self.run(name, command, cwd, timeout)
+    def require(self, name, command, cwd, timeout, *, env_extra=None):
+        record = self.run(name, command, cwd, timeout, env_extra=env_extra)
         if record["returncode"] or record["timed_out"]:
             raise CommandError(record)
         return record

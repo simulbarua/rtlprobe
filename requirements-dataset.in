@@ -3,3 +3,4 @@ networkx
 jsonschema
 pyyaml
 vcdvcd
+pyslang==12.0.0

@@ -1,0 +1,69 @@
+--- a/lowrisc_dv_csr_utils_0/csr_utils_pkg.sv
++++ b/lowrisc_dv_csr_utils_0/csr_utils_pkg.sv
+@@ -342,6 +342,10 @@
+                             input  uint               timeout_ns = default_timeout_ns,
+                             input  uvm_reg_map        map = null,
+                             input  uvm_reg_frontdoor  user_ftdr = default_user_frontdoor);
++    // TRIAL PATCH: Verilator forbids writing a task output inside a fork after a timing control;
++    // collect in a local and copy after the join.
++    uvm_reg_data_t value_l;
++    uvm_status_e   status_l;
+     if (backdoor) begin
+       value = csr_peek(ptr, check);
+       status = UVM_IS_OK;
+@@ -356,16 +360,16 @@
+             csr_or_fld = decode_csr_or_field(ptr);
+             if (user_ftdr != null) csr_or_fld.csr.set_frontdoor(user_ftdr);
+             if (csr_or_fld.field != null) begin
+-              csr_or_fld.field.read(.status(status), .value(value), .path(path), .map(map),
++              csr_or_fld.field.read(.status(status_l), .value(value_l), .path(path), .map(map),
+                                     .prior(100));
+             end else begin
+-              csr_or_fld.csr.read(.status(status), .value(value), .path(path), .map(map),
++              csr_or_fld.csr.read(.status(status_l), .value(value_l), .path(path), .map(map),
+                                   .prior(100));
+             end
+             // TODO: need to remove the frontdoor to switch back to the default,
+             // but this doesn't work: if (user_ftdr != null) ptr.set_frontdoor(null);
+             if (check == UVM_CHECK && !under_reset) begin
+-              `DV_CHECK_EQ(status, UVM_IS_OK,
++              `DV_CHECK_EQ(status_l, UVM_IS_OK,
+                            $sformatf("trying to read csr/field %0s", ptr.get_full_name()),
+                            error, $sformatf("%m"))
+             end
+@@ -380,6 +384,8 @@
+         disable fork;
+       end : isolation_fork
+     join
++    value = value_l;
++    status = status_l;
+   endtask
+ 
+   // backdoor read csr
+@@ -653,6 +659,9 @@
+                             input  uint               timeout_ns = default_timeout_ns,
+                             input  uvm_reg_map        map = null,
+                             input  uvm_reg_frontdoor  user_ftdr = default_user_frontdoor);
++    // TRIAL PATCH: Verilator forbids writing a task output inside a fork after a timing control;
++    // collect in a local and copy after the join.
++    bit[31:0] data_l;
+     fork
+       begin : isolating_fork
+         uvm_status_e status;
+@@ -661,7 +670,7 @@
+           begin
+             increment_outstanding_access();
+             if (user_ftdr != null) ptr.set_frontdoor(user_ftdr);
+-            ptr.read(.status(status), .offset(offset), .value(data), .map(map), .prior(100));
++            ptr.read(.status(status), .offset(offset), .value(data_l), .map(map), .prior(100));
+             // TODO: need to remove the frontdoor to switch back to the default,
+             // but this doesn't work: if (user_ftdr != null) ptr.set_frontdoor(null);
+             if (check == UVM_CHECK && !under_reset) begin
+@@ -680,6 +689,7 @@
+         disable fork;
+       end : isolating_fork
+     join
++    data = data_l;
+   endtask : mem_rd_sub
+ 
+   task automatic mem_wr(input uvm_mem             ptr,

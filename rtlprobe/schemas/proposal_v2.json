@@ -72,8 +72,7 @@
           "minLength": 1
         },
         "after": {
-          "type": "string",
-          "minLength": 1
+          "type": "string"
         }
       }
     },
@@ -90,7 +89,10 @@
     "family": {
       "enum": [
         "datapath_arithmetic",
-        "constant_or_boundary"
+        "constant_or_boundary",
+        "comparison_boundary",
+        "control",
+        "logic"
       ]
     }
   }

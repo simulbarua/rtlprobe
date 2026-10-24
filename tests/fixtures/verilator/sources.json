@@ -1,0 +1,58 @@
+{
+  "uvm-pass.log": {
+    "source": "/Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/logs/rv_timer-run8.log",
+    "sha256": "ebb11ea146326e6c69c77d29543324fc0d9dd9d4ece8b86fb3f342599a680bcf"
+  },
+  "uvm-fail.log": {
+    "source": "/Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/logs/mutant-M1-run-seed1.log",
+    "sha256": "324f9bf123ea32456979b46042071f35b490c9a9ef471739727075f84a62e855"
+  },
+  "uvm-truncated.log": {
+    "source": "/Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/logs/rv_timer-run3-sample.txt",
+    "sha256": "be26ba64188544a898413d2cb5bd192dc451c4e6a754dd207031458e96bfe204"
+  },
+  "uvm-timeout.log": {
+    "source": "/Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/logs/tests/rv_timer_cfg_update_on_fly.log",
+    "sha256": "949e98d2c7090f0bcde94f558dee531cda720a6fde212696c144bbf11afecab6"
+  },
+  "crc-pass.log": {
+    "source": "/Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/opentitan-nonuvm-2026-10-24/baseline-run.log",
+    "sha256": "a0b6747398d1e80e0b4c6911379ca173fbb71405edcb90c7af1c1815c16241f1"
+  },
+  "crc-fail.log": {
+    "source": "/Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/opentitan-nonuvm-2026-10-24/control-run.log",
+    "sha256": "2398a69e3b1706c71b36dfe5bcd27d91d4d2414c1e473d06916381bbcb4ddca7"
+  },
+  "rv_timer_disabled.log": {
+    "source": "/Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/logs/tests/rv_timer_disabled.log",
+    "sha256": "ca674f9da451f73bcb342b72e76dfa0f246646a777b7296fa21f23234ca0366e"
+  },
+  "rv_timer_random_reset.log": {
+    "source": "/Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/logs/tests/rv_timer_random_reset.log",
+    "sha256": "938efa51fc1dcedc2251a9b54349ad679979711463abeb62af16ea92bf7d6f31"
+  },
+  "same_csr_outstanding.log": {
+    "source": "/Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/logs/tests/same_csr_outstanding.log",
+    "sha256": "7e7b08c12f0248c15a9b5f4d628849526ad9d9ff12ceace418e1d6b70f5ddba0"
+  },
+  "intr_test.log": {
+    "source": "/Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/logs/tests/intr_test.log",
+    "sha256": "f069441031f1595a291a445dbef4cb11974d958e79108c83f81321e722ec4454"
+  },
+  "tl_errors.log": {
+    "source": "/Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/logs/tests/tl_errors.log",
+    "sha256": "8c0bff8b5b8e1a71c5ffabc6fde6239c6879dcc6d7b7346a0066975910fc7526"
+  },
+  "uart_smoke.log": {
+    "source": "/Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/logs/tests-uart/uart_smoke-seed1.log",
+    "sha256": "01bc0331aa67325e1727277357e31a75a24f9de9cc1df0baf3fb640678bc3f98"
+  },
+  "uart_tx_rx.log": {
+    "source": "/Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/logs/tests-uart/uart_tx_rx-seed1.log",
+    "sha256": "2cda5e43fbe3acbcbff576f3ad6d6e6b58790c5aa46c094146638af3f054d90e"
+  },
+  "uvm-duplicate-finish.log": {
+    "source": "/private/tmp/rtlprobe-backend-20261024/outputs/opentitan_rv_timer/original-proof/3c53b16deda5-20261024T222345135907Z/commands/original_same_csr_outstanding/stdout.log",
+    "sha256": "4b40421ca272a3a2ac20e999c2e5d9e384169be3a69f07988a3154d6c43e7485"
+  }
+}

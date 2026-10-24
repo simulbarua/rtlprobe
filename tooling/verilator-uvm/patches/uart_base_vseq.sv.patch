@@ -1,0 +1,13 @@
+--- a/lowrisc_dv_uart_env_0.1/seq_lib/uart_base_vseq.sv
++++ b/lowrisc_dv_uart_env_0.1/seq_lib/uart_base_vseq.sv
+@@ -33,6 +33,10 @@
+   }
+ 
+   constraint baud_rate_c {
++    // TRIAL PATCH: Verilator's solver drops the enum's value domain once the enum is cast inside
++    // arithmetic below; restate the domain (semantically what the enum type already implies).
++    baud_rate inside {BaudRate9600, BaudRate115200, BaudRate230400, BaudRate128Kbps,
++                      BaudRate256Kbps, BaudRate1Mbps, BaudRate1p5Mbps};
+     // when the uart frequency is very close to core freq, disable noise filter and glitch,
+     // otherwise, not enough timing margin to predict status correctly in scb
+     if (baud_rate == BaudRate1p5Mbps && p_sequencer.cfg.clk_freq_mhz < 48) {

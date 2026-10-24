@@ -1,0 +1,20 @@
+--- a/lowrisc_dv_csr_utils_0/csr_aliasing_seq.sv
++++ b/lowrisc_dv_csr_utils_0/csr_aliasing_seq.sv
+@@ -33,7 +33,7 @@
+ 
+   // Write random values to each register in the list, running the sequences in parallel for maximum
+   // throughput.
+-  extern local task randomize_chunk(const ref uvm_reg registers[$]);
++  extern local task randomize_chunk(ref uvm_reg registers[$]);  // TRIAL PATCH: const ref -> ref (Verilator fork codegen drops const)
+ 
+   // Read back csr using csr_rd_check and checking against the register model. Mask the comparison
+   // using get_mask_excl_fields (to avoid checking the values of fields that are not modelled).
+@@ -127,7 +127,7 @@
+   csr_wr(.ptr(csr), .value(wdata), .predict(!external_checker));
+ endtask
+ 
+-task csr_aliasing_seq::randomize_chunk(const ref uvm_reg registers[$]);
++task csr_aliasing_seq::randomize_chunk(ref uvm_reg registers[$]);  // TRIAL PATCH: see declaration
+   fork : isolation_fork begin
+     foreach (registers[i]) begin
+       automatic uvm_reg _reg = registers[i];

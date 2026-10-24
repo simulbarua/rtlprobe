@@ -1,0 +1,12 @@
+--- a/src/dpi/uvm_hdl.svh
++++ b/src/dpi/uvm_hdl.svh
+@@ -152,7 +152,8 @@
+       $sformatf("uvm_hdl DPI routines are compiled off. Recompile without +define+UVM_HDL_NO_DPI"));
+   endtask
+ 
+-  function int uvm_hdl_release(string path, output uvm_hdl_data_t value);
++  // TRIAL PATCH: no-DPI stub signature matched to the DPI import (single argument), as callers use.
++  function int uvm_hdl_release(string path);
+     uvm_report_fatal("UVM_HDL_RELEASE", 
+       $sformatf("uvm_hdl DPI routines are compiled off. Recompile without +define+UVM_HDL_NO_DPI"));
+     return 0;

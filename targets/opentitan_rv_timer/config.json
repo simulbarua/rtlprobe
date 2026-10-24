@@ -1,0 +1,177 @@
+{
+  "schema_version": "backend-1",
+  "repository_url": "https://github.com/lowRISC/opentitan.git",
+  "revision": "3a7f6947247254fcc2fd05143c18a2646f75c7ee",
+  "vendor": "vendor/opentitan",
+  "lineage": "opentitan",
+  "split_group": "opentitan",
+  "track": "synthesizable",
+  "compile_flags": [],
+  "parameters": {},
+  "seed": 1,
+  "collateral": [
+    "LICENSE"
+  ],
+  "specification": {
+    "status": "pending",
+    "required_before_acceptance": true
+  },
+  "coverage": {
+    "status": "unavailable",
+    "reason": "Covergroup code guarded out in UVM portability patches; pre_dv has no measured coverage."
+  },
+  "control": {
+    "pending": "front end",
+    "intended_site": "hw/ip/rv_timer/rtl/timer_core.sv:39 >= to >; relational replacement after front end; trial M1 precedent only"
+  },
+  "limits": {
+    "compile_seconds": 1200,
+    "simulation_seconds": 2400,
+    "synthesis_seconds": 120,
+    "campaign_seconds": 14400,
+    "cpu_seconds": 100000,
+    "disk_bytes": 30000000000,
+    "workers": 1,
+    "max_candidates": 10,
+    "fallback_tests": 0,
+    "memory_bytes": 12884901888
+  },
+  "scope": "Original-only proof; no gate-1 qualification or cases until controls, restoration, structural gates and spec store are complete.",
+  "design": "rv_timer",
+  "design_id": "opentitan_rv_timer",
+  "target_id": "opentitan_rv_timer",
+  "case_prefix": "opentitan-rv_timer",
+  "backend": "verilator_uvm",
+  "top": "rv_timer",
+  "test_top": "tb",
+  "testbench": "hw/ip/rv_timer/dv/tb/tb.sv",
+  "rtl": [
+    "hw/ip/rv_timer/rtl/rv_timer.sv",
+    "hw/ip/rv_timer/rtl/timer_core.sv"
+  ],
+  "defines": [
+    "UVM_NO_DPI",
+    "UVM",
+    "UVM_ENABLE_DEPRECATED_API",
+    "UVM_REGEX_NO_DPI",
+    "UVM_REG_ADDR_WIDTH=32",
+    "UVM_REG_DATA_WIDTH=32",
+    "UVM_REG_BYTENABLE_WIDTH=4",
+    "SIMULATION",
+    "DUT_HIER=tb.dut",
+    "DV_VERILATOR_UVM"
+  ],
+  "build": {
+    "core": "lowrisc:dv:rv_timer_sim",
+    "jobs": 8,
+    "flags": [
+      "-Wno-fatal",
+      "-Wno-lint",
+      "-Wno-style",
+      "--timescale",
+      "1ns/1ps",
+      "--error-limit",
+      "200"
+    ],
+    "optimization": "-O0",
+    "verilator_git_sha": "0041d207c3dcede92f48b86e0c7e2b70626cd86c"
+  },
+  "checker": {
+    "path": "targets/opentitan_uvm/checker.py"
+  },
+  "vcs_equivalence_gap": "Not established; covergroups and DPI/backdoor checks unavailable, wait wake-up and RAL read-back defects remain. Mixed RAL zero-read signatures require later curation hold.",
+  "admitted_tests": [
+    {
+      "id": "rv_timer_random",
+      "sequence": "rv_timer_random_vseq",
+      "oracle_kind": "scoreboard",
+      "seed": 1,
+      "run_options": [
+        "+UVM_NO_RELNOTES",
+        "+UVM_VERBOSITY=UVM_LOW",
+        "+cdc_instrumentation_enabled=1",
+        "+test_timeout_ns=10000000000"
+      ],
+      "completion_pattern": "Running test iteration (\\d+)/(\\d+)"
+    },
+    {
+      "id": "rv_timer_disabled",
+      "sequence": "rv_timer_disabled_vseq",
+      "oracle_kind": "scoreboard",
+      "seed": 1,
+      "run_options": [
+        "+UVM_NO_RELNOTES",
+        "+UVM_VERBOSITY=UVM_LOW",
+        "+cdc_instrumentation_enabled=1",
+        "+test_timeout_ns=10000000000"
+      ],
+      "completion_pattern": "Running test iteration (\\d+)/(\\d+)"
+    },
+    {
+      "id": "rv_timer_random_reset",
+      "sequence": "rv_timer_random_reset_vseq",
+      "oracle_kind": "scoreboard",
+      "seed": 1,
+      "run_options": [
+        "+UVM_NO_RELNOTES",
+        "+UVM_VERBOSITY=UVM_LOW",
+        "+cdc_instrumentation_enabled=1"
+      ],
+      "completion_pattern": "Running test iteration (\\d+)/(\\d+)"
+    },
+    {
+      "id": "intr_test",
+      "sequence": "rv_timer_common_vseq",
+      "oracle_kind": "mixed_ral_read",
+      "seed": 1,
+      "run_options": [
+        "+UVM_NO_RELNOTES",
+        "+UVM_VERBOSITY=UVM_LOW",
+        "+cdc_instrumentation_enabled=1",
+        "+run_intr_test"
+      ],
+      "completion_pattern": "Running intr test iteration (\\d+)/(\\d+)"
+    },
+    {
+      "id": "tl_errors",
+      "sequence": "rv_timer_common_vseq",
+      "oracle_kind": "scoreboard",
+      "seed": 1,
+      "run_options": [
+        "+UVM_NO_RELNOTES",
+        "+UVM_VERBOSITY=UVM_LOW",
+        "+cdc_instrumentation_enabled=1",
+        "+run_tl_errors"
+      ],
+      "completion_pattern": "Running run_tl_errors_vseq (\\d+)/(\\d+)"
+    }
+  ],
+  "upstream_option_sources": [
+    "hw/dv/tools/dvsim/common_sim_cfg.hjson",
+    "hw/ip/rv_timer/dv/rv_timer_sim_cfg.hjson",
+    "hw/dv/tools/dvsim/tests/csr_tests.hjson",
+    "hw/dv/tools/dvsim/tests/intr_test.hjson",
+    "hw/dv/tools/dvsim/tests/tl_access_tests.hjson"
+  ],
+  "excluded_tests": {
+    "csr_*": "csr_rd_check / RAL read-back defect",
+    "tl_intg_err": "RAL read-back defect",
+    "sec_cm": "DPI unavailable",
+    "rv_timer_max": "RAL read-back defect",
+    "rv_timer_min": "constraint solver limits",
+    "stress_all_with_rand_reset": "constraint solver limits",
+    "csr_mem_rw_with_rand_reset": "clone/solver limitation",
+    "rv_timer_cfg_update_on_fly": "exceeded 40 minutes at -O0",
+    "alert_test": "exceeded 40 minutes at -O0",
+    "stress_all": "not in bounded admitted set",
+    "same_csr_outstanding": "nondeterministic under Verilator: 1 of 3 original runs completed (18 s), 2 hit the UVM test timeout at 10 s simulated time with 'Alert fatal_fault fired unexpectedly' (2026-10-24, user decision); oracle was in-sequence TL comparison with +en_scb=0"
+  },
+  "test_id": "rv_timer_random",
+  "test_metadata": {
+    "checkpoints": [
+      "uvm_checks"
+    ],
+    "checker": "Unchanged upstream checker; require explicit completion and consistent summary",
+    "coverage": "unavailable"
+  }
+}

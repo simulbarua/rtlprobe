@@ -1,0 +1,121 @@
+Simulation
+==================
+
+Tracing can be toggled by sending SIGUSR1 to this process:
+$ kill -USR1 90108
+
+Simulation running, end by pressing CTRL-c.
+Tracing enabled.
+Writing simulation traces to sim.fst
+ffffffff
+0a6db4c6
+00000000
+20694d7d
+e829a9da
+2fb5a697
+95dd8554
+cbe3c96c
+bb0644a3
+7be59740
+988df00a
+31121294
+e8aad507
+688a3d2a
+6293601b
+34c8f376
+112059fc
+32dfd467
+008ecbf5
+9fb6f40b
+e7370f1d
+1822b7a0
+af1614e7
+4cec9dca
+7a4ef094
+3697b0b8
+d45edc72
+e0b40f72
+2b0b55e9
+ec9b93af
+92e775bd
+7d936ff0
+d1ff6858
+12e61fd0
+fd87f6cf
+729f3508
+339f1b5b
+ac55c751
+46fcf4b9
+b7047d25
+e59b6f3e
+c0ca8053
+7b9b536c
+83204b77
+544f3d9d
+64f80437
+3c080c82
+dbce7df6
+035dbdce
+a5002ad9
+d4ef662e
+e32c7812
+91a89075
+b3ca6e1a
+ff02e3d6
+635f2aab
+8e91199a
+4ce507f9
+83ab5572
+2d4f026d
+404db4ff
+7f1bbe3a
+5d57a836
+5646aeb8
+6a55c0c4
+fc2bfae6
+c7289e68
+ccd34e0e
+5a2512ce
+f6c47348
+cc562b50
+6c7db719
+8d8e629c
+626ec6fb
+6e716593
+c5496293
+08916f4e
+3e4fe0aa
+8ec9ba8c
+598b4de6
+c0326ffb
+ddcd507b
+c27f2e5f
+c1d98451
+3f6a2455
+7e3896ba
+0bf9373e
+262c25d2
+0f8c97be
+bc31b57a
+4dc130cb
+ae491165
+6dfd2460
+4f71a330
+34f72f31
+62531e8d
+4a3bb18a
+48619565
+d48efd27
+3c31abea
+- /Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/dl/opentitan/hw/ip/prim/pre_dv/prim_crc32/prim_crc32_sim.sv:33: Verilog $finish
+Received $finish() from Verilog, shutting down simulation.
+
+Simulation statistics
+=====================
+Executed cycles:  104
+Wallclock time:   0.002 s
+Simulation speed: 52000 cycles/s (52 kHz)
+Trace file size:  7109 B
+
+You can view the simulation traces by calling
+$ gtkwave sim.fst

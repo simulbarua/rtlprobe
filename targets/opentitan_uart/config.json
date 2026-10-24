@@ -1,0 +1,131 @@
+{
+  "schema_version": "backend-1",
+  "repository_url": "https://github.com/lowRISC/opentitan.git",
+  "revision": "3a7f6947247254fcc2fd05143c18a2646f75c7ee",
+  "vendor": "vendor/opentitan",
+  "lineage": "opentitan",
+  "split_group": "opentitan",
+  "track": "synthesizable",
+  "compile_flags": [],
+  "parameters": {},
+  "seed": 1,
+  "collateral": [
+    "LICENSE"
+  ],
+  "specification": {
+    "status": "pending",
+    "required_before_acceptance": true
+  },
+  "coverage": {
+    "status": "unavailable",
+    "reason": "Covergroup code guarded out in UVM portability patches; pre_dv has no measured coverage."
+  },
+  "control": {
+    "pending": "front end",
+    "intended_site": "to be chosen"
+  },
+  "limits": {
+    "compile_seconds": 1200,
+    "simulation_seconds": 2400,
+    "synthesis_seconds": 120,
+    "campaign_seconds": 14400,
+    "cpu_seconds": 100000,
+    "disk_bytes": 30000000000,
+    "workers": 1,
+    "max_candidates": 10,
+    "fallback_tests": 0,
+    "memory_bytes": 12884901888
+  },
+  "scope": "Original-only proof; no gate-1 qualification or cases until controls, restoration, structural gates and spec store are complete.",
+  "design": "uart",
+  "design_id": "opentitan_uart",
+  "target_id": "opentitan_uart",
+  "case_prefix": "opentitan-uart",
+  "backend": "verilator_uvm",
+  "top": "uart",
+  "test_top": "tb",
+  "testbench": "hw/ip/uart/dv/tb/tb.sv",
+  "rtl": [
+    "hw/ip/uart/rtl/uart.sv",
+    "hw/ip/uart/rtl/uart_core.sv",
+    "hw/ip/uart/rtl/uart_rx.sv",
+    "hw/ip/uart/rtl/uart_tx.sv"
+  ],
+  "defines": [
+    "UVM_NO_DPI",
+    "UVM",
+    "UVM_ENABLE_DEPRECATED_API",
+    "UVM_REGEX_NO_DPI",
+    "UVM_REG_ADDR_WIDTH=32",
+    "UVM_REG_DATA_WIDTH=32",
+    "UVM_REG_BYTENABLE_WIDTH=4",
+    "SIMULATION",
+    "DUT_HIER=tb.dut",
+    "DV_VERILATOR_UVM"
+  ],
+  "build": {
+    "core": "lowrisc:dv:uart_sim",
+    "jobs": 8,
+    "flags": [
+      "-Wno-fatal",
+      "-Wno-lint",
+      "-Wno-style",
+      "--timescale",
+      "1ns/1ps",
+      "--error-limit",
+      "200"
+    ],
+    "optimization": "-O0",
+    "verilator_git_sha": "0041d207c3dcede92f48b86e0c7e2b70626cd86c"
+  },
+  "checker": {
+    "path": "targets/opentitan_uvm/checker.py"
+  },
+  "vcs_equivalence_gap": "Not established; covergroups and DPI/backdoor checks unavailable, wait wake-up and RAL read-back defects remain. Mixed RAL zero-read signatures require later curation hold.",
+  "admitted_tests": [
+    {
+      "id": "uart_smoke",
+      "sequence": "uart_smoke_vseq",
+      "oracle_kind": "mixed_ral_read",
+      "seed": 1,
+      "run_options": [
+        "+UVM_NO_RELNOTES",
+        "+UVM_VERBOSITY=UVM_LOW",
+        "+cdc_instrumentation_enabled=1"
+      ],
+      "completion_pattern": "finished run (\\d+)/(\\d+)"
+    },
+    {
+      "id": "uart_tx_rx",
+      "sequence": "uart_tx_rx_vseq",
+      "oracle_kind": "mixed_ral_read",
+      "seed": 1,
+      "run_options": [
+        "+UVM_NO_RELNOTES",
+        "+UVM_VERBOSITY=UVM_LOW",
+        "+cdc_instrumentation_enabled=1"
+      ],
+      "completion_pattern": "finished run (\\d+)/(\\d+)"
+    }
+  ],
+  "upstream_option_sources": [
+    "hw/dv/tools/dvsim/common_sim_cfg.hjson",
+    "hw/ip/uart/dv/uart_sim_cfg.hjson",
+    "hw/dv/tools/dvsim/tests/csr_tests.hjson",
+    "hw/dv/tools/dvsim/tests/intr_test.hjson",
+    "hw/dv/tools/dvsim/tests/tl_access_tests.hjson"
+  ],
+  "excluded_tests": {
+    "csr_*": "csr_rd_check / RAL read-back defect",
+    "tl_intg_err": "RAL read-back defect",
+    "sec_cm": "DPI unavailable"
+  },
+  "test_id": "uart_smoke",
+  "test_metadata": {
+    "checkpoints": [
+      "uvm_checks"
+    ],
+    "checker": "Unchanged upstream checker; require explicit completion and consistent summary",
+    "coverage": "unavailable"
+  }
+}

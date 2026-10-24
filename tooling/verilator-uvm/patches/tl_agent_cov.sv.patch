@@ -1,0 +1,26 @@
+--- a/lowrisc_dv_tl_agent_0/tl_agent_cov.sv
++++ b/lowrisc_dv_tl_agent_0/tl_agent_cov.sv
+@@ -21,7 +21,11 @@
+   option.name         = {path, "::", name};
+ 
+   cp_num_of_outstanding: coverpoint num_outstanding {
++`ifdef DV_VERILATOR_UVM  // TRIAL PATCH: constant bin bounds (coverage only); Verilator needs constants
++    bins values[]  = {[1:255]};
++`else
+     bins values[]  = {[1:max_outstanding]};
++`endif
+   }
+ endgroup : max_outstanding_cg
+ 
+@@ -42,7 +46,11 @@
+     bins others       = default;
+   }
+   cp_source: coverpoint item.a_source {
++`ifdef DV_VERILATOR_UVM  // TRIAL PATCH: constant bin bounds (coverage only); Verilator needs constants
++    bins valid_sources[] = {[0:255]};
++`else
+     bins valid_sources[] = {[0 : 2 << (valid_source_width - 1) - 1]};
++`endif
+   }
+   cross cp_opcode, cp_mask, cp_size;
+ endgroup : tl_a_chan_cov_cg

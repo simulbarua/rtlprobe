@@ -1,0 +1,126 @@
+{
+  "backend": "verilator_uvm",
+  "build_record": "original_build/build.json",
+  "build_walltime_seconds": {
+    "bld": 23.738,
+    "command_wall_seconds": 106.27123595800367,
+    "cvt": 80.5,
+    "elab": 0.836,
+    "reported_total": 106.198
+  },
+  "checkpoints": [
+    {
+      "id": "uvm_checks",
+      "outcome": "pass"
+    }
+  ],
+  "comparisons_completed": null,
+  "completion": {
+    "finish": true,
+    "iterations": [
+      [
+        1,
+        17
+      ],
+      [
+        2,
+        17
+      ],
+      [
+        3,
+        17
+      ],
+      [
+        4,
+        17
+      ],
+      [
+        5,
+        17
+      ],
+      [
+        6,
+        17
+      ],
+      [
+        7,
+        17
+      ],
+      [
+        8,
+        17
+      ],
+      [
+        9,
+        17
+      ],
+      [
+        10,
+        17
+      ],
+      [
+        11,
+        17
+      ],
+      [
+        12,
+        17
+      ],
+      [
+        13,
+        17
+      ],
+      [
+        14,
+        17
+      ],
+      [
+        15,
+        17
+      ],
+      [
+        16,
+        17
+      ],
+      [
+        17,
+        17
+      ]
+    ],
+    "summary": true,
+    "verdict": "TEST PASSED CHECKS"
+  },
+  "evidence": "/private/tmp/rtlprobe-backend-uart-20261024/outputs/opentitan_uart/original-proof/d1e9c93b8ac7-20261024T224055789289Z",
+  "executable_sha256": "b8d0c28f357dd0245918fb61a19b0f1d982c5c775fe7b350299dc4e01e2cb20a",
+  "execution_manifest_sha256": "5eab5bb07035eecc143fdbb6e8e61ea00b875b2bafa8fae6924034ccb0edd39d",
+  "failures": [],
+  "final_adapter_outcome": "pass",
+  "final_checker_sha256": "fa2724e9018c5fdeb80422bf6fa2cb9a907c04ce7fd88fb4d187106735f80e19",
+  "fingerprint": "d1e9c93b8ac7df9093e97e54c5b544a83f82565f2d7e2c101ce036903b1cc4c8",
+  "oracle_kind": "mixed_ral_read",
+  "outcome": "pass",
+  "reason": "checker_completed",
+  "recorded_checker_sha256": "9d39ed4b11a448d4368f92eb6b86189f81dd6682f818c0b513ab2d2507381e21",
+  "report_counts": {
+    "ERROR": 0,
+    "FATAL": 0,
+    "INFO": 30,
+    "WARNING": 0
+  },
+  "result_sha256": "8ea6dee4ac54bb8f1811022b8060023ad21f1336f9d07db25ae30ee87d705868",
+  "run_id": "original_uart_tx_rx",
+  "run_options": [
+    "+UVM_NO_RELNOTES",
+    "+UVM_VERBOSITY=UVM_LOW",
+    "+cdc_instrumentation_enabled=1"
+  ],
+  "run_wall_seconds": 1194.237609207994,
+  "sealed_execution_manifest": true,
+  "seed": 1,
+  "signature": null,
+  "source_sha256": "3281b97c1a1b8b7631415ab57b34ddb7d5f095e9ef67cb38b9ed5d5386a10e57",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "021744dd30dffb1f3a2dc106529c247d4dda75cfdbe5262b8ff35d78a7adbbfc",
+  "target": "opentitan_uart",
+  "test_id": "uart_tx_rx"
+}

@@ -1,0 +1,57 @@
+{
+  "backend_environment": {
+    "admitted_tests_sha256": "9fff9ee1edfab514a2b4ba264150ca7a523b2b78749aa520cfdfb1e4878baa2b",
+    "backend": "verilator_predv",
+    "build_environment": {
+      "CC": "/opt/homebrew/opt/llvm/bin/clang",
+      "CXX": "/opt/homebrew/opt/llvm/bin/clang++",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "SDKROOT": "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"
+    },
+    "edalize": null,
+    "fusesoc": null,
+    "library_edits": [],
+    "patchset_manifest_sha256": null,
+    "uvm_tree_sha256": null,
+    "verilator": {
+      "binary_sha256": "17d4160c560b8c54a734e4a2db0a58a700b5ce6a639848c275b0f9a7021874b0",
+      "executable": "/opt/homebrew/Cellar/verilator/5.046/bin/verilator",
+      "git_revision": "vUNKNOWN-built20260228",
+      "sha256": "93dde63802d895d64675984a6a8268a287211ed1abace90b3e0bc4320ed22bdb",
+      "version": "Verilator 5.046 2026-02-28 rev vUNKNOWN-built20260228"
+    }
+  },
+  "fingerprint": "ed2b5b8f551e5dfabe68b5f05a6bd27e0d9c2759774fb7b19a359e2e2210ac89",
+  "fingerprint_source": "/private/tmp/rtlprobe-backend-uart-20261024/outputs/opentitan_crc32/original-proof/ed2b5b8f551e-20261024T224049858548Z",
+  "implementation": {
+    "rtlprobe/__init__.py": "0baad37fbc8ac73640c5ee8e6c92c4372a6431c1170a85f59d23cef94d22a7ea",
+    "rtlprobe/backends/__init__.py": "8e6ecce0f3cd5582fbedcde6847c687dbe722bba86cd01f8b9c3b7313acf013d",
+    "rtlprobe/backends/common.py": "2f9e7cf5c97304fa0e2f4e0c7ef7ec6859ef32e92a58e4e6b681547d0cec2309",
+    "rtlprobe/backends/icarus.py": "f9ba3514b5c0b99e559a646f363feac3645c45b6b1af8453937e5afb43561c26",
+    "rtlprobe/backends/proof.py": "a7df6cdbc0377ea8a7bd182b5d2b53c7f796353654c15cf5cbe0f3a7935887d0",
+    "rtlprobe/backends/uvm_patchset.py": "51d9ee40beee7e11c792cc4a097f4babc6e62bd8b09825c5135ec25439be739f",
+    "rtlprobe/backends/verilator_predv.py": "7ce614eb49fccc25f51bea6687180f339d48b614611d322b64b895cb3e9fd5d2",
+    "rtlprobe/backends/verilator_uvm.py": "a938803960f1b020d30e706534bd9d1b325c3c24a88e4a45c33e444109ef7b3a",
+    "rtlprobe/batch.py": "eadce8fda74e5b1e592f8afea484a9fbac8ae66035fae3bf1ca0270672a540a3",
+    "rtlprobe/candidates.py": "f85292566765c04c3f7477a910db2f73e5fc5070c67d11f86932b9114ebaeeda",
+    "rtlprobe/curation.py": "0be5900c51319bcf2d2b2e8644bd0a9460608239b7eb8e75550605e04f12dcd8",
+    "rtlprobe/evidence.py": "0d1cab442109ef70ff6b7de01b822a46019452bd406a493d16cb56c29f20e2cf",
+    "rtlprobe/execution.py": "88a9f345c0c6d7008092340408cd11868baf4d85a7ff6d7919a190a402d7b4d4",
+    "rtlprobe/fetch.py": "a82eeb8a30834e246eb49f5e8ab4089facd09ca8de61bbc18976909ba921d1b0",
+    "rtlprobe/lifecycle.py": "04a84c7c7809fd677a471b0baf3d634d859cdb1bde1d9052c09ab7f9a4f0528e",
+    "rtlprobe/mutation.py": "f0e4dfaf6a12bc26e12767b5c9bac267e1c71cfb78d59c40eecf59dffe3e93ea",
+    "rtlprobe/operators.json": "89351b2af1879ab228ca6e78cbaff6ce43850672f33c34c91863f65faad1bc25",
+    "rtlprobe/oracle.py": "1ff4be3dd0613ff16246365ef07e4bb734b7c2da3b72298d73d38e8f089f72cd",
+    "rtlprobe/pilot.py": "386d07395bb7f39fb8c0f86558ca0a8799a2cf9e80e8437cc51643d2c46ac12e",
+    "rtlprobe/schemas/case.json": "cfd7a17bcfd5f18ace95e63275f19e629e15b86a7af574d9eacfe91901573576",
+    "rtlprobe/schemas/case_v2.json": "d0bbc0a53626d620953c812c4181c324e6059015521d9afdb56692b094616740",
+    "rtlprobe/schemas/curation_v2.json": "99adb59bf3c6b44cb1071fcc60937d71208b6fb4fc41e64dfb90e6a5263fc673",
+    "rtlprobe/schemas/design.json": "05451db0e2e8a6bdd3366e6ec10adc65235243e1bc82cb71c4c5b343df12f570",
+    "rtlprobe/schemas/proposal.json": "4e4dd28fba9b5bf2c615098504e599b18af1c47bdb62440d28c39d9fd4c18601",
+    "rtlprobe/schemas/proposal_v2.json": "186ea8a7918bc22d360ed1768e4c21cb6017324284268ae33f7c8d920cd65218",
+    "rtlprobe/sv_frontend.py": "f61f17d0e16eb26daef329c072d3b10b685edd2b59f180ff96159f177f6611e6",
+    "rtlprobe/target.py": "a65f906953ace76b19f8b6b96d5f97da91b6617a4d8f9f71a64bf9b3504f11d9",
+    "targets/opentitan_crc32/checker.py": "5f4f1d8d6474190002cf4efd1a3f47d1b15c29ec29e906fc63dd89758675b3ba"
+  },
+  "source_sha256": "fdcd0036e5c8b3e5b1ca683fdc763e5ba9486c416ecb3dcd9944d5153f08303d"
+}

@@ -1,0 +1,11 @@
+--- a/src/base/uvm_component.svh
++++ b/src/base/uvm_component.svh
+@@ -2179,7 +2179,7 @@
+     begin \
+       static bit warned; \
+       if (!warned) \
+-        `uvm_warning("UVM/DEPRECATED/COMP/OVM_PHASES", {"The library is calling the deprecated uvm_component::", `"NAME`", " method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::", `"NAME`", "_phase()."}) \
++        `uvm_info("UVM/DEPRECATED/COMP/OVM_PHASES", {"The library is calling the deprecated uvm_component::", `"NAME`", " method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::", `"NAME`", "_phase()."}, UVM_LOW) /* TRIAL PATCH: demoted from uvm_warning */ \
+       warned = 1; \
+       NAME(); \
+     end

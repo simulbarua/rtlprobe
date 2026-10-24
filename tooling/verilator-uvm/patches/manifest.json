@@ -1,0 +1,286 @@
+{
+  "version": 1,
+  "opentitan_revision": "3a7f6947247254fcc2fd05143c18a2646f75c7ee",
+  "uvm_archive": "Accellera-1800.2-2017-1.0.tar.gz",
+  "uvm_archive_sha256": "60466406956e4a6f1101198b1b6459f829ba0bae72c8850b7dac24cd79ecc466",
+  "library_configuration_edit": "UVM_ENABLE_DEPRECATED_API replaces UVM_NO_DEPRECATED (fourth documented edit; a build define, not a source diff)",
+  "patches": [
+    {
+      "domain": "opentitan",
+      "path": "lowrisc_dv_alert_agent_0/alert_agent.sv",
+      "patch": "alert_agent.sv.patch",
+      "upstream_sha256": "0067ff31701540e0b111ee140a61c83c4bf54f5f8974f37983ac62d230f1f12a",
+      "patched_sha256": "cd4b41d71d4f2ff73db750c58cb83779e6c7177a078fb490049dafae8ea69868",
+      "diff_sha256": "30e9a2abda075cf3592be9ba32a38b762d3f345d36c30af8fd6930bfba013414",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "opentitan",
+      "path": "lowrisc_dv_alert_agent_0/alert_agent_cov.sv",
+      "patch": "alert_agent_cov.sv.patch",
+      "upstream_sha256": "1ad7421e737283590a3b0921f5952e0a1fc666ac826cdb66a4bcca2dce1ca76f",
+      "patched_sha256": "d370089a2f6eb7e5be7a7a5f17f01815857857586898112a2bd8d4db9e973921",
+      "diff_sha256": "737f68556895e629e5c496ec68006cad41d5e62a6b3aed55c09881afe275a8f3",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "opentitan",
+      "path": "lowrisc_dv_alert_agent_0/alert_if.sv",
+      "patch": "alert_if.sv.patch",
+      "upstream_sha256": "cde708bdf6162319bb756b3ab99c47c2d835cc3adf39122d2f78a76177885fe0",
+      "patched_sha256": "ba5e19b218783fe4f8acd23bec78319a4ea7147a1a0f96d092845e19d5ba5b40",
+      "diff_sha256": "d94492e8753ccbd9b8aa2c65afc32c54ced6532de6524f7cafbab61444d3754f",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "opentitan",
+      "path": "lowrisc_dv_cip_lib_0/cip_base_env_cov.sv",
+      "patch": "cip_base_env_cov.sv.patch",
+      "upstream_sha256": "e098f7cc664af1a7e15b46c57c879a69ca6b014a1a8301869f33363dcbea6995",
+      "patched_sha256": "af1e079cd1d44e2fbcff61db49a4069319bdf2ab787065cfcd9fe0ded02262ca",
+      "diff_sha256": "fc9c49c2494a70456320110d5ea09655d0345ab88f247c200aa845554d161d43",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "opentitan",
+      "path": "lowrisc_dv_cip_lib_0/cip_base_scoreboard.sv",
+      "patch": "cip_base_scoreboard.sv.patch",
+      "upstream_sha256": "c3913c20fb6a3fbb3fc53fea88a045e2de3634aad92ece63dfa9eea55e7f788e",
+      "patched_sha256": "e665c63b5dadc36f691178babcf9938eca1e02e5d9e8cb593cf9c14a5429507a",
+      "diff_sha256": "95942194bf738d42e19977440f761c1984d1b8cd8c0cef7ccfb106240c4b9a87",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "opentitan",
+      "path": "lowrisc_dv_cip_lib_0/cip_base_test.sv",
+      "patch": "cip_base_test.sv.patch",
+      "upstream_sha256": "540bd7c5e144ee0c2885cd10da6f210046837b0ce2137331bcb38f2288174f30",
+      "patched_sha256": "d66ea3a24f5cf38d45580cce3a9975036600d4dab727e9189c4233702bdf636f",
+      "diff_sha256": "0ba6be5b4d46a692999f50f253d2653c0e0645703c8f125833fa33c405a4a7e7",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "opentitan",
+      "path": "lowrisc_dv_cip_lib_0/seq_lib/cip_base_vseq.sv",
+      "patch": "cip_base_vseq.sv.patch",
+      "upstream_sha256": "c685642cbd0b2b809b6881d5ce59ef72c6edfa27ec4deeee52986fca607f70a0",
+      "patched_sha256": "7088902ab75d26d7144b69ebeb066341aec99b3cdd99a46f7601649f989ca208",
+      "diff_sha256": "a9100fe870c8b2afc5b4e2083f73f0f09665aa929a8307db44266f987f1d666e",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "opentitan",
+      "path": "lowrisc_dv_common_ifs_0/clk_rst_if.sv",
+      "patch": "clk_rst_if.sv.patch",
+      "upstream_sha256": "1035d690e8932bf8b7a685b59ea09c5fd850878cb4cd1f060e7fb374e57eb30a",
+      "patched_sha256": "d29bae8986436cdeea039827944dc312df39a14b4c4ac7c5ca06e8ae6d1e61e1",
+      "diff_sha256": "1b986ec9cd82b2d694e94203d679b7aa938e3fe82edd9f90e438db5b088d09f2",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "opentitan",
+      "path": "lowrisc_dv_csr_utils_0/csr_aliasing_seq.sv",
+      "patch": "csr_aliasing_seq.sv.patch",
+      "upstream_sha256": "1255519d1f17dc8645234e5ebb8cd4e553396b5c5684a4263af63c1eef3a1d03",
+      "patched_sha256": "e5d017553a437a38ee8a7b17ab53f5e67653cca392b1366e0d0009c47677f271",
+      "diff_sha256": "938941f81509b0d07936ce72d2799d88ab9c230786fcc41c2bd8f579c99a6c7e",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "opentitan",
+      "path": "lowrisc_dv_csr_utils_0/csr_utils_pkg.sv",
+      "patch": "csr_utils_pkg.sv.patch",
+      "upstream_sha256": "1378dfc57d01571ee62872c172e68bf9ea530ca71808169baf74d601bf2c624a",
+      "patched_sha256": "800917a3aca8f8a300f75e9b2bc35f1511c0bc5fac286e2f6e4e72473a359915",
+      "diff_sha256": "ac8aaf878caecf883632aa9ff23758b7a9213f439e7a64427b4117bbdf89be7f",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "opentitan",
+      "path": "lowrisc_dv_dv_lib_0/dv_base_test.sv",
+      "patch": "dv_base_test.sv.patch",
+      "upstream_sha256": "4be14e03064e7b429e9bc7daf2b6ba8b60e7b3daf9420cb0ccc3f1811bb06604",
+      "patched_sha256": "55c5084949e12869fa501d1420a5b6af7e8308785e3f6a434cd11ccd53fed9a1",
+      "diff_sha256": "ac8c8c14cc845546208c4403b29c51003bef39560ffe7d5fb8cdbe7123fd542e",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "opentitan",
+      "path": "lowrisc_dv_sec_cm_0/prim_onehot_check_if.sv",
+      "patch": "prim_onehot_check_if.sv.patch",
+      "upstream_sha256": "5cb94c61b3f6afd704eb655c1c64babd70d14b6fc3c61dcac1129d515c5dcf2d",
+      "patched_sha256": "0b29b8867bbc6c5bce6cfb4407189cf8802c123e6d98007abe78c912e156a1cf",
+      "diff_sha256": "274beee787133885838e33ab78ed772290582077f63879c54befcb83d92c9620",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "opentitan",
+      "path": "lowrisc_dv_sec_cm_0/sec_cm_base_if_proxy.sv",
+      "patch": "sec_cm_base_if_proxy.sv.patch",
+      "upstream_sha256": "95de2746cf727121e78c9dd758bac32cbeaa0bfa95689f8c0d5f3fb8021e5512",
+      "patched_sha256": "e76726eadcc99b252d91b926ffcc1e66b8d7dd195f0323fc17d31ba66215359b",
+      "diff_sha256": "2ab9cb1f6f3a402dfc2b34535a02b45378cefd53f09337bff7861fb7ea01f230",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "opentitan",
+      "path": "lowrisc_dv_tl_agent_0/tl_agent_cov.sv",
+      "patch": "tl_agent_cov.sv.patch",
+      "upstream_sha256": "6f8e91bc618bc08ba2068ddbda5ff787fe4d9733ac915ff801b4c060278a8380",
+      "patched_sha256": "ade85281a88735f190adfe68d6ed029db5e2753df3aecd3650100e0f25f0eecc",
+      "diff_sha256": "3abfeff65a09ee9ec30531e47bef0dff2f684c89f45aec6d41f05c578d72d2ec",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "opentitan",
+      "path": "lowrisc_dv_tl_agent_0/seq_lib/tl_device_seq.sv",
+      "patch": "tl_device_seq.sv.patch",
+      "upstream_sha256": "70cca962992870347ba2bd715edc933e4a725309fae54b5578f34c06704af26f",
+      "patched_sha256": "274abf2963ed9ed8b4bebf34d5c9c599f143e3aac74878fc6b0725536407f7b2",
+      "diff_sha256": "c11a1b38031a503dd5ed9920a97e1fb5351fd4da286896740c3b6ee56d6780e2",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "opentitan",
+      "path": "lowrisc_dv_tl_agent_0/seq_lib/tl_host_seq.sv",
+      "patch": "tl_host_seq.sv.patch",
+      "upstream_sha256": "33968f0540ae2fcf3f050c45436178c252dcd44a4f632ac58dd0b9774dc9d103",
+      "patched_sha256": "618c64972ce57749133eccde630124cc20718ef62031ade205ce19d3f0387bf0",
+      "diff_sha256": "d62ed3ad5334eb37fde32528fd125068daf62bdd846b2676dbc3cd7e5fb35b99",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "opentitan",
+      "path": "lowrisc_dv_tl_agent_0/seq_lib/tl_host_single_seq.sv",
+      "patch": "tl_host_single_seq.sv.patch",
+      "upstream_sha256": "b08ef97daa7a38c39bd827ecd38db1f6c514d7f38dc2031227181d7703073d33",
+      "patched_sha256": "d94c292bd4ea0824efd5fc3e5db0a39a1f1754c993f8dddef98272c48b277756",
+      "diff_sha256": "cf8bcb1b35b216e1fa7069062caf89377c7f89948769365d32cb41b5c62517da",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "opentitan",
+      "path": "lowrisc_dv_tl_agent_0/tl_seq_item.sv",
+      "patch": "tl_seq_item.sv.patch",
+      "upstream_sha256": "78d7a05425d846fd59c2a0fe449c49a842a0191ab31002017f001d1bddaabf94",
+      "patched_sha256": "7a3c7530eb0f8dc750af808ae16f48e4792579ef84fec5944506becac5209349",
+      "diff_sha256": "2a99b28a3710df8684292a92f227f5d5382888aa4b0a84682fb2624cd2a72a9f",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "opentitan",
+      "path": "lowrisc_dv_uart_env_0.1/seq_lib/uart_base_vseq.sv",
+      "patch": "uart_base_vseq.sv.patch",
+      "upstream_sha256": "619c84b679e3ae12dda712533ee796f91e39dee7ee385007c4e2a413ac5accd6",
+      "patched_sha256": "d13bf7832389763fb508d34815f4feeeefbe525669cdf6395e3a6678a885e957",
+      "diff_sha256": "8ea790f909204b802e9a7ee68eba18ead11225fc75ba4fb35597724e64566755",
+      "targets": [
+        "uart"
+      ]
+    },
+    {
+      "domain": "uvm",
+      "path": "src/base/uvm_component.svh",
+      "patch": "uvm_component.svh.patch",
+      "upstream_sha256": "c15f99f9d2373fcb900a08d3afa76766cb149451155d471adc4ba522755199c1",
+      "patched_sha256": "3b7b3d522bb5462ff3594278e7455cac35a67908a6a92b263ec95e68c64459c5",
+      "diff_sha256": "6012ccb14e0cef44032c110fb11f3966ba886b2dd7c4c57bafda887415f67037",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "uvm",
+      "path": "src/dpi/uvm_hdl.svh",
+      "patch": "uvm_hdl.svh.patch",
+      "upstream_sha256": "41bfc963c761c3a74cda5f164f9d2cea4a719a7f76334cd6569e4e5081eaf62a",
+      "patched_sha256": "334d10632983af30cc5e6bc4f3bd46b436e4001c7b8bace28d782c7023527c98",
+      "diff_sha256": "aac14ced79defd7463f956e454ea90102d981b06f9ef8aa9004612cedf5ca82b",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "uvm",
+      "path": "src/base/uvm_traversal.svh",
+      "patch": "uvm_traversal.svh.patch",
+      "upstream_sha256": "387b84175333085e52fcc488f52cc01f3d76df97a5d9ae138981b7064fd26f45",
+      "patched_sha256": "26a85e5686190bdf76db83c73536e9a54a6c4d84f498c25f857d4a3e4c749c3b",
+      "diff_sha256": "5daf78daf95556a0c28823c619022d7375c83492087cff92b22947306cd05500",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ]
+    },
+    {
+      "domain": "shim",
+      "path": "ot_uvm_compat.svh",
+      "patch": "ot_uvm_compat.svh.patch",
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "patched_sha256": "0cadf6d6ec644b10c087208131a2903edbf9515d08eda068a9d38578eb873c75",
+      "diff_sha256": "4c8c9c9b669bb06f6387c01b0557134a0e23a4462c18b108d43a81dfa7daebf8",
+      "targets": [
+        "rv_timer",
+        "uart"
+      ],
+      "new_file": true,
+      "provenance": "Trial UVM 1.2 compatibility macro; new-file diff has the empty-input SHA256, not an upstream-file attribution."
+    }
+  ]
+}

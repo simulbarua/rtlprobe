@@ -1,0 +1,29 @@
+{
+  "command": [
+    "/private/tmp/rtlprobe-backend-20261024/outputs/opentitan_rv_timer/original-proof/b92769fe4188-20261024T225221463915Z/original_build/obj/Vtb",
+    "+UVM_NO_RELNOTES",
+    "+UVM_VERBOSITY=UVM_LOW",
+    "+cdc_instrumentation_enabled=1",
+    "+UVM_TESTNAME=rv_timer_base_test",
+    "+UVM_TEST_SEQ=rv_timer_random_reset_vseq",
+    "+verilator+seed+1"
+  ],
+  "cpu_seconds": 260.6864740000001,
+  "cwd": "/private/tmp/rtlprobe-backend-20261024/outputs/opentitan_rv_timer/original-proof/b92769fe4188-20261024T225221463915Z/original_rv_timer_random_reset_runtime",
+  "elapsed_seconds": 270.07481116699637,
+  "id": "original_rv_timer_random_reset",
+  "interrupted": false,
+  "memory_limit": {
+    "bytes": 12884901888,
+    "enforced": false,
+    "scope": "unavailable on this host"
+  },
+  "returncode": 0,
+  "started_at": "2026-10-24T22:56:10.929965+00:00",
+  "stderr": "commands/original_rv_timer_random_reset/stderr.log",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout": "commands/original_rv_timer_random_reset/stdout.log",
+  "stdout_sha256": "569782465fe196dee6038c98518ab037a225a35cdad8a4f350fc2c521da23370",
+  "timed_out": false,
+  "timeout_seconds": 2400
+}

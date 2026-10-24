@@ -1,0 +1,15 @@
+--- a/lowrisc_dv_tl_agent_0/seq_lib/tl_host_single_seq.sv
++++ b/lowrisc_dv_tl_agent_0/seq_lib/tl_host_single_seq.sv
+@@ -25,7 +25,11 @@
+   constraint req_cnt_eq_1_c { req_cnt == 1; }
+ 
+   virtual function void randomize_req(REQ req, int idx);
+-    if (!(req.randomize() with {
++    // TRIAL PATCH: Verilator internal error on inline constraint through type-parameter handle;
++    // randomize via the concrete item type.
++    tl_seq_item req_c;
++    `DV_CHECK_FATAL($cast(req_c, req))
++    if (!(req_c.randomize() with {
+         a_valid_delay inside {[min_req_delay:max_req_delay]};
+         a_data == data;
+         a_mask == mask;

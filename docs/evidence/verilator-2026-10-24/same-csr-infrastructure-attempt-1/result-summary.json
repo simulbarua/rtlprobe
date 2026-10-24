@@ -1,0 +1,57 @@
+{
+  "backend": "verilator_uvm",
+  "build_record": "original_build/build.json",
+  "checkpoints": [],
+  "evidence": "/private/tmp/rtlprobe-backend-20261024/outputs/opentitan_rv_timer/original-proof/3c53b16deda5-20261024T222345135907Z",
+  "executable_sha256": "3e806b666c1376c4eae7125e684967165cf1671c37161430df3db4204802d9f8",
+  "failures": [
+    {
+      "actual": null,
+      "component": "",
+      "expected": null,
+      "file": "cip_base_vseq.sv",
+      "id": "uvm_checks",
+      "line": 915,
+      "message": "timeout occurred!",
+      "operands": null,
+      "outcome": "functional_fail",
+      "raw": "UVM_FATAL @ 10047804935 ps: (cip_base_vseq.sv:915) [uvm_test_top.env.virtual_sequencer.rv_timer_common_vseq] timeout occurred!",
+      "report_id": "uvm_test_top.env.virtual_sequencer.rv_timer_common_vseq",
+      "severity": "FATAL",
+      "simulation_time": "10047804935 ps",
+      "source": "other"
+    },
+    {
+      "actual": null,
+      "component": "uvm_test_top.env.virtual_sequencer",
+      "expected": null,
+      "file": "cip_base_vseq.sv",
+      "id": "uvm_checks",
+      "line": 935,
+      "message": "Alert fatal_fault fired unexpectedly.",
+      "operands": null,
+      "outcome": "functional_fail",
+      "raw": "UVM_ERROR @ 10047804935 ps: (cip_base_vseq.sv:935) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.rv_timer_common_vseq] Alert fatal_fault fired unexpectedly.",
+      "report_id": "uvm_test_top.env.virtual_sequencer.rv_timer_common_vseq",
+      "severity": "ERROR",
+      "simulation_time": "10047804935 ps",
+      "source": "other"
+    }
+  ],
+  "oracle_kind": "sequence_tl_compare",
+  "outcome": "infrastructure_error",
+  "reason": "incomplete_or_inconsistent_log",
+  "result_sha256": "458412e7c478f5fef35e852a89c46b539f00d23b2911f9f511b281bba5513ad1",
+  "run_id": "original_same_csr_outstanding",
+  "run_options": [
+    "+UVM_NO_RELNOTES",
+    "+UVM_VERBOSITY=UVM_LOW",
+    "+cdc_instrumentation_enabled=1",
+    "+run_same_csr_outstanding",
+    "+en_scb=0"
+  ],
+  "run_wall_seconds": 826.6143066249933,
+  "seed": 1,
+  "signature": null,
+  "test_id": "same_csr_outstanding"
+}

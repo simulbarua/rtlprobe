@@ -1,0 +1,24 @@
+{
+  "command": [
+    "/private/tmp/rtlprobe-backend-uart-20261024/outputs/opentitan_crc32/original-proof/ed2b5b8f551e-20261024T224049858548Z/original_build/obj/Vprim_crc32_sim",
+    "--trace"
+  ],
+  "cpu_seconds": 0.004200999999999788,
+  "cwd": "/private/tmp/rtlprobe-backend-uart-20261024/outputs/opentitan_crc32/original-proof/ed2b5b8f551e-20261024T224049858548Z/original_prim_crc32_runtime",
+  "elapsed_seconds": 0.18427825000253506,
+  "id": "original_prim_crc32",
+  "interrupted": false,
+  "memory_limit": {
+    "bytes": 12884901888,
+    "enforced": false,
+    "scope": "unavailable on this host"
+  },
+  "returncode": 0,
+  "started_at": "2026-10-24T22:40:53.231629+00:00",
+  "stderr": "commands/original_prim_crc32/stderr.log",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout": "commands/original_prim_crc32/stdout.log",
+  "stdout_sha256": "07b2627f23caf80db1478d691357953dd70b30e20b572d2f876b9f69c28b4bd9",
+  "timed_out": false,
+  "timeout_seconds": 2400
+}

@@ -1,0 +1,45 @@
+{
+  "backend": "verilator_uvm",
+  "build_record": "original_build/build.json",
+  "checkpoints": [
+    {
+      "id": "uvm_checks",
+      "outcome": "pass"
+    }
+  ],
+  "comparisons_completed": null,
+  "completion": {
+    "finish": true,
+    "iterations": [
+      [
+        1,
+        1
+      ]
+    ],
+    "summary": true,
+    "verdict": "TEST PASSED CHECKS"
+  },
+  "executable_sha256": "a59b6a7770cc04a4410f4e406221e151cb16cda48ab8d157b5a6f2800e16b3d6",
+  "failures": [],
+  "oracle_kind": "scoreboard",
+  "outcome": "pass",
+  "reason": "checker_completed",
+  "report_counts": {
+    "ERROR": 0,
+    "FATAL": 0,
+    "INFO": 14,
+    "WARNING": 0
+  },
+  "result_sha256": "6cc3a97390bf820effba0b1a87d62412986bc333d0d4fe0b74bcf00289d1dd78",
+  "run_id": "original_rv_timer_disabled",
+  "run_options": [
+    "+UVM_NO_RELNOTES",
+    "+UVM_VERBOSITY=UVM_LOW",
+    "+cdc_instrumentation_enabled=1",
+    "+test_timeout_ns=10000000000"
+  ],
+  "run_wall_seconds": 77.05260433300282,
+  "seed": 1,
+  "signature": null,
+  "test_id": "rv_timer_disabled"
+}

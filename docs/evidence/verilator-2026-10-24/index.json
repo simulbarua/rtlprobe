@@ -1,0 +1,1059 @@
+{
+  "control": "pending front end",
+  "gate_1_complete": false,
+  "other_attempts": [
+    {
+      "outcome": "infrastructure_error",
+      "path": "same-csr-infrastructure-attempt-1",
+      "run_wall_seconds": 826.6143066249933,
+      "test": "same_csr_outstanding"
+    },
+    {
+      "outcome": "infrastructure_error",
+      "path": "same-csr-infrastructure-attempt-2",
+      "run_wall_seconds": 817.6214235420048,
+      "test": "same_csr_outstanding"
+    }
+  ],
+  "qualification_reusable": false,
+  "records": [
+    {
+      "backend": "verilator_predv",
+      "build_record": "original_build/build.json",
+      "build_walltime_seconds": {
+        "bld": 3.141,
+        "command_wall_seconds": 3.2664329999970505,
+        "cvt": 0.023,
+        "elab": 0.001,
+        "reported_total": 3.173
+      },
+      "checkpoints": [
+        {
+          "id": "crc_00",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_01",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_02",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_03",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_04",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_05",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_06",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_07",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_08",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_09",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_10",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_11",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_12",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_13",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_14",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_15",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_16",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_17",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_18",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_19",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_20",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_21",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_22",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_23",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_24",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_25",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_26",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_27",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_28",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_29",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_30",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_31",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_32",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_33",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_34",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_35",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_36",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_37",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_38",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_39",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_40",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_41",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_42",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_43",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_44",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_45",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_46",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_47",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_48",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_49",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_50",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_51",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_52",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_53",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_54",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_55",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_56",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_57",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_58",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_59",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_60",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_61",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_62",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_63",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_64",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_65",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_66",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_67",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_68",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_69",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_70",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_71",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_72",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_73",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_74",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_75",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_76",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_77",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_78",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_79",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_80",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_81",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_82",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_83",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_84",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_85",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_86",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_87",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_88",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_89",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_90",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_91",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_92",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_93",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_94",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_95",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_96",
+          "outcome": "pass"
+        },
+        {
+          "id": "crc_97",
+          "outcome": "pass"
+        }
+      ],
+      "comparisons_completed": 98,
+      "evidence": "/private/tmp/rtlprobe-backend-uart-20261024/outputs/opentitan_crc32/original-proof/ed2b5b8f551e-20261024T224049858548Z",
+      "executable_sha256": "0b79c9d954f22cf18acd1ed0403ae51915038ec222ad84d81d25a544c7e5d498",
+      "execution_manifest_sha256": "43e4e3fce0c076b35f38fc74760d903b8d44f38f55d2ddc383ef15f5a31deb84",
+      "final_adapter_outcome": "pass",
+      "final_checker_sha256": "5f4f1d8d6474190002cf4efd1a3f47d1b15c29ec29e906fc63dd89758675b3ba",
+      "fingerprint": "ed2b5b8f551e5dfabe68b5f05a6bd27e0d9c2759774fb7b19a359e2e2210ac89",
+      "oracle_kind": "upstream_expected_file_compare",
+      "outcome": "pass",
+      "reason": "checker_completed",
+      "recorded_checker_sha256": "5f4f1d8d6474190002cf4efd1a3f47d1b15c29ec29e906fc63dd89758675b3ba",
+      "result_sha256": "3c93bf131869077a15596e3acaf73b37b6a6e32905960ab5116a36d968ea313d",
+      "run_id": "original_prim_crc32",
+      "run_options": [
+        "--trace"
+      ],
+      "run_wall_seconds": 0.18427825000253506,
+      "sealed_execution_manifest": true,
+      "seed": null,
+      "signature": null,
+      "source_sha256": "fdcd0036e5c8b3e5b1ca683fdc763e5ba9486c416ecb3dcd9944d5153f08303d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "07b2627f23caf80db1478d691357953dd70b30e20b572d2f876b9f69c28b4bd9",
+      "target": "opentitan_crc32",
+      "test_id": "prim_crc32"
+    },
+    {
+      "backend": "verilator_uvm",
+      "build_record": "original_build/build.json",
+      "build_walltime_seconds": {
+        "bld": 22.255,
+        "command_wall_seconds": 84.5248872910015,
+        "cvt": 60.24,
+        "elab": 0.866,
+        "reported_total": 84.439
+      },
+      "checkpoints": [
+        {
+          "id": "uvm_checks",
+          "outcome": "pass"
+        }
+      ],
+      "comparisons_completed": null,
+      "completion": {
+        "finish": true,
+        "iterations": [
+          [
+            1,
+            1
+          ]
+        ],
+        "summary": true,
+        "verdict": "TEST PASSED CHECKS"
+      },
+      "evidence": "/private/tmp/rtlprobe-backend-20261024/outputs/opentitan_rv_timer/original-proof/3c53b16deda5-20261024T222345135907Z",
+      "executable_sha256": "3e806b666c1376c4eae7125e684967165cf1671c37161430df3db4204802d9f8",
+      "execution_manifest_sha256": null,
+      "failures": [],
+      "final_adapter_outcome": "pass",
+      "final_checker_sha256": "fa2724e9018c5fdeb80422bf6fa2cb9a907c04ce7fd88fb4d187106735f80e19",
+      "fingerprint": "3c53b16deda577d1db76541b961fd158b9c6b7314e8cb3e36537291777882a5c",
+      "oracle_kind": "scoreboard",
+      "outcome": "pass",
+      "reason": "checker_completed",
+      "recorded_checker_sha256": "9d39ed4b11a448d4368f92eb6b86189f81dd6682f818c0b513ab2d2507381e21",
+      "report_counts": {
+        "ERROR": 0,
+        "FATAL": 0,
+        "INFO": 14,
+        "WARNING": 0
+      },
+      "result_sha256": "4019aac184a41b240e76fc748535e6d54fdc6428ab7d18ca57eaab93fcf7c18d",
+      "run_id": "original_rv_timer_random",
+      "run_options": [
+        "+UVM_NO_RELNOTES",
+        "+UVM_VERBOSITY=UVM_LOW",
+        "+cdc_instrumentation_enabled=1",
+        "+test_timeout_ns=10000000000"
+      ],
+      "run_wall_seconds": 50.71624808300112,
+      "sealed_execution_manifest": false,
+      "seed": 1,
+      "signature": null,
+      "source_sha256": "3281b97c1a1b8b7631415ab57b34ddb7d5f095e9ef67cb38b9ed5d5386a10e57",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "f527dda6037cfebde51e68397f200b7bd28921308a251ce2b6fb74a5dee37e0e",
+      "target": "opentitan_rv_timer",
+      "test_id": "rv_timer_random"
+    },
+    {
+      "backend": "verilator_uvm",
+      "build_record": "original_build/build.json",
+      "build_walltime_seconds": {
+        "bld": 22.255,
+        "command_wall_seconds": 84.5248872910015,
+        "cvt": 60.24,
+        "elab": 0.866,
+        "reported_total": 84.439
+      },
+      "checkpoints": [
+        {
+          "id": "uvm_checks",
+          "outcome": "pass"
+        }
+      ],
+      "comparisons_completed": null,
+      "completion": {
+        "finish": true,
+        "iterations": [
+          [
+            1,
+            1
+          ]
+        ],
+        "summary": true,
+        "verdict": "TEST PASSED CHECKS"
+      },
+      "evidence": "/private/tmp/rtlprobe-backend-20261024/outputs/opentitan_rv_timer/original-proof/3c53b16deda5-20261024T222345135907Z",
+      "executable_sha256": "3e806b666c1376c4eae7125e684967165cf1671c37161430df3db4204802d9f8",
+      "execution_manifest_sha256": null,
+      "failures": [],
+      "final_adapter_outcome": "pass",
+      "final_checker_sha256": "fa2724e9018c5fdeb80422bf6fa2cb9a907c04ce7fd88fb4d187106735f80e19",
+      "fingerprint": "3c53b16deda577d1db76541b961fd158b9c6b7314e8cb3e36537291777882a5c",
+      "oracle_kind": "scoreboard",
+      "outcome": "pass",
+      "reason": "checker_completed",
+      "recorded_checker_sha256": "9d39ed4b11a448d4368f92eb6b86189f81dd6682f818c0b513ab2d2507381e21",
+      "report_counts": {
+        "ERROR": 0,
+        "FATAL": 0,
+        "INFO": 14,
+        "WARNING": 0
+      },
+      "result_sha256": "357ed20b35ac2f042c120969bdd7f63571c08c4a3483dd6ed7a0b5314642daa0",
+      "run_id": "original_rv_timer_disabled",
+      "run_options": [
+        "+UVM_NO_RELNOTES",
+        "+UVM_VERBOSITY=UVM_LOW",
+        "+cdc_instrumentation_enabled=1",
+        "+test_timeout_ns=10000000000"
+      ],
+      "run_wall_seconds": 79.41014775000804,
+      "sealed_execution_manifest": false,
+      "seed": 1,
+      "signature": null,
+      "source_sha256": "3281b97c1a1b8b7631415ab57b34ddb7d5f095e9ef67cb38b9ed5d5386a10e57",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "13cf1b49835dd998e8bef6df78d8fd0b6a22e38ef71a5bc8f58a4198ca0e5a64",
+      "target": "opentitan_rv_timer",
+      "test_id": "rv_timer_disabled"
+    },
+    {
+      "backend": "verilator_uvm",
+      "build_record": "original_build/build.json",
+      "build_walltime_seconds": {
+        "bld": 22.255,
+        "command_wall_seconds": 84.5248872910015,
+        "cvt": 60.24,
+        "elab": 0.866,
+        "reported_total": 84.439
+      },
+      "checkpoints": [
+        {
+          "id": "uvm_checks",
+          "outcome": "pass"
+        }
+      ],
+      "comparisons_completed": null,
+      "completion": {
+        "finish": true,
+        "iterations": [
+          [
+            1,
+            3
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            3,
+            3
+          ]
+        ],
+        "summary": true,
+        "verdict": "TEST PASSED CHECKS"
+      },
+      "evidence": "/private/tmp/rtlprobe-backend-20261024/outputs/opentitan_rv_timer/original-proof/3c53b16deda5-20261024T222345135907Z",
+      "executable_sha256": "3e806b666c1376c4eae7125e684967165cf1671c37161430df3db4204802d9f8",
+      "execution_manifest_sha256": null,
+      "failures": [],
+      "final_adapter_outcome": "pass",
+      "final_checker_sha256": "fa2724e9018c5fdeb80422bf6fa2cb9a907c04ce7fd88fb4d187106735f80e19",
+      "fingerprint": "3c53b16deda577d1db76541b961fd158b9c6b7314e8cb3e36537291777882a5c",
+      "oracle_kind": "scoreboard",
+      "outcome": "pass",
+      "reason": "checker_completed",
+      "recorded_checker_sha256": "9d39ed4b11a448d4368f92eb6b86189f81dd6682f818c0b513ab2d2507381e21",
+      "report_counts": {
+        "ERROR": 0,
+        "FATAL": 0,
+        "INFO": 16,
+        "WARNING": 0
+      },
+      "result_sha256": "9fdded16220e5a89be9df6250a9a49971dfc190a9b4d2b4ca027831a8084b387",
+      "run_id": "original_rv_timer_random_reset",
+      "run_options": [
+        "+UVM_NO_RELNOTES",
+        "+UVM_VERBOSITY=UVM_LOW",
+        "+cdc_instrumentation_enabled=1"
+      ],
+      "run_wall_seconds": 264.61879833399144,
+      "sealed_execution_manifest": false,
+      "seed": 1,
+      "signature": null,
+      "source_sha256": "3281b97c1a1b8b7631415ab57b34ddb7d5f095e9ef67cb38b9ed5d5386a10e57",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "b28c86389bf656dd1f7c4605f5dec961aecee9a6d8eaf7503e38cc4e6c934cb8",
+      "target": "opentitan_rv_timer",
+      "test_id": "rv_timer_random_reset"
+    },
+    {
+      "backend": "verilator_uvm",
+      "build_record": "original_build/build.json",
+      "build_walltime_seconds": {
+        "bld": 22.255,
+        "command_wall_seconds": 84.5248872910015,
+        "cvt": 60.24,
+        "elab": 0.866,
+        "reported_total": 84.439
+      },
+      "checkpoints": [
+        {
+          "id": "uvm_checks",
+          "outcome": "pass"
+        }
+      ],
+      "comparisons_completed": null,
+      "completion": {
+        "finish": true,
+        "iterations": [
+          [
+            1,
+            6
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            3,
+            6
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            5,
+            6
+          ],
+          [
+            6,
+            6
+          ]
+        ],
+        "summary": true,
+        "verdict": "TEST PASSED CHECKS"
+      },
+      "evidence": "/private/tmp/rtlprobe-backend-rv-remaining-20261024",
+      "executable_sha256": "3e806b666c1376c4eae7125e684967165cf1671c37161430df3db4204802d9f8",
+      "execution_manifest_sha256": "3e45c5ec68cc0dd15b2d73c0b76d5f448b27adbfc976a7a178eb250d0cb3f39a",
+      "failures": [],
+      "final_adapter_outcome": "pass",
+      "final_checker_sha256": "fa2724e9018c5fdeb80422bf6fa2cb9a907c04ce7fd88fb4d187106735f80e19",
+      "fingerprint": "3c53b16deda577d1db76541b961fd158b9c6b7314e8cb3e36537291777882a5c",
+      "oracle_kind": "mixed_ral_read",
+      "outcome": "pass",
+      "reason": "checker_completed",
+      "recorded_checker_sha256": "9d39ed4b11a448d4368f92eb6b86189f81dd6682f818c0b513ab2d2507381e21",
+      "report_counts": {
+        "ERROR": 0,
+        "FATAL": 0,
+        "INFO": 19,
+        "WARNING": 0
+      },
+      "result_sha256": "6ba56636ac553de6a3100762b251d9a2ba2cb1b5b4400f044dface0b208aeea7",
+      "run_id": "original_intr_test",
+      "run_options": [
+        "+UVM_NO_RELNOTES",
+        "+UVM_VERBOSITY=UVM_LOW",
+        "+cdc_instrumentation_enabled=1",
+        "+run_intr_test"
+      ],
+      "run_wall_seconds": 5.983191374994931,
+      "sealed_execution_manifest": true,
+      "seed": 1,
+      "signature": null,
+      "source_sha256": "3281b97c1a1b8b7631415ab57b34ddb7d5f095e9ef67cb38b9ed5d5386a10e57",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "5919ad5cd58530997a0a7ce51bc0b6e7d320f9d1c8fdee5fd73b78a266e2bb5c",
+      "target": "opentitan_rv_timer",
+      "test_id": "intr_test"
+    },
+    {
+      "backend": "verilator_uvm",
+      "build_record": "original_build/build.json",
+      "build_walltime_seconds": {
+        "bld": 22.255,
+        "command_wall_seconds": 84.5248872910015,
+        "cvt": 60.24,
+        "elab": 0.866,
+        "reported_total": 84.439
+      },
+      "checkpoints": [
+        {
+          "id": "uvm_checks",
+          "outcome": "pass"
+        }
+      ],
+      "comparisons_completed": null,
+      "completion": {
+        "finish": true,
+        "iterations": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "summary": true,
+        "verdict": "TEST PASSED CHECKS"
+      },
+      "evidence": "/private/tmp/rtlprobe-backend-rv-remaining-20261024",
+      "executable_sha256": "3e806b666c1376c4eae7125e684967165cf1671c37161430df3db4204802d9f8",
+      "execution_manifest_sha256": "3e45c5ec68cc0dd15b2d73c0b76d5f448b27adbfc976a7a178eb250d0cb3f39a",
+      "failures": [],
+      "final_adapter_outcome": "pass",
+      "final_checker_sha256": "fa2724e9018c5fdeb80422bf6fa2cb9a907c04ce7fd88fb4d187106735f80e19",
+      "fingerprint": "3c53b16deda577d1db76541b961fd158b9c6b7314e8cb3e36537291777882a5c",
+      "oracle_kind": "scoreboard",
+      "outcome": "pass",
+      "reason": "checker_completed",
+      "recorded_checker_sha256": "9d39ed4b11a448d4368f92eb6b86189f81dd6682f818c0b513ab2d2507381e21",
+      "report_counts": {
+        "ERROR": 0,
+        "FATAL": 0,
+        "INFO": 15,
+        "WARNING": 0
+      },
+      "result_sha256": "615fc5106e15658ee31d5c22b223cc59935f452b19fee1f3b9e949888e043e05",
+      "run_id": "original_tl_errors",
+      "run_options": [
+        "+UVM_NO_RELNOTES",
+        "+UVM_VERBOSITY=UVM_LOW",
+        "+cdc_instrumentation_enabled=1",
+        "+run_tl_errors"
+      ],
+      "run_wall_seconds": 184.90065962499648,
+      "sealed_execution_manifest": true,
+      "seed": 1,
+      "signature": null,
+      "source_sha256": "3281b97c1a1b8b7631415ab57b34ddb7d5f095e9ef67cb38b9ed5d5386a10e57",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "ff3617b7a96b715f5046c398f248201a28f47518345af76bde33f99118f48bf0",
+      "target": "opentitan_rv_timer",
+      "test_id": "tl_errors"
+    },
+    {
+      "backend": "verilator_uvm",
+      "build_record": "original_build/build.json",
+      "build_walltime_seconds": {
+        "bld": 22.255,
+        "command_wall_seconds": 84.5248872910015,
+        "cvt": 60.24,
+        "elab": 0.866,
+        "reported_total": 84.439
+      },
+      "checkpoints": [
+        {
+          "id": "uvm_checks",
+          "outcome": "pass"
+        }
+      ],
+      "comparisons_completed": null,
+      "completion": {
+        "finish": true,
+        "iterations": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "summary": true,
+        "verdict": "TEST PASSED CHECKS"
+      },
+      "evidence": "/private/tmp/rtlprobe-backend-same-csr-replay-20261024",
+      "executable_sha256": "3e806b666c1376c4eae7125e684967165cf1671c37161430df3db4204802d9f8",
+      "execution_manifest_sha256": "93022169b9f0d4ed45e7e5491eee152e4745d985b9f1e25c335b044a1a22e26e",
+      "failures": [],
+      "final_adapter_outcome": "pass",
+      "final_checker_sha256": "fa2724e9018c5fdeb80422bf6fa2cb9a907c04ce7fd88fb4d187106735f80e19",
+      "fingerprint": "3c53b16deda577d1db76541b961fd158b9c6b7314e8cb3e36537291777882a5c",
+      "oracle_kind": "sequence_tl_compare",
+      "outcome": "pass",
+      "reason": "checker_completed",
+      "recorded_checker_sha256": "9d39ed4b11a448d4368f92eb6b86189f81dd6682f818c0b513ab2d2507381e21",
+      "report_counts": {
+        "ERROR": 0,
+        "FATAL": 0,
+        "INFO": 15,
+        "WARNING": 0
+      },
+      "result_sha256": "1e731162634161e6cf0a2b5da89f9e9948e6c6b66f8f04eecab3cba768c11093",
+      "run_id": "original_same_csr_outstanding",
+      "run_options": [
+        "+UVM_NO_RELNOTES",
+        "+UVM_VERBOSITY=UVM_LOW",
+        "+cdc_instrumentation_enabled=1",
+        "+run_same_csr_outstanding",
+        "+en_scb=0"
+      ],
+      "run_wall_seconds": 18.250010249990737,
+      "sealed_execution_manifest": true,
+      "seed": 1,
+      "signature": null,
+      "source_sha256": "3281b97c1a1b8b7631415ab57b34ddb7d5f095e9ef67cb38b9ed5d5386a10e57",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "a6eabc1c08d604a1c4f722c926c1085ac7d8ca18affdd315d54864ca7b06e9c8",
+      "target": "opentitan_rv_timer",
+      "test_id": "same_csr_outstanding"
+    },
+    {
+      "backend": "verilator_uvm",
+      "build_record": "original_build/build.json",
+      "build_walltime_seconds": {
+        "bld": 23.738,
+        "command_wall_seconds": 106.27123595800367,
+        "cvt": 80.5,
+        "elab": 0.836,
+        "reported_total": 106.198
+      },
+      "checkpoints": [
+        {
+          "id": "uvm_checks",
+          "outcome": "pass"
+        }
+      ],
+      "comparisons_completed": null,
+      "completion": {
+        "finish": true,
+        "iterations": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "summary": true,
+        "verdict": "TEST PASSED CHECKS"
+      },
+      "evidence": "/private/tmp/rtlprobe-backend-uart-20261024/outputs/opentitan_uart/original-proof/d1e9c93b8ac7-20261024T224055789289Z",
+      "executable_sha256": "b8d0c28f357dd0245918fb61a19b0f1d982c5c775fe7b350299dc4e01e2cb20a",
+      "execution_manifest_sha256": "5eab5bb07035eecc143fdbb6e8e61ea00b875b2bafa8fae6924034ccb0edd39d",
+      "failures": [],
+      "final_adapter_outcome": "pass",
+      "final_checker_sha256": "fa2724e9018c5fdeb80422bf6fa2cb9a907c04ce7fd88fb4d187106735f80e19",
+      "fingerprint": "d1e9c93b8ac7df9093e97e54c5b544a83f82565f2d7e2c101ce036903b1cc4c8",
+      "oracle_kind": "mixed_ral_read",
+      "outcome": "pass",
+      "reason": "checker_completed",
+      "recorded_checker_sha256": "9d39ed4b11a448d4368f92eb6b86189f81dd6682f818c0b513ab2d2507381e21",
+      "report_counts": {
+        "ERROR": 0,
+        "FATAL": 0,
+        "INFO": 15,
+        "WARNING": 0
+      },
+      "result_sha256": "9d63dca6ffed99290a3463f5027cce54c6d9d39c34c30a11b3dd06572a613733",
+      "run_id": "original_uart_smoke",
+      "run_options": [
+        "+UVM_NO_RELNOTES",
+        "+UVM_VERBOSITY=UVM_LOW",
+        "+cdc_instrumentation_enabled=1"
+      ],
+      "run_wall_seconds": 11.895331166000688,
+      "sealed_execution_manifest": true,
+      "seed": 1,
+      "signature": null,
+      "source_sha256": "3281b97c1a1b8b7631415ab57b34ddb7d5f095e9ef67cb38b9ed5d5386a10e57",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "2ccae82edea80eb8714f5689a59049f8cf5d6f449546f715ba9b2afd38bd1b76",
+      "target": "opentitan_uart",
+      "test_id": "uart_smoke"
+    },
+    {
+      "backend": "verilator_uvm",
+      "build_record": "original_build/build.json",
+      "build_walltime_seconds": {
+        "bld": 23.738,
+        "command_wall_seconds": 106.27123595800367,
+        "cvt": 80.5,
+        "elab": 0.836,
+        "reported_total": 106.198
+      },
+      "checkpoints": [
+        {
+          "id": "uvm_checks",
+          "outcome": "pass"
+        }
+      ],
+      "comparisons_completed": null,
+      "completion": {
+        "finish": true,
+        "iterations": [
+          [
+            1,
+            17
+          ],
+          [
+            2,
+            17
+          ],
+          [
+            3,
+            17
+          ],
+          [
+            4,
+            17
+          ],
+          [
+            5,
+            17
+          ],
+          [
+            6,
+            17
+          ],
+          [
+            7,
+            17
+          ],
+          [
+            8,
+            17
+          ],
+          [
+            9,
+            17
+          ],
+          [
+            10,
+            17
+          ],
+          [
+            11,
+            17
+          ],
+          [
+            12,
+            17
+          ],
+          [
+            13,
+            17
+          ],
+          [
+            14,
+            17
+          ],
+          [
+            15,
+            17
+          ],
+          [
+            16,
+            17
+          ],
+          [
+            17,
+            17
+          ]
+        ],
+        "summary": true,
+        "verdict": "TEST PASSED CHECKS"
+      },
+      "evidence": "/private/tmp/rtlprobe-backend-uart-20261024/outputs/opentitan_uart/original-proof/d1e9c93b8ac7-20261024T224055789289Z",
+      "executable_sha256": "b8d0c28f357dd0245918fb61a19b0f1d982c5c775fe7b350299dc4e01e2cb20a",
+      "execution_manifest_sha256": "5eab5bb07035eecc143fdbb6e8e61ea00b875b2bafa8fae6924034ccb0edd39d",
+      "failures": [],
+      "final_adapter_outcome": "pass",
+      "final_checker_sha256": "fa2724e9018c5fdeb80422bf6fa2cb9a907c04ce7fd88fb4d187106735f80e19",
+      "fingerprint": "d1e9c93b8ac7df9093e97e54c5b544a83f82565f2d7e2c101ce036903b1cc4c8",
+      "oracle_kind": "mixed_ral_read",
+      "outcome": "pass",
+      "reason": "checker_completed",
+      "recorded_checker_sha256": "9d39ed4b11a448d4368f92eb6b86189f81dd6682f818c0b513ab2d2507381e21",
+      "report_counts": {
+        "ERROR": 0,
+        "FATAL": 0,
+        "INFO": 30,
+        "WARNING": 0
+      },
+      "result_sha256": "8ea6dee4ac54bb8f1811022b8060023ad21f1336f9d07db25ae30ee87d705868",
+      "run_id": "original_uart_tx_rx",
+      "run_options": [
+        "+UVM_NO_RELNOTES",
+        "+UVM_VERBOSITY=UVM_LOW",
+        "+cdc_instrumentation_enabled=1"
+      ],
+      "run_wall_seconds": 1194.237609207994,
+      "sealed_execution_manifest": true,
+      "seed": 1,
+      "signature": null,
+      "source_sha256": "3281b97c1a1b8b7631415ab57b34ddb7d5f095e9ef67cb38b9ed5d5386a10e57",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "021744dd30dffb1f3a2dc106529c247d4dda75cfdbe5262b8ff35d78a7adbbfc",
+      "target": "opentitan_uart",
+      "test_id": "uart_tx_rx"
+    }
+  ],
+  "restored": "pending front end",
+  "status": "original_pass_observations_with_infrastructure_failure"
+}

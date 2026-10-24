@@ -1,0 +1,57 @@
+--- a/lowrisc_dv_tl_agent_0/seq_lib/tl_device_seq.sv
++++ b/lowrisc_dv_tl_agent_0/seq_lib/tl_device_seq.sv
+@@ -64,13 +64,16 @@
+   //
+   // req: A req item retrieved from the TLM fifo and returned back to the caller.
+   protected virtual task get_a_chan_req(output REQ req);
++    // TRIAL PATCH: Verilator forbids writing a task output inside a fork after a timing control;
++    // collect in a local and copy after the join.
++    REQ req_l;
+     fork
+       begin: isolation_thread
+         fork
+           begin
+             tl_seq_item item;
+             p_sequencer.a_chan_req_fifo.get(item);
+-            `downcast(req, item)
++            `downcast(req_l, item)
+           end
+           wait (stop);
+         join_any
+@@ -80,6 +83,7 @@
+         disable fork;
+       end
+     join
++    req = req_l;
+   endtask
+ 
+   // A perpetually running task that collects and enqueues the incoming TL requests.
+@@ -135,17 +139,21 @@
+   // User-overridable function to randomize the response. The response is already cloned from the
+   // request, so the request (a_channel) information is already present.
+   virtual function void randomize_rsp(REQ rsp);
++    // TRIAL PATCH: Verilator internal error on inline constraint through type-parameter handle;
++    // randomize via the concrete item type.
++    tl_seq_item rsp_c;
++    `DV_CHECK_FATAL($cast(rsp_c, rsp))
+     rsp.disable_a_chan_randomization();
+     if (d_error_pct > 0) rsp.no_d_error_c.constraint_mode(0);
+-    if (!(rsp.randomize() with
+-           {rsp.d_valid_delay inside {[min_rsp_delay : max_rsp_delay]};
+-            if (rsp.a_opcode == tlul_pkg::Get) {
+-              rsp.d_opcode == tlul_pkg::AccessAckData;
++    if (!(rsp_c.randomize() with
++           {rsp_c.d_valid_delay inside {[min_rsp_delay : max_rsp_delay]};
++            if (rsp_c.a_opcode == tlul_pkg::Get) {
++              rsp_c.d_opcode == tlul_pkg::AccessAckData;
+             } else {
+-              rsp.d_opcode == tlul_pkg::AccessAck;
++              rsp_c.d_opcode == tlul_pkg::AccessAck;
+             }
+-            rsp.d_size == rsp.a_size;
+-            rsp.d_source == rsp.a_source;
++            rsp_c.d_size == rsp_c.a_size;
++            rsp_c.d_source == rsp_c.a_source;
+             d_error dist {0 :/ (100 - d_error_pct), 1 :/ d_error_pct};
+         })) begin
+       `uvm_fatal(`gfn, "Cannot randomize rsp")

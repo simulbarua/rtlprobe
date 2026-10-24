@@ -1,0 +1,30 @@
+{
+  "command": [
+    "/private/tmp/rtlprobe-backend-rv-remaining-20261024/original_build/obj/Vtb",
+    "+UVM_NO_RELNOTES",
+    "+UVM_VERBOSITY=UVM_LOW",
+    "+cdc_instrumentation_enabled=1",
+    "+run_tl_errors",
+    "+UVM_TESTNAME=rv_timer_base_test",
+    "+UVM_TEST_SEQ=rv_timer_common_vseq",
+    "+verilator+seed+1"
+  ],
+  "cpu_seconds": 43.246481,
+  "cwd": "/private/tmp/rtlprobe-backend-rv-remaining-20261024/original_tl_errors_runtime",
+  "elapsed_seconds": 184.90065962499648,
+  "id": "original_tl_errors",
+  "interrupted": false,
+  "memory_limit": {
+    "bytes": 12884901888,
+    "enforced": false,
+    "scope": "unavailable on this host"
+  },
+  "returncode": 0,
+  "started_at": "2026-10-24T22:43:09.563036+00:00",
+  "stderr": "commands/original_tl_errors/stderr.log",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout": "commands/original_tl_errors/stdout.log",
+  "stdout_sha256": "ff3617b7a96b715f5046c398f248201a28f47518345af76bde33f99118f48bf0",
+  "timed_out": false,
+  "timeout_seconds": 2400
+}

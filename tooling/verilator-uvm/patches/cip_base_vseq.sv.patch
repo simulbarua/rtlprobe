@@ -1,0 +1,38 @@
+--- a/lowrisc_dv_cip_lib_0/seq_lib/cip_base_vseq.sv
++++ b/lowrisc_dv_cip_lib_0/seq_lib/cip_base_vseq.sv
+@@ -672,15 +672,17 @@
+ endtask
+ 
+ function void cip_base_vseq::extract_common_csrs();
++  // TRIAL PATCH: distinct foreach index names; Verilator 5.053 devel generates clashing temporaries
++  // for sibling foreach loops that reuse the same index name (one over an associative array).
+   foreach (cfg.ral_models[i]) begin
+     dv_base_reg regs[$];
+     cfg.ral_models[i].get_dv_base_regs(regs);
+-    foreach (regs[i]) all_csrs.push_back(regs[i]);
+-  end
+-  foreach (all_csrs[i]) begin
+-    string csr_name = all_csrs[i].get_name();
++    foreach (regs[j]) all_csrs.push_back(regs[j]);
++  end
++  foreach (all_csrs[k]) begin
++    string csr_name = all_csrs[k].get_name();
+     if (!uvm_re_match("intr_state*", csr_name)) begin
+-      intr_state_csrs.push_back(all_csrs[i]);
++      intr_state_csrs.push_back(all_csrs[k]);
+     end
+   end
+ endfunction
+@@ -1154,9 +1156,9 @@
+ 
+   // if there is any shadow reg, we shouldn't abort TL access, otherwise, it may do only one
+   // write to the shadow reg, which may cause an unexpected recoverable error.
+-  foreach (cfg.ral_models[i]) cfg.ral_models[i].get_dv_base_regs(regs);
+-  foreach (regs[i]) begin
+-    if (regs[i].get_is_shadowed()) begin
++  foreach (cfg.ral_models[m]) cfg.ral_models[m].get_dv_base_regs(regs);  // TRIAL PATCH: distinct index name
++  foreach (regs[j]) begin  // TRIAL PATCH: distinct index name (see extract_common_csrs)
++    if (regs[j].get_is_shadowed()) begin
+       has_shadow_reg = 1;
+       break;
+     end

@@ -1,0 +1,75 @@
+UVM_INFO /Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/dl/uvm/1800.2-2017-1.0/src/base/uvm_root.svh(449) @ 0: reporter [UVM/RELNOTES] 
+  ***********       IMPORTANT RELEASE NOTES         ************
+
+  This implementation of the UVM Library deviates from the 1800.2-2017
+  standard.  See the DEVIATIONS.md file contained in the release
+  for more details.
+
+  You are using a version of the UVM library that has been compiled
+  with `UVM_ENABLE_DEPRECATED_API defined.
+  See https://accellera.mantishub.io/view.php?id=5072 for more details.
+
+----------------------------------------------------------------
+Accellera:1800.2-2017:UVM:1.0
+
+All copyright owners for this kit are listed in NOTICE.txt
+All Rights Reserved Worldwide
+----------------------------------------------------------------
+
+      (Specify +UVM_NO_RELNOTES to turn off this notice)
+
+UVM_INFO /Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/dl/uvm/1800.2-2017-1.0/src/base/uvm_root.svh(517) @ 0 ps: reporter [NO_DPI_TSTNAME] UVM_NO_DPI defined--getting UVM_TESTNAME directly, without DPI
+UVM_INFO @ 0 ps: reporter [RNTST] Running test rv_timer_base_test...
+UVM_INFO /Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/dl/uvm/1800.2-2017-1.0/src/base/uvm_component.svh(2191) @ 0 ps: reporter [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::build method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::build_phase().
+UVM_INFO @         0 ps: (uvm_component.svh:2213) uvm_test_top.env.m_alert_agent_fatal_fault.driver.m_pending_alert_rsps.analysis_export [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::connect method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::connect_phase().
+UVM_INFO @         0 ps: (uvm_component.svh:2227) uvm_test_top.env.m_alert_agent_fatal_fault.driver.m_pending_alert_rsps.analysis_export [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::end_of_elaboration method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::end_of_elaboration_phase().
+UVM_INFO @         0 ps: (uvm_traversal.svh:293) [UVM/COMP/NAMECHECK] This implementation of the component name checks requires DPI to be enabled
+UVM_INFO @         0 ps: (uvm_component.svh:2220) uvm_test_top.env.m_alert_agent_fatal_fault.driver.m_pending_alert_rsps.analysis_export [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::start_of_simulation method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::start_of_simulation_phase().
+UVM_INFO @         0 ps: (uvm_component.svh:2234) uvm_test_top.env.m_alert_agent_fatal_fault.driver.m_pending_alert_rsps.analysis_export [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::run method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::run_phase().
+UVM_INFO @   1672064 ps: (rv_timer_random_vseq.sv:143) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.rv_timer_random_vseq] Running test iteration 1/1
+UVM_INFO @ 625554763 ps: (uvm_component.svh:2241) uvm_test_top.env.m_alert_agent_fatal_fault.driver.m_pending_alert_rsps.analysis_export [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::extract method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::extract_phase().
+UVM_INFO @ 625554763 ps: (uvm_component.svh:2248) uvm_test_top.env.m_alert_agent_fatal_fault.driver.m_pending_alert_rsps.analysis_export [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::check method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::check_phase().
+UVM_INFO @ 625554763 ps: (uvm_component.svh:2255) uvm_test_top.env.m_alert_agent_fatal_fault.driver.m_pending_alert_rsps.analysis_export [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::report method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::report_phase().
+UVM_INFO @ 625554763 ps: (uvm_report_catcher.svh:675) [UVM/REPORT/CATCHER] 
+--- UVM Report catcher Summary ---
+
+
+Number of demoted UVM_FATAL reports  :    0
+Number of demoted UVM_ERROR reports  :    0
+Number of demoted UVM_WARNING reports:    0
+Number of caught UVM_FATAL reports   :    0
+Number of caught UVM_ERROR reports   :    0
+Number of caught UVM_WARNING reports :    0
+
+UVM_INFO @ 625554763 ps: (uvm_report_server.svh:864) [UVM/REPORT/SERVER] 
+--- UVM Report Summary ---
+
+Quit count :     0 of     1
+** Report counts by severity
+UVM_INFO :   14
+UVM_WARNING :    0
+UVM_ERROR :    0
+UVM_FATAL :    0
+** Report counts by id
+[NO_DPI_TSTNAME]     1
+[RNTST]     1
+[UVM/COMP/NAMECHECK]     1
+[UVM/DEPRECATED/COMP/OVM_PHASES]     8
+[UVM/RELNOTES]     1
+[UVM/REPORT/CATCHER]     1
+[uvm_test_top.env.virtual_sequencer.rv_timer_random_vseq]     1
+
+
+TEST PASSED CHECKS
+ _____         _                                  _ _ 
+|_   _|__  ___| |_   _ __   __ _ ___ ___  ___  __| | |
+  | |/ _ \/ __| __| | '_ \ / _` / __/ __|/ _ \/ _` | |
+  | |  __/\__ \ |_  | |_) | (_| \__ \__ \  __/ (_| |_|
+  |_|\___||___/\__| | .__/ \__,_|___/___/\___|\__,_(_)
+                    |_|                               
+
+- /Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/dl/uvm/1800.2-2017-1.0/src/base/uvm_root.svh:585: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.053 devel
+- Verilator: $finish at 626us; walltime 51.464 s; speed 12.155 us/s
+- Verilator: cpu 50.036 s on 1 threads; allocated 37 MB
+run exit=0

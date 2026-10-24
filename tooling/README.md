@@ -174,3 +174,18 @@ stylistically imperfect (but otherwise fine) design from being wrongly
 logged as FAIL. If you ever run Verilator manually without that flag,
 don't be alarmed by a wall of warnings on real RTL, most are style
 nitpicks, not actual bugs.
+
+## Verilator execution support (October 24, 2026)
+
+`verilator-uvm/` is current execution support, distinct from historical tooling.
+It contains the original Accellera 1800.2-2017-1.0 distribution (Apache-2.0,
+LICENSE and NOTICE retained), the compatibility macro, and hash-checked unified
+diffs. It contains no OpenTitan source tree.
+
+The Mac uses Homebrew Verilator 5.046 for pre_dv and the trial's separate
+`prefix/bin/verilator` at `0041d207c3dcede92f48b86e0c7e2b70626cd86c` for UVM.
+Source the trial's `work/env.sh` to select Homebrew LLVM and SDKROOT. Set
+`RTLPROBE_VERILATOR_PREDV`, `RTLPROBE_VERILATOR_UVM`,
+`RTLPROBE_VERILATOR_UVM_SOURCE`, and `RTLPROBE_FUSESOC`; see
+[the backend guide](../docs/verilator-backends.md). The trial directories are
+read-only references. Builds, patches and generated caches go into new run roots.

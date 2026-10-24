@@ -1,0 +1,83 @@
+{
+  "backend": "verilator_uvm",
+  "build_record": "original_build/build.json",
+  "build_walltime_seconds": {
+    "bld": 22.255,
+    "command_wall_seconds": 84.5248872910015,
+    "cvt": 60.24,
+    "elab": 0.866,
+    "reported_total": 84.439
+  },
+  "checkpoints": [
+    {
+      "id": "uvm_checks",
+      "outcome": "pass"
+    }
+  ],
+  "comparisons_completed": null,
+  "completion": {
+    "finish": true,
+    "iterations": [
+      [
+        1,
+        6
+      ],
+      [
+        2,
+        6
+      ],
+      [
+        3,
+        6
+      ],
+      [
+        4,
+        6
+      ],
+      [
+        5,
+        6
+      ],
+      [
+        6,
+        6
+      ]
+    ],
+    "summary": true,
+    "verdict": "TEST PASSED CHECKS"
+  },
+  "evidence": "/private/tmp/rtlprobe-backend-rv-remaining-20261024",
+  "executable_sha256": "3e806b666c1376c4eae7125e684967165cf1671c37161430df3db4204802d9f8",
+  "execution_manifest_sha256": "3e45c5ec68cc0dd15b2d73c0b76d5f448b27adbfc976a7a178eb250d0cb3f39a",
+  "failures": [],
+  "final_adapter_outcome": "pass",
+  "final_checker_sha256": "fa2724e9018c5fdeb80422bf6fa2cb9a907c04ce7fd88fb4d187106735f80e19",
+  "fingerprint": "3c53b16deda577d1db76541b961fd158b9c6b7314e8cb3e36537291777882a5c",
+  "oracle_kind": "mixed_ral_read",
+  "outcome": "pass",
+  "reason": "checker_completed",
+  "recorded_checker_sha256": "9d39ed4b11a448d4368f92eb6b86189f81dd6682f818c0b513ab2d2507381e21",
+  "report_counts": {
+    "ERROR": 0,
+    "FATAL": 0,
+    "INFO": 19,
+    "WARNING": 0
+  },
+  "result_sha256": "6ba56636ac553de6a3100762b251d9a2ba2cb1b5b4400f044dface0b208aeea7",
+  "run_id": "original_intr_test",
+  "run_options": [
+    "+UVM_NO_RELNOTES",
+    "+UVM_VERBOSITY=UVM_LOW",
+    "+cdc_instrumentation_enabled=1",
+    "+run_intr_test"
+  ],
+  "run_wall_seconds": 5.983191374994931,
+  "sealed_execution_manifest": true,
+  "seed": 1,
+  "signature": null,
+  "source_sha256": "3281b97c1a1b8b7631415ab57b34ddb7d5f095e9ef67cb38b9ed5d5386a10e57",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "5919ad5cd58530997a0a7ce51bc0b6e7d320f9d1c8fdee5fd73b78a266e2bb5c",
+  "target": "opentitan_rv_timer",
+  "test_id": "intr_test"
+}

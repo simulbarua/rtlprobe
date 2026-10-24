@@ -1,0 +1,68 @@
+{
+  "backend": "verilator_uvm",
+  "build_record": "original_build/build.json",
+  "build_walltime_seconds": {
+    "bld": 22.255,
+    "command_wall_seconds": 84.5248872910015,
+    "cvt": 60.24,
+    "elab": 0.866,
+    "reported_total": 84.439
+  },
+  "checkpoints": [
+    {
+      "id": "uvm_checks",
+      "outcome": "pass"
+    }
+  ],
+  "comparisons_completed": null,
+  "completion": {
+    "finish": true,
+    "iterations": [
+      [
+        1,
+        2
+      ],
+      [
+        2,
+        2
+      ]
+    ],
+    "summary": true,
+    "verdict": "TEST PASSED CHECKS"
+  },
+  "evidence": "/private/tmp/rtlprobe-backend-same-csr-replay-20261024",
+  "executable_sha256": "3e806b666c1376c4eae7125e684967165cf1671c37161430df3db4204802d9f8",
+  "execution_manifest_sha256": "93022169b9f0d4ed45e7e5491eee152e4745d985b9f1e25c335b044a1a22e26e",
+  "failures": [],
+  "final_adapter_outcome": "pass",
+  "final_checker_sha256": "fa2724e9018c5fdeb80422bf6fa2cb9a907c04ce7fd88fb4d187106735f80e19",
+  "fingerprint": "3c53b16deda577d1db76541b961fd158b9c6b7314e8cb3e36537291777882a5c",
+  "oracle_kind": "sequence_tl_compare",
+  "outcome": "pass",
+  "reason": "checker_completed",
+  "recorded_checker_sha256": "9d39ed4b11a448d4368f92eb6b86189f81dd6682f818c0b513ab2d2507381e21",
+  "report_counts": {
+    "ERROR": 0,
+    "FATAL": 0,
+    "INFO": 15,
+    "WARNING": 0
+  },
+  "result_sha256": "1e731162634161e6cf0a2b5da89f9e9948e6c6b66f8f04eecab3cba768c11093",
+  "run_id": "original_same_csr_outstanding",
+  "run_options": [
+    "+UVM_NO_RELNOTES",
+    "+UVM_VERBOSITY=UVM_LOW",
+    "+cdc_instrumentation_enabled=1",
+    "+run_same_csr_outstanding",
+    "+en_scb=0"
+  ],
+  "run_wall_seconds": 18.250010249990737,
+  "sealed_execution_manifest": true,
+  "seed": 1,
+  "signature": null,
+  "source_sha256": "3281b97c1a1b8b7631415ab57b34ddb7d5f095e9ef67cb38b9ed5d5386a10e57",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "a6eabc1c08d604a1c4f722c926c1085ac7d8ca18affdd315d54864ca7b06e9c8",
+  "target": "opentitan_rv_timer",
+  "test_id": "same_csr_outstanding"
+}

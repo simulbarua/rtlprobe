@@ -1,0 +1,135 @@
+{
+  "backend_environment": {
+    "admitted_tests_sha256": "44a7ebf712ad0674fc213aec7afa11f19136625cd83c33e2812435b859249690",
+    "backend": "verilator_uvm",
+    "build_environment": {
+      "CC": "/opt/homebrew/opt/llvm/bin/clang",
+      "CXX": "/opt/homebrew/opt/llvm/bin/clang++",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "SDKROOT": "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"
+    },
+    "compat_shim_sha256": "0cadf6d6ec644b10c087208131a2903edbf9515d08eda068a9d38578eb873c75",
+    "diff_hashes": {
+      "alert_agent.sv.patch": "30e9a2abda075cf3592be9ba32a38b762d3f345d36c30af8fd6930bfba013414",
+      "alert_agent_cov.sv.patch": "737f68556895e629e5c496ec68006cad41d5e62a6b3aed55c09881afe275a8f3",
+      "alert_if.sv.patch": "d94492e8753ccbd9b8aa2c65afc32c54ced6532de6524f7cafbab61444d3754f",
+      "cip_base_env_cov.sv.patch": "fc9c49c2494a70456320110d5ea09655d0345ab88f247c200aa845554d161d43",
+      "cip_base_scoreboard.sv.patch": "95942194bf738d42e19977440f761c1984d1b8cd8c0cef7ccfb106240c4b9a87",
+      "cip_base_test.sv.patch": "0ba6be5b4d46a692999f50f253d2653c0e0645703c8f125833fa33c405a4a7e7",
+      "cip_base_vseq.sv.patch": "a9100fe870c8b2afc5b4e2083f73f0f09665aa929a8307db44266f987f1d666e",
+      "clk_rst_if.sv.patch": "1b986ec9cd82b2d694e94203d679b7aa938e3fe82edd9f90e438db5b088d09f2",
+      "csr_aliasing_seq.sv.patch": "938941f81509b0d07936ce72d2799d88ab9c230786fcc41c2bd8f579c99a6c7e",
+      "csr_utils_pkg.sv.patch": "ac8aaf878caecf883632aa9ff23758b7a9213f439e7a64427b4117bbdf89be7f",
+      "dv_base_test.sv.patch": "ac8c8c14cc845546208c4403b29c51003bef39560ffe7d5fb8cdbe7123fd542e",
+      "ot_uvm_compat.svh.patch": "4c8c9c9b669bb06f6387c01b0557134a0e23a4462c18b108d43a81dfa7daebf8",
+      "prim_onehot_check_if.sv.patch": "274beee787133885838e33ab78ed772290582077f63879c54befcb83d92c9620",
+      "sec_cm_base_if_proxy.sv.patch": "2ab9cb1f6f3a402dfc2b34535a02b45378cefd53f09337bff7861fb7ea01f230",
+      "tl_agent_cov.sv.patch": "3abfeff65a09ee9ec30531e47bef0dff2f684c89f45aec6d41f05c578d72d2ec",
+      "tl_device_seq.sv.patch": "c11a1b38031a503dd5ed9920a97e1fb5351fd4da286896740c3b6ee56d6780e2",
+      "tl_host_seq.sv.patch": "d62ed3ad5334eb37fde32528fd125068daf62bdd846b2676dbc3cd7e5fb35b99",
+      "tl_host_single_seq.sv.patch": "cf8bcb1b35b216e1fa7069062caf89377c7f89948769365d32cb41b5c62517da",
+      "tl_seq_item.sv.patch": "2a99b28a3710df8684292a92f227f5d5382888aa4b0a84682fb2624cd2a72a9f",
+      "uart_base_vseq.sv.patch": "8ea790f909204b802e9a7ee68eba18ead11225fc75ba4fb35597724e64566755",
+      "uvm_component.svh.patch": "6012ccb14e0cef44032c110fb11f3966ba886b2dd7c4c57bafda887415f67037",
+      "uvm_hdl.svh.patch": "aac14ced79defd7463f956e454ea90102d981b06f9ef8aa9004612cedf5ca82b",
+      "uvm_traversal.svh.patch": "5daf78daf95556a0c28823c619022d7375c83492087cff92b22947306cd05500"
+    },
+    "edalize": "0.6.3",
+    "fusesoc": "2.4.5",
+    "fusesoc_executable_sha256": "9309e5c7537047ec5ecc121222ca338ae39d0562815e7d652dd952fb2ab17d6c",
+    "library_configuration_edit": "UVM_ENABLE_DEPRECATED_API",
+    "library_edits": [
+      {
+        "diff_sha256": "6012ccb14e0cef44032c110fb11f3966ba886b2dd7c4c57bafda887415f67037",
+        "domain": "uvm",
+        "patch": "uvm_component.svh.patch",
+        "patched_sha256": "3b7b3d522bb5462ff3594278e7455cac35a67908a6a92b263ec95e68c64459c5",
+        "path": "src/base/uvm_component.svh",
+        "targets": [
+          "rv_timer",
+          "uart"
+        ],
+        "upstream_sha256": "c15f99f9d2373fcb900a08d3afa76766cb149451155d471adc4ba522755199c1"
+      },
+      {
+        "diff_sha256": "aac14ced79defd7463f956e454ea90102d981b06f9ef8aa9004612cedf5ca82b",
+        "domain": "uvm",
+        "patch": "uvm_hdl.svh.patch",
+        "patched_sha256": "334d10632983af30cc5e6bc4f3bd46b436e4001c7b8bace28d782c7023527c98",
+        "path": "src/dpi/uvm_hdl.svh",
+        "targets": [
+          "rv_timer",
+          "uart"
+        ],
+        "upstream_sha256": "41bfc963c761c3a74cda5f164f9d2cea4a719a7f76334cd6569e4e5081eaf62a"
+      },
+      {
+        "diff_sha256": "5daf78daf95556a0c28823c619022d7375c83492087cff92b22947306cd05500",
+        "domain": "uvm",
+        "patch": "uvm_traversal.svh.patch",
+        "patched_sha256": "26a85e5686190bdf76db83c73536e9a54a6c4d84f498c25f857d4a3e4c749c3b",
+        "path": "src/base/uvm_traversal.svh",
+        "targets": [
+          "rv_timer",
+          "uart"
+        ],
+        "upstream_sha256": "387b84175333085e52fcc488f52cc01f3d76df97a5d9ae138981b7064fd26f45"
+      }
+    ],
+    "patchset_manifest_sha256": "76c42a27c458225afd5ecce7f3d7039a04d5814467ad89368e276333fe5cd71a",
+    "uvm_tree_sha256": "916f9f1eeafac8e64a6079e16962cd08b59c243f3edab42e14a7b57b60492a2f",
+    "verilator": {
+      "binary_sha256": "67e6e5be37a449df19d13fb4182ce0b3c04ccf3545fd09b7947014a5cab63827",
+      "executable": "/Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/prefix/bin/verilator",
+      "git_revision": "v5.052-567-g0041d207c",
+      "git_sha": "0041d207c3dcede92f48b86e0c7e2b70626cd86c",
+      "sha256": "fde49698e280bc92ff4d4686fbbb47ded12ef0a4f0210c34df4846b1021bc636",
+      "version": "Verilator 5.053 devel rev v5.052-567-g0041d207c"
+    }
+  },
+  "build": {
+    "backend": "verilator_uvm",
+    "binary": "original_build/obj/Vtb",
+    "compile_run": "original_compile",
+    "executable_sha256": "a59b6a7770cc04a4410f4e406221e151cb16cda48ab8d157b5a6f2800e16b3d6",
+    "walltime_seconds": {
+      "bld": 23.178,
+      "command_wall_seconds": 83.43283749998955,
+      "cvt": 58.27,
+      "elab": 0.79,
+      "reported_total": 83.322
+    }
+  },
+  "evidence": "/private/tmp/rtlprobe-backend-20261024/outputs/opentitan_rv_timer/original-proof/b92769fe4188-20261024T225221463915Z",
+  "fingerprint": "b92769fe41887e2f1f1a02f57831812b8043c7f5c1fae43a7aa904c518bbb681",
+  "implementation": {
+    "rtlprobe/__init__.py": "0baad37fbc8ac73640c5ee8e6c92c4372a6431c1170a85f59d23cef94d22a7ea",
+    "rtlprobe/backends/__init__.py": "8e6ecce0f3cd5582fbedcde6847c687dbe722bba86cd01f8b9c3b7313acf013d",
+    "rtlprobe/backends/common.py": "2f9e7cf5c97304fa0e2f4e0c7ef7ec6859ef32e92a58e4e6b681547d0cec2309",
+    "rtlprobe/backends/icarus.py": "f9ba3514b5c0b99e559a646f363feac3645c45b6b1af8453937e5afb43561c26",
+    "rtlprobe/backends/proof.py": "a7df6cdbc0377ea8a7bd182b5d2b53c7f796353654c15cf5cbe0f3a7935887d0",
+    "rtlprobe/backends/uvm_patchset.py": "51d9ee40beee7e11c792cc4a097f4babc6e62bd8b09825c5135ec25439be739f",
+    "rtlprobe/backends/verilator_predv.py": "7ce614eb49fccc25f51bea6687180f339d48b614611d322b64b895cb3e9fd5d2",
+    "rtlprobe/backends/verilator_uvm.py": "a938803960f1b020d30e706534bd9d1b325c3c24a88e4a45c33e444109ef7b3a",
+    "rtlprobe/batch.py": "eadce8fda74e5b1e592f8afea484a9fbac8ae66035fae3bf1ca0270672a540a3",
+    "rtlprobe/candidates.py": "f85292566765c04c3f7477a910db2f73e5fc5070c67d11f86932b9114ebaeeda",
+    "rtlprobe/curation.py": "0be5900c51319bcf2d2b2e8644bd0a9460608239b7eb8e75550605e04f12dcd8",
+    "rtlprobe/evidence.py": "0d1cab442109ef70ff6b7de01b822a46019452bd406a493d16cb56c29f20e2cf",
+    "rtlprobe/execution.py": "88a9f345c0c6d7008092340408cd11868baf4d85a7ff6d7919a190a402d7b4d4",
+    "rtlprobe/fetch.py": "a82eeb8a30834e246eb49f5e8ab4089facd09ca8de61bbc18976909ba921d1b0",
+    "rtlprobe/lifecycle.py": "04a84c7c7809fd677a471b0baf3d634d859cdb1bde1d9052c09ab7f9a4f0528e",
+    "rtlprobe/mutation.py": "f0e4dfaf6a12bc26e12767b5c9bac267e1c71cfb78d59c40eecf59dffe3e93ea",
+    "rtlprobe/operators.json": "89351b2af1879ab228ca6e78cbaff6ce43850672f33c34c91863f65faad1bc25",
+    "rtlprobe/oracle.py": "1ff4be3dd0613ff16246365ef07e4bb734b7c2da3b72298d73d38e8f089f72cd",
+    "rtlprobe/pilot.py": "386d07395bb7f39fb8c0f86558ca0a8799a2cf9e80e8437cc51643d2c46ac12e",
+    "rtlprobe/schemas/case.json": "cfd7a17bcfd5f18ace95e63275f19e629e15b86a7af574d9eacfe91901573576",
+    "rtlprobe/schemas/case_v2.json": "d0bbc0a53626d620953c812c4181c324e6059015521d9afdb56692b094616740",
+    "rtlprobe/schemas/curation_v2.json": "99adb59bf3c6b44cb1071fcc60937d71208b6fb4fc41e64dfb90e6a5263fc673",
+    "rtlprobe/schemas/design.json": "05451db0e2e8a6bdd3366e6ec10adc65235243e1bc82cb71c4c5b343df12f570",
+    "rtlprobe/schemas/proposal.json": "4e4dd28fba9b5bf2c615098504e599b18af1c47bdb62440d28c39d9fd4c18601",
+    "rtlprobe/schemas/proposal_v2.json": "186ea8a7918bc22d360ed1768e4c21cb6017324284268ae33f7c8d920cd65218",
+    "rtlprobe/sv_frontend.py": "f61f17d0e16eb26daef329c072d3b10b685edd2b59f180ff96159f177f6611e6",
+    "rtlprobe/target.py": "a65f906953ace76b19f8b6b96d5f97da91b6617a4d8f9f71a64bf9b3504f11d9",
+    "targets/opentitan_uvm/checker.py": "fa2724e9018c5fdeb80422bf6fa2cb9a907c04ce7fd88fb4d187106735f80e19"
+  }
+}

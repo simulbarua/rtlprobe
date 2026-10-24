@@ -38,7 +38,11 @@ def classify(stdout, stderr='', returncode=0, timed_out=False, *, config, contro
     module = importlib.util.module_from_spec(spec)
     # Do not create bytecode inside immutable qualification evidence.
     exec(compile(path.read_bytes(), str(path), 'exec'), module.__dict__)
-    result = module.classify(stdout, stderr, returncode, timed_out)
+    if config.get('backend') == 'verilator_uvm':
+        test = next(t for t in config['admitted_tests'] if t['id'] == config['test_id'])
+        result = module.classify(stdout, stderr, returncode, timed_out, test=test, design=config['design'])
+    else:
+        result = module.classify(stdout, stderr, returncode, timed_out)
     if not isinstance(result, dict) or result.get('outcome') not in {'pass', 'functional_fail', 'infrastructure_error', 'timeout_unclassified'}:
         raise ValueError('Checker returned an invalid outcome')
     if result['outcome'] == 'functional_fail' and not result.get('signature'):
@@ -55,6 +59,6 @@ def classify(stdout, stderr='', returncode=0, timed_out=False, *, config, contro
                     or (result['outcome'] == 'pass') != (not failed)
                     or result.get('signature') != (failed or None)):
                 raise ValueError('Checker verdict and checkpoint signatures disagree')
-            if any(not isinstance(c.get(k), str) or not c[k] for c in failed for k in ('expected', 'actual')):
+            if config.get('backend') != 'verilator_uvm' and any(not isinstance(c.get(k), str) or not c[k] for c in failed for k in ('expected', 'actual')):
                 raise ValueError('Failed checkpoints require expected and actual observations')
     return result

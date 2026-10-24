@@ -1,0 +1,91 @@
+UVM_INFO /Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/dl/uvm/1800.2-2017-1.0/src/base/uvm_root.svh(449) @ 0: reporter [UVM/RELNOTES] 
+  ***********       IMPORTANT RELEASE NOTES         ************
+
+  This implementation of the UVM Library deviates from the 1800.2-2017
+  standard.  See the DEVIATIONS.md file contained in the release
+  for more details.
+
+  You are using a version of the UVM library that has been compiled
+  with `UVM_ENABLE_DEPRECATED_API defined.
+  See https://accellera.mantishub.io/view.php?id=5072 for more details.
+
+----------------------------------------------------------------
+Accellera:1800.2-2017:UVM:1.0
+
+All copyright owners for this kit are listed in NOTICE.txt
+All Rights Reserved Worldwide
+----------------------------------------------------------------
+
+      (Specify +UVM_NO_RELNOTES to turn off this notice)
+
+UVM_INFO /Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/dl/uvm/1800.2-2017-1.0/src/base/uvm_root.svh(517) @ 0 ps: reporter [NO_DPI_TSTNAME] UVM_NO_DPI defined--getting UVM_TESTNAME directly, without DPI
+UVM_INFO @ 0 ps: reporter [RNTST] Running test uart_base_test...
+UVM_INFO /Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/dl/uvm/1800.2-2017-1.0/src/base/uvm_component.svh(2191) @ 0 ps: reporter [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::build method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::build_phase().
+UVM_INFO @         0 ps: (uvm_component.svh:2213) uvm_test_top.env.m_alert_agent_fatal_fault.driver.m_pending_alert_rsps.analysis_export [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::connect method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::connect_phase().
+UVM_INFO @         0 ps: (uvm_component.svh:2227) uvm_test_top.env.m_alert_agent_fatal_fault.driver.m_pending_alert_rsps.analysis_export [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::end_of_elaboration method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::end_of_elaboration_phase().
+UVM_INFO @         0 ps: (uvm_traversal.svh:293) [UVM/COMP/NAMECHECK] This implementation of the component name checks requires DPI to be enabled
+UVM_INFO @         0 ps: (uvm_component.svh:2220) uvm_test_top.env.m_alert_agent_fatal_fault.driver.m_pending_alert_rsps.analysis_export [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::start_of_simulation method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::start_of_simulation_phase().
+UVM_INFO @         0 ps: (uvm_component.svh:2234) uvm_test_top.env.m_alert_agent_fatal_fault.driver.m_pending_alert_rsps.analysis_export [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::run method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::run_phase().
+UVM_INFO @ 430919828 ps: (uart_tx_rx_vseq.sv:132) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.uart_tx_rx_vseq] finished run 1/17
+UVM_INFO @ 1594441132 ps: (uart_tx_rx_vseq.sv:132) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.uart_tx_rx_vseq] finished run 2/17
+UVM_INFO @ 2461189300 ps: (uart_tx_rx_vseq.sv:132) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.uart_tx_rx_vseq] finished run 3/17
+UVM_INFO @ 5317472572 ps: (uart_tx_rx_vseq.sv:132) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.uart_tx_rx_vseq] finished run 4/17
+UVM_INFO @ 5579429660 ps: (uart_tx_rx_vseq.sv:132) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.uart_tx_rx_vseq] finished run 5/17
+UVM_INFO @ 5735142700 ps: (uart_tx_rx_vseq.sv:132) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.uart_tx_rx_vseq] finished run 6/17
+UVM_INFO @ 6652951684 ps: (uart_tx_rx_vseq.sv:132) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.uart_tx_rx_vseq] finished run 7/17
+UVM_INFO @ 7483659324 ps: (uart_tx_rx_vseq.sv:132) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.uart_tx_rx_vseq] finished run 8/17
+UVM_INFO @ 7669270084 ps: (uart_tx_rx_vseq.sv:132) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.uart_tx_rx_vseq] finished run 9/17
+UVM_INFO @ 8685710932 ps: (uart_tx_rx_vseq.sv:132) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.uart_tx_rx_vseq] finished run 10/17
+UVM_INFO @ 8911117292 ps: (uart_tx_rx_vseq.sv:132) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.uart_tx_rx_vseq] finished run 11/17
+UVM_INFO @ 10608450652 ps: (uart_tx_rx_vseq.sv:132) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.uart_tx_rx_vseq] finished run 12/17
+UVM_INFO @ 11642381156 ps: (uart_tx_rx_vseq.sv:132) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.uart_tx_rx_vseq] finished run 13/17
+UVM_INFO @ 12631822220 ps: (uart_tx_rx_vseq.sv:132) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.uart_tx_rx_vseq] finished run 14/17
+UVM_INFO @ 13792384364 ps: (uart_tx_rx_vseq.sv:132) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.uart_tx_rx_vseq] finished run 15/17
+UVM_INFO @ 15002476724 ps: (uart_tx_rx_vseq.sv:132) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.uart_tx_rx_vseq] finished run 16/17
+UVM_INFO @ 15538921412 ps: (uart_tx_rx_vseq.sv:132) uvm_test_top.env.virtual_sequencer [uvm_test_top.env.virtual_sequencer.uart_tx_rx_vseq] finished run 17/17
+UVM_INFO @ 16551280700 ps: (uvm_component.svh:2241) uvm_test_top.env.m_alert_agent_fatal_fault.driver.m_pending_alert_rsps.analysis_export [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::extract method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::extract_phase().
+UVM_INFO @ 16551280700 ps: (uvm_component.svh:2248) uvm_test_top.env.m_alert_agent_fatal_fault.driver.m_pending_alert_rsps.analysis_export [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::check method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::check_phase().
+UVM_INFO @ 16551280700 ps: (uvm_component.svh:2255) uvm_test_top.env.m_alert_agent_fatal_fault.driver.m_pending_alert_rsps.analysis_export [UVM/DEPRECATED/COMP/OVM_PHASES] The library is calling the deprecated uvm_component::report method because UVM_ENABLE_DEPRECATED_API is defined.  Usage of this deprecated method by the user may lead to unexpected behavior.  Users should use uvm_component::report_phase().
+UVM_INFO @ 16551280700 ps: (uvm_report_catcher.svh:675) [UVM/REPORT/CATCHER] 
+--- UVM Report catcher Summary ---
+
+
+Number of demoted UVM_FATAL reports  :    0
+Number of demoted UVM_ERROR reports  :    0
+Number of demoted UVM_WARNING reports:    0
+Number of caught UVM_FATAL reports   :    0
+Number of caught UVM_ERROR reports   :    0
+Number of caught UVM_WARNING reports :    0
+
+UVM_INFO @ 16551280700 ps: (uvm_report_server.svh:864) [UVM/REPORT/SERVER] 
+--- UVM Report Summary ---
+
+Quit count :     0 of    50
+** Report counts by severity
+UVM_INFO :   30
+UVM_WARNING :    0
+UVM_ERROR :    0
+UVM_FATAL :    0
+** Report counts by id
+[NO_DPI_TSTNAME]     1
+[RNTST]     1
+[UVM/COMP/NAMECHECK]     1
+[UVM/DEPRECATED/COMP/OVM_PHASES]     8
+[UVM/RELNOTES]     1
+[UVM/REPORT/CATCHER]     1
+[uvm_test_top.env.virtual_sequencer.uart_tx_rx_vseq]    17
+
+
+TEST PASSED CHECKS
+ _____         _                                  _ _ 
+|_   _|__  ___| |_   _ __   __ _ ___ ___  ___  __| | |
+  | |/ _ \/ __| __| | '_ \ / _` / __/ __|/ _ \/ _` | |
+  | |  __/\__ \ |_  | |_) | (_| \__ \__ \  __/ (_| |_|
+  |_|\___||___/\__| | .__/ \__,_|___/___/\___|\__,_(_)
+                    |_|                               
+
+- /Users/simulbarua/Work/ml_projects/RTLProbe/local/trials/verilator-uvm-2026-10-24/dl/uvm/1800.2-2017-1.0/src/base/uvm_root.svh:585: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.053 devel
+- Verilator: $finish at 17ms; walltime 1160.665 s; speed 14.260 us/s
+- Verilator: cpu 1114.879 s on 1 threads; allocated 44 MB
+uart_tx_rx exit=0

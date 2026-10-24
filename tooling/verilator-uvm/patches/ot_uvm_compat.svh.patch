@@ -1,0 +1,11 @@
+--- /dev/null
++++ b/ot_uvm_compat.svh
+@@ -0,0 +1,8 @@
++// Trial shim: UVM 1.2 internal macro used by OpenTitan dv_base_reg_block.sv, absent from 1800.2 kits.
++`ifndef m_uvm_get_type_name_func
++`define m_uvm_get_type_name_func(T) \
++   const static string type_name = `"T`"; \
++   virtual function string get_type_name (); \
++     return type_name; \
++   endfunction
++`endif

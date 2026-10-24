@@ -1,0 +1,14 @@
+--- a/lowrisc_dv_sec_cm_0/prim_onehot_check_if.sv
++++ b/lowrisc_dv_sec_cm_0/prim_onehot_check_if.sv
+@@ -199,8 +199,11 @@
+   prim_onehot_check_if_proxy if_proxy;
+ 
+   initial begin
++`ifndef DV_VERILATOR_UVM  // TRIAL PATCH: uvm_hdl_* is DPI/VPI; compiled off in the no-DPI Verilator build.
++                           // Fault-injection (sec_cm) tests are therefore out of scope for this build.
+     `DV_CHECK_FATAL(uvm_hdl_check_path(en_signal_forced),, $sformatf("%m"))
+     `DV_CHECK_FATAL(uvm_hdl_check_path(oh_signal_forced),, $sformatf("%m"))
++`endif
+ 
+     // Store the proxy object for TB to use
+     if (AddrCheck) begin

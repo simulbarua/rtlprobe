@@ -1,0 +1,63 @@
+{
+  "backend": "verilator_uvm",
+  "build_record": "original_build/build.json",
+  "build_walltime_seconds": {
+    "bld": 22.255,
+    "command_wall_seconds": 84.5248872910015,
+    "cvt": 60.24,
+    "elab": 0.866,
+    "reported_total": 84.439
+  },
+  "checkpoints": [
+    {
+      "id": "uvm_checks",
+      "outcome": "pass"
+    }
+  ],
+  "comparisons_completed": null,
+  "completion": {
+    "finish": true,
+    "iterations": [
+      [
+        1,
+        1
+      ]
+    ],
+    "summary": true,
+    "verdict": "TEST PASSED CHECKS"
+  },
+  "evidence": "/private/tmp/rtlprobe-backend-20261024/outputs/opentitan_rv_timer/original-proof/3c53b16deda5-20261024T222345135907Z",
+  "executable_sha256": "3e806b666c1376c4eae7125e684967165cf1671c37161430df3db4204802d9f8",
+  "execution_manifest_sha256": null,
+  "failures": [],
+  "final_adapter_outcome": "pass",
+  "final_checker_sha256": "fa2724e9018c5fdeb80422bf6fa2cb9a907c04ce7fd88fb4d187106735f80e19",
+  "fingerprint": "3c53b16deda577d1db76541b961fd158b9c6b7314e8cb3e36537291777882a5c",
+  "oracle_kind": "scoreboard",
+  "outcome": "pass",
+  "reason": "checker_completed",
+  "recorded_checker_sha256": "9d39ed4b11a448d4368f92eb6b86189f81dd6682f818c0b513ab2d2507381e21",
+  "report_counts": {
+    "ERROR": 0,
+    "FATAL": 0,
+    "INFO": 14,
+    "WARNING": 0
+  },
+  "result_sha256": "4019aac184a41b240e76fc748535e6d54fdc6428ab7d18ca57eaab93fcf7c18d",
+  "run_id": "original_rv_timer_random",
+  "run_options": [
+    "+UVM_NO_RELNOTES",
+    "+UVM_VERBOSITY=UVM_LOW",
+    "+cdc_instrumentation_enabled=1",
+    "+test_timeout_ns=10000000000"
+  ],
+  "run_wall_seconds": 50.71624808300112,
+  "sealed_execution_manifest": false,
+  "seed": 1,
+  "signature": null,
+  "source_sha256": "3281b97c1a1b8b7631415ab57b34ddb7d5f095e9ef67cb38b9ed5d5386a10e57",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "f527dda6037cfebde51e68397f200b7bd28921308a251ce2b6fb74a5dee37e0e",
+  "target": "opentitan_rv_timer",
+  "test_id": "rv_timer_random"
+}

@@ -34,3 +34,23 @@ The tiny checker under `tests/fixtures/` is only a software regression fixture.
 
 Use `scripts/rtlprobe.py --data-root /absolute/data --target-config /absolute/target.json qualify`.
 There is no default target or data-root override. See [execution layout](../docs/execution-layout.md).
+
+## OpenTitan original-only manifests
+
+All three targets pin `3a7f6947247254fcc2fd05143c18a2646f75c7ee`, share lineage
+`opentitan`, require pending specification stores, and have controls pending the
+front end. IPs are designs within one lineage, not independent families. Shared
+primitives and generated register RTL are not mutation candidates for the IPs.
+
+| Target | Backend | Admitted tests and oracle |
+|---|---|---|
+| opentitan_crc32 | verilator_predv | prim_crc32: unchanged upstream expected-file comparison, 98 checkpoints |
+| opentitan_rv_timer | verilator_uvm | rv_timer_random, rv_timer_disabled, rv_timer_random_reset, tl_errors: scoreboard; same_csr_outstanding: sequence_tl_compare; intr_test: conservatively mixed_ral_read |
+| opentitan_uart | verilator_uvm | uart_smoke, uart_tx_rx: mixed_ral_read |
+
+Each UVM test records its sequence, seed, upstream run options and existing
+progress-log pattern. `same_csr_outstanding` retains `+en_scb=0`; no scoreboard is
+enabled for it. `csr_rd_check` tests remain excluded. The manifests record the
+other exclusions and the VCS-equivalence gap. A zero-valued register-model-read
+failure signature must be held by the subsequent curation change; these manifests
+and original-only proofs do not authorize promotion.

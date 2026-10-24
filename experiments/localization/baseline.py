@@ -14,6 +14,7 @@ import time
 from pyverilog.vparser.parser import VerilogParser
 
 
+
 def walk(node):
     yield node
     for child in node.children():
@@ -41,6 +42,10 @@ def extract(sources, top, instance):
     Arrays collapse to a single signal. Port connections use declared direction.
     Supports plain modules with named ports; rejects generate/functions/overrides.
     """
+    from rtlprobe.candidates import extract_candidates
+    syntax_inventory = extract_candidates(sources)
+    if syntax_inventory['rejected']:
+        raise ValueError('Candidate syntax rejected: ' + repr(syntax_inventory['rejected']))
     modules = {}
     for path, text in sorted(sources.items()):
         with tempfile.TemporaryDirectory(prefix="rtlprobe-localization-") as tmp:
@@ -148,6 +153,14 @@ def extract(sources, top, instance):
                 descend(child)
 
         visit(node)
+        # Candidate coverage comes from source syntax, independently of the
+        # operator registry. Existing graph exclusions still raise above.
+        for candidate in syntax_inventory['candidates']:
+            if candidate['path'] == path and candidate['module'] == module:
+                candidates.append({**candidate, 'instance': scope,
+                    'lhs': [scope + '.' + n for n in candidate['lhs']],
+                    'dependencies': [scope + '.' + n for n in candidate['dependencies']],
+                    'sequential': False})
 
     visit_module(top, instance)
     # Evaluation uses source lines. Multiple assignments starting on one line
@@ -159,6 +172,11 @@ def extract(sources, top, instance):
             locations[key] = candidate
         else:
             old = locations[key]
+            if candidate['kind'] == 'source_syntax':
+                old['site_spans'] = candidate['site_spans']
+                old['syntax_kinds'] = candidate['syntax_kinds']
+                # Keep the graph extractor's scope-resolved names.
+                continue
             old["lhs"] = sorted(set(old["lhs"]) | set(candidate["lhs"]))
             old["dependencies"] = sorted(set(old["dependencies"]) | set(candidate["dependencies"]))
             old["sequential"] |= candidate["sequential"]
@@ -168,7 +186,7 @@ def extract(sources, top, instance):
             "limitations": ["signal-level, not bit-level", "arrays collapsed",
                             "procedural for loops collapsed, not unrolled",
                             "branch feasibility not evaluated", "no cycle-accurate slicing",
-                            "source locations are assignment/localparam start lines"]}
+                            "source syntax includes if/ternary conditions and binary expression sites"]}
 
 
 def distances(graph, anchors):
