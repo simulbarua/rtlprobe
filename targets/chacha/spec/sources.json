@@ -1,26 +1,74 @@
 {
   "rfc8439": {
     "title": "ChaCha20 and Poly1305 for IETF Protocols, RFC 8439",
-    "url": "https://www.rfc-editor.org/rfc/rfc8439",
+    "url": "https://www.rfc-editor.org/rfc/rfc8439.txt",
     "version": "June 2018",
-    "publisher": "IETF",
-    "license": "IETF Trust Legal Provisions; reproduction permitted with attribution",
+    "publisher": "IRTF / RFC Editor",
+    "license": "Copyright (c) 2018 IETF Trust and the document authors; BCP 78 and IETF Trust Legal Provisions in effect at publication; attributed extracts retained.",
     "redistributable": true,
-    "retrieval_date": null,
-    "sha256": null,
-    "sections_of_interest": ["2.1 The ChaCha Quarter Round", "2.2 A Quarter Round on the ChaCha State", "2.3 The ChaCha20 Block Function", "2.3.1 test vector"],
-    "status": "sources identified; sections not yet extracted"
+    "retrieval_date": "2026-10-23",
+    "retrieval_method": "Owner supplied local file; curator computed SHA-256",
+    "sha256": "25bef70fbf7a07ff45c2fe4cb7c6ce954eac687413d8610603268b4e4415324c",
+    "sections_of_interest": [
+      "2.1 The ChaCha Quarter Round",
+      "2.2 A Quarter Round on the ChaCha State",
+      "2.3 The ChaCha20 Block Function",
+      "2.3.1 The ChaCha20 Block Function in Pseudocode",
+      "2.3.2 Test Vector for the ChaCha20 Block Function",
+      "2.4 The ChaCha20 Encryption Algorithm"
+    ],
+    "status": "Six attributed section extracts; RFC vector retained as context only"
+  },
+  "djb-chacha-2008": {
+    "title": "ChaCha, a variant of Salsa20",
+    "url": "https://cr.yp.to/chacha/chacha-20080128.pdf",
+    "version": "2008-01-28",
+    "publisher": "Daniel J. Bernstein",
+    "license": "No explicit redistribution grant for the paper found in the supplied PDF. Page 2 calls the software public-domain; this does not establish a license for the paper. Author web-page terms were unavailable locally.",
+    "redistributable": false,
+    "retrieval_date": "2026-10-23",
+    "retrieval_method": "Owner supplied local file; curator computed SHA-256",
+    "sha256": "654280755b604667419f24d72047e3729655481d2569694125930070f87187f7",
+    "sections_of_interest": [
+      "Abstract (PDF page 1)",
+      "2.1 Review of the Salsa20 quarter-round: notation (PDF page 3)",
+      "2.2 The ChaCha quarter-round (PDF pages 3-4)",
+      "3.2 The ChaCha matrix (PDF page 5)"
+    ],
+    "status": "Four requirement records restate technical facts in curator wording with citations; four section files contain bibliographic pointers only; no paper sentences reproduced under the owner rule adopted 2026-10-23",
+    "quotation_basis": "none; technical facts restated by the curator with citation"
   },
   "secworks-chacha-readme": {
-    "title": "secworks/chacha README and core documentation at the pinned commit",
-    "url": "https://github.com/secworks/chacha",
-    "version": "commit 7eaba360df9fed9fc2db98d5f3df81cf01e5b604",
-    "publisher": "secworks",
+    "title": "secworks/chacha README.md",
+    "url": "https://github.com/secworks/chacha/blob/7eaba360df9fed9fc2db98d5f3df81cf01e5b604/README.md",
+    "version": "7eaba360df9fed9fc2db98d5f3df81cf01e5b604",
+    "publisher": "Secworks",
     "license": "BSD-2-Clause",
     "redistributable": true,
-    "retrieval_date": null,
-    "sha256": null,
     "classification_of_claims": "repository_claim",
-    "status": "in the pinned snapshot; sections to extract for the 8/12/20-round and 128/256-bit key configurations the bench exercises"
+    "retrieval_date": "2026-10-23",
+    "retrieval_method": "Read from pinned original qualification snapshot",
+    "sha256": "1124644da2c6028be53fbdf4e25ae69b4d3b75cdde4467a3c26899f01a9d70bb",
+    "sections_of_interest": [
+      "Functionality (lines 30-31)",
+      "Performance (lines 53-54, first sentence)"
+    ],
+    "status": "Two short excerpts; supported range and cycle claim distinguished from checked behavior"
+  },
+  "original-rtl-and-testbench": {
+    "title": "Pinned original ChaCha RTL and testbench",
+    "url": "https://github.com/secworks/chacha/tree/7eaba360df9fed9fc2db98d5f3df81cf01e5b604",
+    "version": "7eaba360df9fed9fc2db98d5f3df81cf01e5b604",
+    "license": "BSD-2-Clause",
+    "redistributable": true,
+    "classification_of_claims": "inferred_from_rtl_and_checker",
+    "retrieval_date": "2026-10-23",
+    "retrieval_method": "Read from pinned original qualification snapshot",
+    "snapshot": "/Users/simulbarua/Work/ml_projects/RTLProbe/local/rtlprobe-data/outputs/chacha/qualification/5197fcd16058-20261020T020211206229Z/original",
+    "files_sha256": {
+      "src/rtl/chacha_core.v": "498bde1d1e83793eb65d37378257e2df8ff9a46da0b783da0b7d2d4f59225844",
+      "src/rtl/chacha_qr.v": "d6bef8c91bba0f113fcf3c69cd38aa56b3b788956e6dbcbbb2f760641e2dff65",
+      "src/tb/tb_chacha_core.v": "fb17ed21e761bf67d89d4adca6c2cb810d24b1eff37cb76fd3f61e25e16018cb"
+    }
   }
 }

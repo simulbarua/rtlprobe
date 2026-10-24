@@ -1,0 +1,254 @@
+{
+  "basis": "Union of requirement RTL regions in the pinned original snapshot; inclusive physical lines including enclosed comments and blank lines. This is source mapping, not measured execution coverage. Empty checkpoint lists mark behavior without a corresponding comparison.",
+  "snapshot": "/Users/simulbarua/Work/ml_projects/RTLProbe/local/rtlprobe-data/outputs/chacha/qualification/5197fcd16058-20261020T020211206229Z/original",
+  "checkpoint_configurations": [
+    {
+      "checkpoint": "case01_tc1_1",
+      "key_bits": 128,
+      "rounds": 8,
+      "testbench_call_line": 530
+    },
+    {
+      "checkpoint": "case02_tc1_2",
+      "key_bits": 128,
+      "rounds": 12,
+      "testbench_call_line": 539
+    },
+    {
+      "checkpoint": "case03_tc1_3",
+      "key_bits": 128,
+      "rounds": 20,
+      "testbench_call_line": 548
+    },
+    {
+      "checkpoint": "case04_tc1_4",
+      "key_bits": 256,
+      "rounds": 8,
+      "testbench_call_line": 557
+    },
+    {
+      "checkpoint": "case05_tc1_5",
+      "key_bits": 256,
+      "rounds": 12,
+      "testbench_call_line": 566
+    },
+    {
+      "checkpoint": "case06_tc1_6",
+      "key_bits": 256,
+      "rounds": 20,
+      "testbench_call_line": 575
+    },
+    {
+      "checkpoint": "case07_tc2_1",
+      "key_bits": 128,
+      "rounds": 8,
+      "testbench_call_line": 584
+    },
+    {
+      "checkpoint": "case08_tc2_1",
+      "key_bits": 256,
+      "rounds": 8,
+      "testbench_call_line": 593
+    },
+    {
+      "checkpoint": "case09_tc3_1",
+      "key_bits": 128,
+      "rounds": 8,
+      "testbench_call_line": 602
+    },
+    {
+      "checkpoint": "case10_tc4_1",
+      "key_bits": 128,
+      "rounds": 8,
+      "testbench_call_line": 611
+    },
+    {
+      "checkpoint": "case11_tc5_1",
+      "key_bits": 128,
+      "rounds": 8,
+      "testbench_call_line": 620
+    },
+    {
+      "checkpoint": "case12_tc6_1",
+      "key_bits": 128,
+      "rounds": 8,
+      "testbench_call_line": 629
+    },
+    {
+      "checkpoint": "case13_tc7_1",
+      "key_bits": 128,
+      "rounds": 8,
+      "testbench_call_line": 638
+    },
+    {
+      "checkpoint": "case14_tc7_2",
+      "key_bits": 256,
+      "rounds": 8,
+      "testbench_call_line": 647
+    },
+    {
+      "checkpoint": "case15_tc8_1",
+      "key_bits": 128,
+      "rounds": 8,
+      "testbench_call_line": 656
+    }
+  ],
+  "files": {
+    "src/rtl/chacha_core.v": {
+      "total_lines": 709,
+      "covered_ranges": [
+        "42-60",
+        "67-68",
+        "72-75",
+        "77-80",
+        "82-86",
+        "94-98",
+        "104-142",
+        "148",
+        "150-152",
+        "154-188",
+        "194-240",
+        "246-248",
+        "258-308",
+        "316-369",
+        "376-485",
+        "496-519",
+        "527-543",
+        "551-567",
+        "575-602",
+        "609-704"
+      ],
+      "covered_line_count": 564,
+      "uncovered_ranges": [
+        {
+          "lines": "1-41",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "61-66",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "69",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "70",
+          "reason": "Unused NUM_ROUNDS constant; the active loop uses the rounds input."
+        },
+        {
+          "lines": "71",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "76",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "81",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "87-93",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "99-103",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "143-147",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "149",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "153",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "189-193",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "241-245",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "249-257",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "309-315",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "370-375",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "486-495",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "520-526",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "544-550",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "568-574",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "603-608",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "705-709",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        }
+      ],
+      "uncovered_line_count": 145,
+      "scope_note": "Complete blocks include unexercised continuation, carry, reset assignments, and status behavior; mapped does not mean every enclosed behavior is independently checked."
+    },
+    "src/rtl/chacha_qr.v": {
+      "total_lines": 118,
+      "covered_ranges": [
+        "44-53",
+        "58-61",
+        "67-70",
+        "78-113"
+      ],
+      "covered_line_count": 54,
+      "uncovered_ranges": [
+        {
+          "lines": "1-43",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "54-57",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "62-66",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "71-77",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        },
+        {
+          "lines": "114-118",
+          "reason": "Comments, blank lines, compilation directive, or module delimiter; no independent value computation."
+        }
+      ],
+      "uncovered_line_count": 64,
+      "scope_note": "All four outputs and the complete combinational quarter round are mapped. The finite block vectors do not independently check every possible four-word input."
+    }
+  }
+}
