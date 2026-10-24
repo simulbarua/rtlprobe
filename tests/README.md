@@ -8,10 +8,11 @@ Upstream RTL testbenches stay with their pinned source repositories under
 `vendor/`; target configurations describe how to run them. Saved experiment
 results belong in `outputs/` and are not substitutes for software tests.
 
-Run the standard-library regression tests from the repository root:
+Install the pinned dependencies in the runner environment, then run the regression
+tests from the repository root:
 
 ```sh
-python3 -m unittest discover -s tests -v
+.venv-dataset/bin/python -m unittest discover -s tests -v
 ```
 
 Launcher tests use a Docker test double to verify the mounted root, working

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RTLProbe specification requirement record",
+  "type": "object",
+  "required": ["id", "source", "section", "text", "classification", "rtl_regions", "checkpoints"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_.-]*$"},
+    "source": {"type": "string", "description": "key into sources.json"},
+    "section": {"type": "string"},
+    "text": {"type": "string", "maxLength": 1500},
+    "classification": {"enum": ["documented_requirement", "repository_claim", "inferred_from_rtl_and_checker"]},
+    "rtl_regions": {"type": "array", "items": {"type": "object", "required": ["path", "lines"], "properties": {"path": {"type": "string"}, "lines": {"type": "string"}}}},
+    "checkpoints": {"type": "array", "items": {"type": "string"}},
+    "notes": {"type": "string"}
+  },
+  "additionalProperties": false
+}

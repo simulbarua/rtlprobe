@@ -1,0 +1,90 @@
+{
+  "schema_version": "pilot-1",
+  "design_id": "secworks_chacha_core",
+  "repository_url": "https://github.com/secworks/chacha.git",
+  "revision": "7eaba360df9fed9fc2db98d5f3df81cf01e5b604",
+  "vendor": "tools/dataset/vendor/chacha",
+  "top": "chacha_core",
+  "test_top": "tb_chacha_core",
+  "test_id": "upstream_core_all",
+  "rtl": [
+    "src/rtl/chacha_core.v",
+    "src/rtl/chacha_qr.v"
+  ],
+  "testbench": "src/tb/tb_chacha_core.v",
+  "collateral": [
+    "README.md",
+    "LICENSE",
+    "chacha.core",
+    "toolruns/Makefile"
+  ],
+  "compile_flags": [
+    "-g2005"
+  ],
+  "defines": [],
+  "parameters": {},
+  "seed": null,
+  "stimulus": "unchanged existing upstream suite: fifteen known-answer comparisons across 128/256-bit keys and 8/12/20 rounds; diagnostic QR prints are not standalone tests",
+  "track": "synthesizable",
+  "limits": {
+    "compile_seconds": 60,
+    "simulation_seconds": 15,
+    "synthesis_seconds": 120,
+    "campaign_seconds": 600,
+    "cpu_seconds": 480,
+    "disk_bytes": 268435456,
+    "workers": 1,
+    "max_candidates": 1,
+    "fallback_tests": 0
+  },
+  "specification": {
+    "classification": "inferred_from_rtl_and_checker",
+    "requirement": "The configured ChaCha initialization and quarter-round arithmetic must reproduce all existing core testbench 512-bit expected outputs. SIGMA constants initialize 256-bit keys; TAU constants initialize 128-bit keys.",
+    "evidence": "src/rtl/chacha_core.v and src/tb/tb_chacha_core.v at pinned commit"
+  },
+  "control": {
+    "path": "src/rtl/chacha_qr.v",
+    "line": 96,
+    "lhs": "a0",
+    "rhs_tail": "b",
+    "statement": "a0 = a + b;",
+    "operator": {
+      "id": "unsigned32_root_add_to_sub",
+      "version": "1.0"
+    }
+  },
+  "coverage": {
+    "status": "unavailable",
+    "reason": "No per-test RTL coverage instrumentation in this initial slice; no coverage or Ochiai eligibility claimed."
+  },
+  "target_id": "chacha",
+  "case_prefix": "chacha",
+  "split_group": "secworks_crypto",
+  "checker": {
+    "path": "targets/chacha/checker.py"
+  },
+  "scope": "Pinned upstream ChaCha core first-block testbench; 64-bit IV variant, 128/256-bit keys, configured 8/12/20 rounds; wrapper and streaming/counter progression not qualified",
+  "test_metadata": {
+    "checker": "fifteen unchanged upstream fixed expected 512-bit outputs; all ordered verdicts, summary and completion required; repeated task labels disambiguated by order",
+    "checkpoints": [
+      "case01_tc1_1",
+      "case02_tc1_2",
+      "case03_tc1_3",
+      "case04_tc1_4",
+      "case05_tc1_5",
+      "case06_tc1_6",
+      "case07_tc2_1",
+      "case08_tc2_1",
+      "case09_tc3_1",
+      "case10_tc4_1",
+      "case11_tc5_1",
+      "case12_tc6_1",
+      "case13_tc7_1",
+      "case14_tc7_2",
+      "case15_tc8_1"
+    ],
+    "coverage": "unavailable",
+    "source_mapping": "semantic initialization/quarter-round/checker relation, not measured coverage"
+  },
+  "dossier_notes": "Catalog R013 (Master Catalog row 14); same Secworks crypto catalog lineage as the SHA-256 pilot. Existing complete core and quarter-round module; unchanged upstream self-checking TB, no generated HDL or external IP. BSD-2-Clause with LICENSE retained. Suite has fifteen output comparisons; displayed TC2-2 header invokes TC2-1 again, so checker IDs include invocation ordinal. Diagnostic qr_tests prints no verdict and is not an independent oracle. No per-test measured coverage, qualified source-to-netlist mapping, full protocol certification, second-block/counter-wrap coverage, or cross-lineage generalization is claimed."
+}

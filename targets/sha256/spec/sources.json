@@ -1,0 +1,14 @@
+{
+  "fips180-4": {
+    "title": "Secure Hash Standard (SHS), FIPS PUB 180-4",
+    "url": "https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf",
+    "version": "August 2015",
+    "publisher": "NIST",
+    "license": "US Government work; public domain in the United States",
+    "redistributable": true,
+    "retrieval_date": null,
+    "sha256": null,
+    "sections_of_interest": ["4.1.2 SHA-224 and SHA-256 Functions", "4.2.2 SHA-224 and SHA-256 Constants", "5.3.3 SHA-256 initial hash value", "6.2 SHA-256", "6.2.1 preprocessing", "6.2.2 hash computation"],
+    "status": "sources identified; sections not yet extracted; retrieval date and hash to be filled when extracted"
+  }
+}

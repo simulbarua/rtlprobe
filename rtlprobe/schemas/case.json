@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RTLProbe pilot case",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "case_id",
+    "state",
+    "automated_validation",
+    "design_id",
+    "proposal",
+    "fingerprint",
+    "track",
+    "original",
+    "mutants",
+    "restored",
+    "checks",
+    "structural",
+    "qualification",
+    "prediction_agreement",
+    "human_review",
+    "ground_truth",
+    "access",
+    "cost"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "pilot-1"
+    },
+    "case_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "state": {
+      "enum": [
+        "validated_pending_review",
+        "needs_review"
+      ]
+    },
+    "automated_validation": {
+      "enum": [
+        "pass",
+        "fail"
+      ]
+    },
+    "mutants": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "boolean"
+      }
+    },
+    "human_review": {
+      "type": "object",
+      "required": [
+        "status",
+        "reviewer",
+        "decision"
+      ],
+      "properties": {
+        "status": {
+          "const": "pending"
+        },
+        "reviewer": {
+          "type": "null"
+        },
+        "decision": {
+          "type": "null"
+        }
+      }
+    }
+  }
+}

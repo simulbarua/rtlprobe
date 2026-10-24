@@ -1,0 +1,26 @@
+{
+  "rfc8439": {
+    "title": "ChaCha20 and Poly1305 for IETF Protocols, RFC 8439",
+    "url": "https://www.rfc-editor.org/rfc/rfc8439",
+    "version": "June 2018",
+    "publisher": "IETF",
+    "license": "IETF Trust Legal Provisions; reproduction permitted with attribution",
+    "redistributable": true,
+    "retrieval_date": null,
+    "sha256": null,
+    "sections_of_interest": ["2.1 The ChaCha Quarter Round", "2.2 A Quarter Round on the ChaCha State", "2.3 The ChaCha20 Block Function", "2.3.1 test vector"],
+    "status": "sources identified; sections not yet extracted"
+  },
+  "secworks-chacha-readme": {
+    "title": "secworks/chacha README and core documentation at the pinned commit",
+    "url": "https://github.com/secworks/chacha",
+    "version": "commit 7eaba360df9fed9fc2db98d5f3df81cf01e5b604",
+    "publisher": "secworks",
+    "license": "BSD-2-Clause",
+    "redistributable": true,
+    "retrieval_date": null,
+    "sha256": null,
+    "classification_of_claims": "repository_claim",
+    "status": "in the pinned snapshot; sections to extract for the 8/12/20-round and 128/256-bit key configurations the bench exercises"
+  }
+}

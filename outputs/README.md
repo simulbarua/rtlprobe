@@ -1,5 +1,9 @@
 # Generated execution evidence
 
+This repository directory currently contains documentation only. The active Python
+runner uses `outputs/` under its configured external data root. The older `tooling/`
+launcher uses this repository-local directory. See [execution layout](../docs/execution-layout.md).
+
 Use unique per-target/per-run directories for captured input snapshots, effective
 configuration, commands, tool/environment identity, build artifacts, logs,
 waveforms, coverage, ASTs, synthesized netlists, timing, and artifact manifests.

@@ -1,5 +1,10 @@
 # Downloaded upstream sources
 
+This repository directory currently contains documentation only. The active Python
+runner fetches pinned sources under its explicit external data root. This directory
+remains the input location supported by the older `tooling/` launcher. See
+[execution layout](../docs/execution-layout.md).
+
 Use this directory for pinned upstream RTL repositories, their existing
 testbenches, and external verification dependencies. Preserve upstream directory
 layouts and record exact revisions, dependency identities, and license references

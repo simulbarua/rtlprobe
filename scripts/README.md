@@ -1,15 +1,17 @@
-# Setup and maintenance scripts
+# RTLProbe scripts
 
-Put helpers for environment setup, fetching pinned upstream repositories,
-dependency preparation, and maintenance here. Document prerequisites, arguments,
-working-directory rules, and output paths for each helper.
+`rtlprobe.py` is the deterministic entry point used by the separate agent repository.
+It takes explicit absolute `--data-root` and `--target-config` paths for target
+operations and exposes qualification,
+execution, and auditing. It has no prompt, response-import, or Hermes actions.
+Agent-specific preparation/import/provenance use `rtlprobe-agents/scripts/planner.py`.
+See [execution layout](../docs/execution-layout.md) for actions and data resolution.
 
-Core configuration, execution, checking, and dataset logic belongs in the
-`rtlprobe/` Python package as it is implemented. Keep credentials in local
-environment/configuration outside version control.
+`fetch-design.sh` obtains/checks pinned upstream sources using an explicit absolute
+`RTLPROBE_DATA_ROOT` environment variable and one absolute manifest-path argument.
+There is no default target or named-repository allowlist. Agents invoke this script from the main
+checkout rather than maintaining another downloader.
 
-This directory currently contains no executable helpers. The existing pipeline
-scripts remain in [`../tooling/`](../tooling/README.md); the Dockerfile is at the
-repository root. Build from the root, then invoke `./tooling/pipeline.sh` as
-documented in the tooling guide. The launcher resolves all relative paths from
-the repository root, including when called from another directory.
+Install Python dependencies from `requirements-dataset.lock.txt` in this repository's
+own environment. Native Git, patch, Icarus, Verilator, and Yosys are required for
+qualification and mutation execution. None of these scripts invokes a model API.

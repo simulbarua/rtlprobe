@@ -8,10 +8,15 @@ and simulation, checker adapters, lint and synthesis, artifact extraction, appro
 mutation operators, evidence auditing, dataset processing, localization models,
 and evaluation.
 
-This directory is currently a scaffold. Add modules and Python package metadata
-as functionality is implemented. Existing executable tooling remains under
-[`../tooling/`](../tooling/README.md).
+The target-selected runner supplies mutation operators, checker parsing,
+qualification, bounded execution, restoration, immutable evidence, curation-index
+checks, and generic proposal execution in `execution.py`. It makes no model calls.
+Agent preparation, response interpretation, Hermes metadata, and their schemas/tests
+live in the separate agents repository.
+Use [`../scripts/rtlprobe.py`](../scripts/rtlprobe.py) with explicit data and target-manifest paths.
+The older artifact tooling remains under [`../tooling/`](../tooling/README.md).
 
-Keep target-specific source lists in `targets/`, downloaded upstream code in
-`vendor/`, and generated artifacts in `outputs/`. Agent implementations, prompts,
+Keep target-specific manifests and checker adapters in `targets/`. The Python
+runner resolves downloaded sources and generated artifacts under its external data
+root; the older artifact tooling uses repo-local `vendor/` and `outputs/`. Agent implementations, prompts,
 and model-provider integrations belong in the separate agents repository.

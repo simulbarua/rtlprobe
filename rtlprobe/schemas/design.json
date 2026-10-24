@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RTLProbe pilot design",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "design_id",
+    "status",
+    "fingerprint",
+    "configuration",
+    "baseline",
+    "negative_control",
+    "structure",
+    "tests",
+    "evidence"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "pilot-1"
+    },
+    "status": {
+      "const": "qualified"
+    },
+    "fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "configuration": {
+      "type": "object"
+    },
+    "baseline": {
+      "type": "object",
+      "required": [
+        "outcome"
+      ],
+      "properties": {
+        "outcome": {
+          "const": "pass"
+        }
+      }
+    },
+    "negative_control": {
+      "type": "object",
+      "required": [
+        "outcome"
+      ],
+      "properties": {
+        "outcome": {
+          "const": "functional_fail"
+        }
+      }
+    },
+    "evidence": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

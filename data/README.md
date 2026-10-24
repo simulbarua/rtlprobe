@@ -1,7 +1,9 @@
 # Dataset records
 
-Keep curated dataset manifests, reconstructable mutation patches, causal labels,
-review and acceptance records, and train/validation/test split definitions here.
+This repository directory currently contains documentation only. The active Python
+runner stores dataset manifests, patches, labels, reviews, approvals, and state under
+the explicitly configured external data root. See [execution layout](../docs/execution-layout.md).
+This guide documents the record types and their retention requirements.
 Organize subdirectories as those record formats are implemented.
 
 Small reviewed metadata may be version controlled. Large raw/processed datasets

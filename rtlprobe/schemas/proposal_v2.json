@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RTLProbe pilot proposal",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "proposal_id",
+    "baseline_fingerprint",
+    "path",
+    "target",
+    "operator",
+    "family",
+    "source_kind",
+    "lineage_id",
+    "split_group",
+    "split",
+    "requirement",
+    "primary_test",
+    "fallback_tests",
+    "activation",
+    "prediction",
+    "confidence",
+    "limits",
+    "registry_sha256"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "pilot-2"
+    },
+    "proposal_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "baseline_fingerprint": {
+      "type": "string",
+      "minLength": 1
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target": {
+      "type": "object",
+      "required": [
+        "line",
+        "column_1based",
+        "start_byte",
+        "end_byte",
+        "before",
+        "after",
+        "lhs",
+        "rhs_tail",
+        "statement",
+        "file_sha256",
+        "mapper"
+      ],
+      "properties": {
+        "line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "start_byte": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end_byte": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "before": {
+          "type": "string",
+          "minLength": 1
+        },
+        "after": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "operator": {
+      "type": "object"
+    },
+    "fallback_tests": {
+      "type": "array",
+      "maxItems": 0
+    },
+    "prediction": {
+      "type": "object"
+    },
+    "family": {
+      "enum": [
+        "datapath_arithmetic",
+        "constant_or_boundary"
+      ]
+    }
+  }
+}

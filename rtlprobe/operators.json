@@ -1,0 +1,54 @@
+{
+  "registry_version": "pilot-2",
+  "operators": [
+    {
+      "id": "unsigned32_root_add_to_sub",
+      "version": "1.0",
+      "status": "approved",
+      "approval_scope": "implementation allowlist for this pilot; not human acceptance of any dataset case",
+      "review": "Assistant code review and executable positive/negative fixture tests; human case review remains mandatory and separately pending.",
+      "family": "datapath_arithmetic",
+      "implementation": "rtlprobe/mutation.py:apply",
+      "preconditions": [
+        "one AST-located blocking assignment on one line",
+        "unsigned 32-bit uniquely declared operands and target",
+        "RHS root Plus with identifier right operand",
+        "RHS contains only Plus and Identifier nodes",
+        "exact source hash and token span match"
+      ],
+      "edit": "Replace exactly the root addition token with subtraction, keeping width and all surrounding source unchanged.",
+      "exclusions": [
+        "signed or unknown-width operands",
+        "macros or multiline statements",
+        "compound/select RHS operands",
+        "ambiguous declarations",
+        "comment or string edits",
+        "no-op replacements"
+      ],
+      "fixture_tests": "tests/test_pilot.py"
+    },
+    {
+      "id": "literal_lsb_flip32",
+      "version": "1.0",
+      "status": "approved",
+      "approval_scope": "pilot implementation allowlist; individual cases require human review",
+      "review": "Assistant implementation review and positive/negative fixture tests; not human dataset acceptance",
+      "family": "constant_or_boundary",
+      "implementation": "rtlprobe/mutation.py:apply_constant",
+      "preconditions": [
+        "AST-located localparam or unsigned 32-bit blocking assignment",
+        "single-line literal RHS",
+        "exact source hash and span",
+        "32-bit hex or nonnegative unsized decimal below 2^31; representation preserved"
+      ],
+      "edit": "Flip numeric least-significant bit without changing declared width, base or signedness.",
+      "exclusions": [
+        "unknown or signed-sized literals",
+        "expressions or width declarations",
+        "multiline or macro-derived sites",
+        "ambiguous nodes"
+      ],
+      "fixture_tests": "tests/test_batch.py"
+    }
+  ]
+}
