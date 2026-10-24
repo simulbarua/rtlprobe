@@ -1,5 +1,7 @@
 # RTLProbe repository inventory and agent-boundary audit
 
+> Dated audit. The sibling paths it names (`github/rtlprobe`, `github/rtlprobe-agents`, `rtlprobe-data`, `workarea`) are the pre-2026-10-23 layout; this repository is now the `rtlprobe/` submodule of `rtlprobe-agents`, with data and the workarea under a local root outside both. See `docs/execution-layout.md`.
+
 Audited October 19, 2026; refreshed after target-manifest generalization and the real ChaCha trial. This lists all version-control-eligible files in the active main checkout, including pending untracked implementation files. It excludes `.git`, ignored caches, local environments/configuration, and generated data.
 
 **Conclusion:** agent preparation, model-response interpretation, Hermes provenance, prompts, skills, and their schemas/tests live in the separate `rtlprobe-agents` repository. The main repository retains reusable hardware/dataset operations, machine contracts, tests, infrastructure, and project records.

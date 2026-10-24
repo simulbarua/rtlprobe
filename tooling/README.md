@@ -1,5 +1,7 @@
 # RTLProbe Tooling Pipeline
 
+> Historical tooling workstream. Its toolchain pins differ from the native toolchain that produced every accepted case; see the root README, "Which toolchain is authoritative".
+
 Containerized environment plus automation script for compiling, simulating,
 linting, and synthesizing RTL designs with a pinned, reproducible toolchain.
 Built for the RTLProbe capstone project's dataset/tooling workstream.

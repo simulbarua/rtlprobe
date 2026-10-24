@@ -1,5 +1,9 @@
 # RTLProbe tooling pipeline environment
 #
+# Historical: these pins (Icarus 12.0, Yosys 0.33, Verilator 5.038) are not the
+# toolchain that qualified the accepted cases. See README.md, "Which toolchain
+# is authoritative", before building or relying on this image.
+#
 # Base: Ubuntu 24.04 (Noble). Chosen deliberately: Ubuntu 24.04's apt repo
 # ships Icarus Verilog 12.0-2build2, which is an EXACT match for the
 # required 12.0 — no source build needed for that tool. Verilator's pinned

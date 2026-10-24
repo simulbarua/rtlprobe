@@ -41,6 +41,17 @@ existing testbench, trusted checker adapter, and fresh qualification. The backen
 currently Icarus/Verilator/Yosys with two narrow 32-bit mutation operators; this is
 not arbitrary-repository automation or a trained localizer.
 
+### Which toolchain is authoritative
+
+Every accepted case was qualified and executed with the native Mac toolchain
+recorded in the agents repository's `environment/toolchain-versions-mac-2026-09.txt`
+(Icarus Verilog 13.0, Verilator 5.046, Yosys 0.69+post). The root `Dockerfile` and the
+`tooling/` pipeline pin a different set (Icarus 12.0, Yosys 0.33, Verilator 5.038)
+and produced none of the accepted evidence. They are the historical tooling
+workstream, kept for raw artifact collection; a new host must qualify against the
+runner's fingerprint, not against the image. Realigning or retiring the image is
+an open item in the project change log.
+
 The Dockerfile is at the repository root. Build the image from that directory:
 
 ```sh
