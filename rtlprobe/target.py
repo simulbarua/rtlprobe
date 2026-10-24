@@ -106,8 +106,11 @@ def validate_verilator(config):
                 raise ValueError('UVM requires an explicit sequence and integer seed')
             if any(s.startswith(('+UVM_TESTNAME=', '+UVM_TEST_SEQ=', '+verilator+seed+')) for s in test['run_options']):
                 raise ValueError('Run options cannot override test identity or seed')
-            if test['id'] == 'same_csr_outstanding' and (test['run_options'].count('+en_scb=0') != 1 or any(s.startswith('+en_scb=') and s != '+en_scb=0' for s in test['run_options'])):
-                raise ValueError('same_csr_outstanding must keep upstream +en_scb=0')
+            # A test that runs upstream with the scoreboard off (+en_scb=0) must keep it off:
+            # enabling it would change the recorded oracle. Applies by option, not by test id.
+            scb_opts = [s for s in test['run_options'] if s.startswith('+en_scb=')]
+            if ('+en_scb=0' in scb_opts or test.get('oracle_kind') == 'sequence_tl_compare') and scb_opts != ['+en_scb=0']:
+                raise ValueError(f"{test['id']} runs upstream with +en_scb=0 and must keep exactly that option")
     if len(ids) != len(set(ids)) or config['test_id'] not in ids:
         raise ValueError('Test selection must be unique and admitted')
     control = config['control']
