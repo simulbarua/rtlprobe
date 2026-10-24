@@ -15,7 +15,8 @@ The script works from any current directory:
 /path/to/rtlprobe/.venv-dataset/bin/python /path/to/rtlprobe/scripts/rtlprobe.py --data-root /path/to/rtlprobe-data paths
 ```
 
-Actions are `paths`, `fetch`, `check`, `qualify`, `run`, `audit`, and `audit-data`.
+Actions are `paths`, `fetch`, `check`, `qualify`, `run`, `audit`, `audit-data`,
+`accept`, `promote-auto`, and `sample-auto`.
 Target operations (`fetch`, `check`, `qualify`, `run`) require an absolute
 `--target-config /path/to/target.json` before the action. There is no implicit
 target, inherited target selection, named-target allowlist, or data-root config override.
@@ -41,6 +42,90 @@ Python dependency pins resolve from the code repository; source checkouts, mutab
 dossiers, plans, state, and outputs resolve from the selected data root. The script
 rejects a data root overlapping its code repository. The main script does not read model prompt settings; those are an agent-side concern. Direct library imports retain a repository-local
 default for compatibility; external agents should use the script interface.
+
+## Case curation
+
+Use the runner directly; the separate agents launcher's action list needs its own
+update. These actions require no target config and acquire the existing
+`workspace_lock(data_root)` for the entire read/check/write transaction:
+
+```sh
+python scripts/rtlprobe.py --data-root /absolute/rtlprobe-data accept CASE_ID --reviewer NAME --decision approve --evidence "Review rationale" --document /absolute/review.md
+python scripts/rtlprobe.py --data-root /absolute/rtlprobe-data accept CASE_ID --reviewer NAME --decision reject --evidence "Rejection rationale"
+python scripts/rtlprobe.py --data-root /absolute/rtlprobe-data promote-auto --first-n 5 --dry-run
+python scripts/rtlprobe.py --data-root /absolute/rtlprobe-data promote-auto --first-n 5
+python scripts/rtlprobe.py --data-root /absolute/rtlprobe-data sample-auto --fraction 0.10
+python scripts/rtlprobe.py --data-root /absolute/rtlprobe-data audit-data
+```
+
+The curation states are `validated_pending_review`, `accepted_core`,
+`accepted_auto`, and `rejected`. Existing terminal execution states remain
+`needs_review`, `invalid`, `unexposed`, `infrastructure_error`, `unsupported`,
+and `flaky`. Curation only starts from pending or auto-accepted cases; it does
+not change sealed evidence or recover terminal execution failures. Rejected
+cases retain their evidence for auditing and deduplication, with both acceptance
+flags zero; dataset consumers select accepted states explicitly and exclude them.
+
+`accepted_core` means a named human approved the case. `accepted_auto` means it
+passed the automated acceptance policy without that human approval. The distinction
+records what was actually reviewed: counts always show these states separately,
+and no accepted-total field combines them. `audit-data` reports state counts and,
+for each design/operator pair, `accepted_core`, `accepted_auto`, `pending`,
+`held_with_reasons` (case IDs, ranks, and reasons), and `rejected`. Pending includes
+held cases. Hold reporting uses the default first-N policy and sealed checks;
+`promote-auto --dry-run` additionally runs the saved-evidence audit for eligible
+cases. The batch runner reports `newly_accepted_core: 0` and
+`newly_accepted_auto: 0`; curation is a separate action.
+
+`accept` requires a reviewer, decision, and evidence text, with an optional review
+document whose text, path, and hash are retained in the review. Approval changes
+pending or auto cases to `accepted_core`; rejection changes either to `rejected`.
+It replaces the current review and label, records their previous hashes and the
+previous index hash, and binds the acceptance receipt to the review, sealed case,
+and case manifest. An auto receipt replaced by human review is preserved under
+`data/reviews/history/<case_id>/`, and its hash is added to the new receipt.
+Human acceptance remains an explicit human decision; this command does not infer it.
+
+`promote-auto` defaults to `--first-n 5` (nonnegative integer). Rank is one-based
+within `(design_id, proposal.operator.id)`, among pending, core, auto, and rejected
+cases, ordered by the timestamp suffix of `case_path`; path and ID break ties.
+Ranks 1 through N wait for human review. Later cases are held for non-pass automated
+validation, unconfirmed predictions, an independently checked first-checkpoint
+mismatch, any false check, a pair policy file, or a failed saved-evidence audit.
+Gate reasons use only sealed `case.json`; annotations never influence them.
+Eligible cases must pass `pilot.audit` immediately before promotion. Dry-run prints
+`PROMOTE` or `HOLD`, pair, rank, and reasons for each pending case, without changing
+file contents or creating curation/reservation records. Acquiring the controller
+lock is permitted; its existing behavior can create the lock on a fresh data root.
+
+`sample-auto` defaults to `--fraction 0.10` (finite, greater than zero, at most one).
+The seed is `identity(sorted case ids)`. It chooses one random member per pair,
+then fills to `ceil(fraction * population size)` with uniformly chosen remaining
+cases. Thus the per-pair floor may exceed the fraction for a small population.
+The same population and fraction select the same cases. Each immutable
+`data/reviews/samples/<utc-stamp>-<hash>.json` records the population, pairs,
+sample, fraction, seed, and the first-N values of the population's receipts.
+An empty population produces an empty sample. Rejecting a sampled case creates
+`data/reviews/policy/<design_id>__<operator_id>.json` with `full_review: true`,
+the rejected ID, timestamp, and sample references. While that file exists, every
+pending case of the pair is held with `pair_under_full_review`. Existing auto
+receipts stay valid; policy removal is a separate human action.
+
+New receipts use [curation-2](../rtlprobe/schemas/curation_v2.json). A standard-library
+validator enforces the schema's supported keywords before any receipt is written.
+Every receipt records `from_state`, `to_state`, reviewer/review bindings (null on
+auto receipts), the manifest hash, `validation_record` (sealed `case.json`) and
+`validation_sha256`, policy parameters (`first_n`, `fraction`, pair, rank, holds),
+previous record hashes, and UTC timestamp. Human review inherits an auto receipt's
+first-N value and, when sampled, the most recent sample fraction. New human cases
+record the defaults. Old `curation-1` approvals retain their existing verification
+checks. New auto/rejected branches check receipt and sealed-evidence bindings;
+auto verification also recomputes sealed gate holds. Pair policies govern future
+promotion rather than invalidating previously issued receipts.
+
+All curation data stays in `data/reviews/`, `data/labels/`, and `data/manifests/`.
+These are evaluator-only records, excluded from localizer inputs along with the
+original RTL, mutation patch, operator metadata, case IDs, and acceptance records.
 
 ## Data directory
 

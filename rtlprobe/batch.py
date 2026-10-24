@@ -210,7 +210,7 @@ def run(proposal_path, cap=10, validate_plan=None):
                       "recovered_this_invocation": recovered_this_invocation,
                       "duplicates_this_invocation": sum(r["disposition"] == "duplicate" for r in results),
                       "counts": dict(Counter(r["state"] for r in results)),
-                      "newly_accepted_core": 0, "budget": config["limits"],
+                      "newly_accepted_core": 0, "newly_accepted_auto": 0, "budget": config["limits"],
                       "cost": dict(zip(("command_elapsed_seconds", "child_cpu_seconds", "artifact_bytes"),
                                        campaign_usage([k for _, k, _, _ in prepared])))}
             save(directory/"report.json", report)

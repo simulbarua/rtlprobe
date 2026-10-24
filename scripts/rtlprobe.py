@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Deterministic RTLProbe command-line runner."""
 import argparse
-from collections import Counter
 import json
 import os
 from pathlib import Path
@@ -15,7 +14,8 @@ def main():
     parser.add_argument('--data-root', required=True, type=Path)
     parser.add_argument('--bundle-sha256')
     parser.add_argument('--target-config', type=Path)
-    parser.add_argument('action', choices=['paths', 'fetch', 'check', 'qualify', 'run', 'audit', 'audit-data'])
+    parser.add_argument('action', choices=['paths', 'fetch', 'check', 'qualify', 'run', 'audit', 'audit-data',
+                                         'accept', 'promote-auto', 'sample-auto'])
     parser.add_argument('arguments', nargs=argparse.REMAINDER)
     args = parser.parse_args()
     if not args.data_root.is_absolute():
@@ -33,7 +33,6 @@ def main():
     sys.path.insert(0, str(CODE_ROOT))
     from rtlprobe import pilot, execution
     from rtlprobe.evidence import workspace_lock
-    from rtlprobe.lifecycle import existing_cases
     if args.action == 'paths':
         print(json.dumps({'rtlprobe_root': str(CODE_ROOT), 'data_root': str(data_root),
                           'config': str(pilot.CONFIG) if pilot.CONFIG else None}, indent=2))
@@ -48,10 +47,34 @@ def main():
         with workspace_lock(data_root):
             pilot.qualify()
     elif args.action == 'audit-data':
-        with workspace_lock(data_root):
-            cases = existing_cases(data_root)
-            print(json.dumps({'scope': 'saved_metadata_and_manifests', 'fresh_simulations': 0,
-                              'cases': len(cases), 'counts': dict(Counter(s['state'] for s in cases.values()))}, indent=2))
+        from rtlprobe.curation import audit_data
+        if args.arguments:
+            parser.error('audit-data takes no arguments')
+        print(json.dumps(audit_data(data_root), indent=2))
+    elif args.action in {'accept', 'promote-auto', 'sample-auto'}:
+        from rtlprobe import curation
+        action = argparse.ArgumentParser(prog=f'{parser.prog} {args.action}')
+        if args.action == 'accept':
+            action.add_argument('case_id')
+            action.add_argument('--reviewer', required=True)
+            action.add_argument('--decision', required=True, choices=['approve', 'reject'])
+            action.add_argument('--evidence', required=True)
+            action.add_argument('--document', type=Path)
+            options = action.parse_args(args.arguments)
+            print(json.dumps(curation.accept(data_root, **vars(options)), indent=2))
+        elif args.action == 'promote-auto':
+            action.add_argument('--first-n', type=int, default=curation.DEFAULT_FIRST_N)
+            action.add_argument('--dry-run', action='store_true')
+            options = action.parse_args(args.arguments)
+            for result in curation.promote_auto(data_root, **vars(options)):
+                print(f"{result['action']} {result['case_id']} "
+                      f"pair=({result['pair']['design_id']}, {result['pair']['operator_id']}) "
+                      f"rank={result['rank']} reasons={json.dumps(result['reasons'])}")
+        else:
+            action.add_argument('--fraction', type=float, default=curation.DEFAULT_FRACTION)
+            options = action.parse_args(args.arguments)
+            path, sample = curation.sample_auto(data_root, **vars(options))
+            print(json.dumps({'record': str(path.relative_to(data_root)), **sample}, indent=2))
     elif args.action == 'audit':
         if len(args.arguments) != 1:
             parser.error('audit requires a case directory')

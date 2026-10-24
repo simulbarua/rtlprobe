@@ -33,6 +33,9 @@ def verify_index(root, summary):
                 or review["manifest_sha256"] != summary["case_manifest_sha256"]
                 or event["to_state"] != "accepted_core" or review["decision"] != "approve"):
             raise ValueError("Human approval receipt does not match case evidence")
+    elif summary["state"] in {"accepted_auto", "rejected"}:
+        from .curation import verify_receipt
+        verify_receipt(root, summary, record)
     elif summary["state"] != record["state"]:
         raise ValueError("Case state disagrees with published summary")
     return record
@@ -128,6 +131,6 @@ def publish(root, out, record):
                "case_path": str(out.relative_to(root)), "case_manifest_sha256": manifest_sha,
                "state": record["state"], "attempted_candidates": 1,
                "validated_pending_review": int(record["state"] == "validated_pending_review"),
-               "accepted_core": 0, "distinct_sites": 1, "cost": record["cost"]}
+               "accepted_core": 0, "accepted_auto": 0, "distinct_sites": 1, "cost": record["cost"]}
     write_once(summary_path, summary)
     return summary

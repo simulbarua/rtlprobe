@@ -36,6 +36,7 @@ manifest, with no default repository or two-repository allowlist. The main repos
 checker, and evidence handling. Agent skills, model prompts, and orchestration live
 in the separate `rtlprobe-agents` repository. Experiment data lives at an explicitly
 configured external root. See [execution layout and script interface](docs/execution-layout.md).
+Human acceptance, automatic promotion, sampling, and separate acceptance counts are documented in [case curation](docs/execution-layout.md#case-curation).
 The SHA-256 and ChaCha targets have real pilot evidence. Other targets need a compatible manifest,
 existing testbench, trusted checker adapter, and fresh qualification. The backend is
 currently Icarus/Verilator/Yosys with two narrow 32-bit mutation operators; this is
