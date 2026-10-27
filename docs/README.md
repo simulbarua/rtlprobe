@@ -44,4 +44,12 @@ Bulk evidence stays in the configured external data/evidence roots. The existing
 unchanged for provenance; its original-only observations do not establish full
 target qualification. Test fixtures remain with their owning tests.
 
-[AGENTS.md](../AGENTS.md) gives the same ownership rules to coding assistants.
+Use repository-relative links for runner files and portable example paths.
+Contributor instructions must work with this checkout alone. Check executable
+registries and manifests before stating current approval or target support;
+dated results remain historical observations, not fresh qualification.
+
+Assistant-specific working instructions are maintained in the agent repository.
+Keep them out of this shared implementation repository, including an AGENTS.md
+file or a renamed agent-instructions document. The contributor policy above
+remains the documentation ownership reference here.

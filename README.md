@@ -117,4 +117,5 @@ Start with the [documentation index](docs/README.md). This repository contains
 maintained technical guides and reproducible capstone methods/results. Agent
 session reports, work orders, audits, planning and individual case-review dossiers
 belong in the separate [rtlprobe-agents repository](https://github.com/simulbarua/rtlprobe-agents).
-[AGENTS.md](AGENTS.md) records the ownership rules for future coding work.
+The [documentation policy](docs/README.md#documentation-policy) records the
+ownership rules for contributors.
