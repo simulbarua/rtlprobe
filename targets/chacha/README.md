@@ -19,30 +19,29 @@ copied from the upstream testbench, which is not edited. The eighth vector's hea
 says TC2-2, but its task argument repeats TC2-1; unique checker IDs include invocation
 order. Upstream prints completion before the summary; both are required.
 
-The separate qualification control changes `chacha_qr.v:96` from addition to
-subtraction. Dataset case `chacha-cf9ca6a8bc3bf5b4` uses the distinct site at line 99
-and is `accepted_core` following explicit user approval on October 19, 2026.
-See the [detailed case review and acceptance receipts](../../docs/reviews/chacha-cf9ca6a8bc3bf5b4.md);
-the [trial report](../../docs/RTLProbe_ChaCha_Agent_Trial_2026-10-19.md) records setup and workflow limits.
+Qualification uses the control defined in the manifest to prove that the
+unchanged checker detects an intentional fault. Control-site validation does not
+establish correctness of every possible mutation or measured test coverage.
+Individual case labels, reviews and acceptance receipts live in the external
+data root, not this target guide.
 
-Configure the separate agent checkout using `config/chacha.example.json` as a
-template, with real absolute code/data/Python/manifest paths. From that checkout:
+From the runner root, using its Python environment and an external data directory:
 
 ```sh
-python3 -m rtlprobe_agents --config CONFIG_JSON fetch
-python3 -m rtlprobe_agents --config CONFIG_JSON qualify
-python3 -m rtlprobe_agents --config CONFIG_JSON prepare --max-candidates 1
+python scripts/rtlprobe.py --data-root /absolute/rtlprobe-data --target-config /absolute/rtlprobe/targets/chacha/config.json fetch
+python scripts/rtlprobe.py --data-root /absolute/rtlprobe-data --target-config /absolute/rtlprobe/targets/chacha/config.json qualify
+python scripts/rtlprobe.py --data-root /absolute/rtlprobe-data --target-config /absolute/rtlprobe/targets/chacha/config.json check
+python scripts/rtlprobe.py --data-root /absolute/rtlprobe-data audit-data
 ```
 
-Existing source checkouts must be clean and at the pinned commit. Import a saved
-model response through the agent's `plan` action, then invoke `run` on its frozen
-plan and `audit` on the published case. New qualification/planning on another host
-is required before new generation; saved metadata auditing alone is not replay.
-
-The current PyVerilog mapper rejects the ANSI function declaration in
-`chacha_core.v`. A first constant-site proposal was rejected before execution.
-The successful case uses the supported quarter-round file; do not bypass parsing
-or edit the original sources to make an unsupported site pass.
+Existing upstream checkouts must be clean and at the pinned revision. Fresh
+qualification is required before generation on another host; saved-evidence
+metadata auditing alone is not a replay. See [execution and data layout](../../docs/execution-layout.md)
+for submitting machine proposals, execution and curation, and
+[mutation operators](../../docs/mutation-operators.md) for the current pyslang
+mapper and its constraints. Historical Pyverilog mutation-parser limitations do
+not describe the current mapper; the experimental dependency graph still has
+its own parser restrictions.
 
 This is a different repository/algorithm from SHA-256 but belongs to the same
 Secworks crypto catalog lineage. Keep that relationship in final dataset splits.

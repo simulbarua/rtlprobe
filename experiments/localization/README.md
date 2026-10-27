@@ -6,18 +6,17 @@ deterministic ranking heuristics, and evaluates predictions afterward.
 It is separate from case admission and does not change dataset approvals.
 It is not a trained model, a general target adapter, or a deployment workflow.
 
-Read the [audit and measured results](../../docs/RTLProbe_Localization_Pilot_2026-10-19.md).
+Read the [method, recorded results and limits](../../docs/localization.md).
 
-From the RTLProbe workspace parent, using its verified Python environment:
+From this repository root, using a Python environment with the pinned dataset
+requirements and a real saved case directory:
 
 ```sh
-workarea/.venv-dataset/bin/python \
-  github/rtlprobe/experiments/localization/run_sha256.py \
-  --case rtlprobe-data/outputs/sha256/cases/sha256-ff21c95042a2062f-20261018T063551393932Z \
-  --out localization-pilot-2026-10-19/run-new
+python experiments/localization/run_sha256.py \
+  --case /absolute/rtlprobe-data/outputs/sha256/cases/CASE_DIRECTORY \
+  --out /absolute/evidence/localization/run-new
 
-workarea/.venv-dataset/bin/python -m unittest discover \
-  -s github/rtlprobe/experiments/localization -p 'test_*.py' -v
+python -m unittest discover -s experiments/localization -p 'test_*.py' -v
 ```
 
 Use a fresh output directory; an existing directory is rejected. Python needs
@@ -36,10 +35,9 @@ evidence but is not rerun or supplied to these rankers.
 Its standalone CLI accepts only an inference file and prediction destination:
 
 ```sh
-workarea/.venv-dataset/bin/python \
-  github/rtlprobe/experiments/localization/baseline.py \
-  localization-pilot-2026-10-19/run-06/inference/rtl_logs_structure_checker_trace.json \
-  /tmp/rtlprobe-localization-prediction.json
+python experiments/localization/baseline.py \
+  /absolute/evidence/localization/run-new/inference/rtl_logs_structure_checker_trace.json \
+  /absolute/predictions/rtlprobe-localization.json
 ```
 
 The CLI is a reproducible data boundary, not an OS access-control sandbox.

@@ -1,37 +1,47 @@
-# Project documentation
+# RTLProbe documentation
 
-Keep requirements, architecture, configuration contracts, dataset methodology,
-research notes, experiment reports, limitations, and recorded decisions here.
-Distinguish approved decisions, proposals, historical observations, and freshly
-verified findings. Link research claims to primary sources.
+These guides describe the shared capstone implementation and its reproducible
+experiments. Start with the [project README](../README.md).
+
+| Guide | Contents |
+|---|---|
+| [Execution and data layout](execution-layout.md) | Runner commands, configuration, curation, external data and evidence portability |
+| [Mutation operators](mutation-operators.md) | Approved edits, safety constraints, candidate extraction and read-only inspection commands |
+| [Verilator backends](verilator-backends.md) | Build requirements, manifest fields, checker contracts and qualification limits |
+| [Localization pilot](localization.md) | Experiment method, recorded baseline results, limitations and reproduction entry point |
+| [Target configuration](../targets/README.md) | Target manifests and admission gates |
+| [Specification stores](../targets/SPEC_STORE.md) | Source-backed requirements, curation and inference boundaries |
+| [Tests](../tests/README.md) | Software validation and its scope |
+| [Tooling](../tooling/README.md) | Historical raw-artifact collection tools |
 
 ## Repository catalog
 
-[Repository catalog spreadsheet](RTLProbe_Repository_Catalog.xlsx) lists candidate
-repositories and proposed pilot/split selections. Catalog status is not proof of
-testbench qualification or dataset admission. Agents should consult this catalog
-before searching for additional repositories; execution still requires an explicit
+The [repository catalog](RTLProbe_Repository_Catalog.xlsx) lists candidate
+repositories and proposed pilot/split selections. Catalog status does not establish
+testbench qualification or dataset admission; execution requires an explicit
 target manifest and fresh qualification.
 
-Imported unchanged on October 19, 2026 from the shared project-workspace
-`docs/RTLProbe_Repository_Catalog.xlsx` identified by the approved mutation plan.
-The separate historical `documents/catalogs/` copy was not used. This copy is now
-the repository's catalog; future repository edits should update it here.
+The spreadsheet was imported unchanged on October 19, 2026 from the shared
+project-workspace catalog. It is the maintained catalog for this repository;
+the separate historical document copy was not used.
 
-For human approval, start with the [detailed ChaCha case review](reviews/chacha-cf9ca6a8bc3bf5b4.md).
-The [ChaCha agent trial report](RTLProbe_ChaCha_Agent_Trial_2026-10-19.md) records
-the repository setup, workflow results, and remaining manual integration steps.
+## Documentation policy
 
-Record the relevant revision, environment, commands, evidence references, and
-scope when reporting experiments. Preserve historical results rather than
-rewriting them as claims about a new environment.
+Keep setup, architecture, machine contracts, dataset methodology and reproducible
+capstone methods/results here. Describe implemented behavior and known limits,
+and distinguish recorded results from fresh verification. Research claims need
+primary sources. Dated team/advisor notes belong in [meetings](../meetings/README.md).
 
-Existing tooling documentation remains at its original locations:
+Agent session and implementation reports, work orders, audits, planning notes and
+individual curator reviews belong in the separate
+[rtlprobe-agents repository](https://github.com/simulbarua/rtlprobe-agents), under
+`project/reports/` or the corresponding project record. They are not part of the
+runner's technical documentation or a prerequisite for using this checkout.
+The October 26 cleanup archived the former reports there with a relocation map.
 
-- [Tooling setup and usage](../tooling/README.md)
-- [Pipeline findings](../tooling/FINDINGS.md)
-- [Previously tried datasets](../tooling/DATASETS.md)
+Bulk evidence stays in the configured external data/evidence roots. The existing
+[Verilator validation archive](evidence/verilator-2026-10-24/README.md) is retained
+unchanged for provenance; its original-only observations do not establish full
+target qualification. Test fixtures remain with their owning tests.
 
-Use [`../meetings/`](../meetings/README.md) for dated team and advisor notes. Keep
-agent implementation and model-provider documentation in the separate agents
-repository.
+[AGENTS.md](../AGENTS.md) gives the same ownership rules to coding assistants.

@@ -2,10 +2,8 @@
 
 The Python target schema is enforced by `rtlprobe/target.py`. The optional
 `backend` field defaults to `icarus`; the other values are `verilator_predv` and
-`verilator_uvm`. Each backend implements `build` and `run`. The Icarus functions
-were moved without changing commands or result records; existing target JSON and
-checkers were not edited. Fingerprints intentionally change with implementation
-and backend metadata.
+`verilator_uvm`. Each backend implements `build` and `run`. Fingerprints bind
+the implementation and backend metadata as well as target inputs and tools.
 
 ## Manifest extension
 
@@ -16,46 +14,53 @@ upstream progress message with iteration/total captures). Oracle kinds are
 `scoreboard`, `sequence_tl_compare`, or `mixed_ral_read`. CRC32 uses the separate
 pre_dv oracle kind `upstream_expected_file_compare`.
 
-For example, the rv_timer `same_csr_outstanding` entry preserves:
+For example, the admitted rv_timer `rv_timer_random` entry preserves:
 
 ```json
 {
-  "id": "same_csr_outstanding",
-  "sequence": "rv_timer_common_vseq",
-  "oracle_kind": "sequence_tl_compare",
+  "id": "rv_timer_random",
+  "sequence": "rv_timer_random_vseq",
+  "oracle_kind": "scoreboard",
   "seed": 1,
   "run_options": [
     "+UVM_NO_RELNOTES", "+UVM_VERBOSITY=UVM_LOW",
     "+cdc_instrumentation_enabled=1",
-    "+run_same_csr_outstanding", "+en_scb=0"
+    "+test_timeout_ns=10000000000"
   ],
-  "completion_pattern": "Running same CSR outstanding test iteration (\\d+)/(\\d+)"
+  "completion_pattern": "Running test iteration (\\d+)/(\\d+)"
 }
 ```
 
 Full runnable examples are `targets/opentitan_{crc32,rv_timer,uart}/config.json`.
-Only explicit upstream defaults and per-test options are used. The trial's extra
+Only explicit upstream defaults and per-test options are used. The
 10-second simulation-time override is retained only where the upstream test
 already declares it (rv_timer_random and rv_timer_disabled); other tests retain
 their upstream default timeout. The independent wall-clock cap is 2,400 seconds.
 No stimulus, seed sweep, checker modification, or converted bench is introduced.
 
-## Reproduce on the Mac
+`same_csr_outstanding` is excluded from the current rv_timer admitted-test list
+because repeated original executions were not reliable. Archived observations
+of that test do not authorize its use as a detector. Preserve upstream options
+for each admitted test, including `+en_scb=0` wherever the upstream flow uses it.
 
-Use a Python environment containing the runner's requirements. Fetch through
-`scripts/fetch-design.sh` with an absolute target manifest, using a fresh,
-separate scratch data root, never the live dataset root. Source the trial's
-`work/env.sh` and select:
+## Build and reproduce
+
+Use a Python environment containing the runner requirements. Fetch the target
+using the runner's `fetch` action and an absolute manifest, with a separate
+scratch data root. Configure the installed backend tools explicitly; the paths
+below are examples to replace with actual host installations:
 
 ```sh
-export RTLPROBE_VERILATOR_PREDV=/opt/homebrew/bin/verilator
-export RTLPROBE_VERILATOR_UVM="$TRIAL/prefix/bin/verilator"
-export RTLPROBE_VERILATOR_UVM_SOURCE="$TRIAL/dl/verilator-src"
-export RTLPROBE_FUSESOC="$TRIAL/work/.venv/bin/fusesoc"
-export PATH="$TRIAL/work/.venv/bin:$PATH"
+export RTLPROBE_VERILATOR_PREDV=/absolute/predv-prefix/bin/verilator
+export RTLPROBE_VERILATOR_UVM=/absolute/uvm-prefix/bin/verilator
+export RTLPROBE_VERILATOR_UVM_SOURCE=/absolute/pinned-verilator-source
+export RTLPROBE_FUSESOC=/absolute/python-env/bin/fusesoc
+export PATH="/absolute/python-env/bin:$PATH"
 ```
 
-Here `TRIAL` is the read-only `local/trials/verilator-uvm-2026-10-24` directory.
+The UVM build's configured source revision is recorded in the target manifest;
+install the matching tools and Python build dependencies for that backend.
+These commands require no local trial directory or agent checkout.
 Run the regular CLI `qualify` action with the scratch `--data-root` and selected
 `--target-config`. Its pending-control branch executes every admitted test on a
 fresh original binary, emits `ORIGINAL_PROOF` lines, and seals
@@ -115,19 +120,17 @@ must hold register-model-read comparisons with actual zero as
 
 ## Remaining gates
 
-After the front end and operator work, execute approved controls and restored
-PASS; complete structural/mapping support and frozen specification stores before
+Execute approved controls and restored PASS for pending-control targets; complete structural/mapping support and frozen specification stores before
 case admission. The original-only path cannot satisfy those gates. Preserve the
 full archived controller and evidence when checking older fingerprints.
 
-The agents launcher needs the backend targets/actions and original-proof status,
-per-test oracle/run options, mixed-oracle hold routing, and explicit host prefixes.
-BaruaLabs requires its own native toolchain deployment and complete qualification;
-Mac proofs are not its gate-1 evidence. Use one UVM build at a time there and
-configure jobs for its four CPUs. Add the project change-log row after review.
+Each new host requires native toolchain setup and complete target qualification;
+Mac original-only proofs do not qualify a Linux host. Set backend build jobs to
+fit the destination CPU/memory budget and run one UVM build at a time on a small
+host. Curation must hold ambiguous tool-related detections; the known zero-read
+hold is a separate pending implementation, not a guarantee of this backend.
 
-
-## Resource and frozen-controller notes
+## Resource limits and saved proof validity
 
 The Verilator manifests request a 12 GiB per-process address-space ceiling.
 Runner records explicitly identify whether it is enforced: Linux RLIMIT_AS is
@@ -136,11 +139,9 @@ process-tree memory cap. Wall-clock process-group timeouts and campaign CPU/disk
 accounting are inherited from the runner. Native BaruaLabs qualification must
 validate its resource settings before production.
 
-For this session, concurrent front-end edits required a frozen controller copy
-under `outputs/verilator-proof-controller-final-20261024` and
-`outputs/verilator-proof-controller-reviewed-20261024`. Each run records that
-copy's scripts, target manifests, implementation and fingerprint alongside
-the results. See the session report for successful observations and the two
-same-CSR infrastructure failures; rv_timer has no clean aggregate proof. Subsequent source or tool changes invalidate reuse. Per-test fields
-are authoritative for Verilator seed/run selection; legacy top-level fields
-remain for compatibility with existing manifests.
+A saved proof binds its source, executable, checker, implementation and tool
+fingerprints. Historical runs may refer to a frozen controller copy recorded
+with their evidence. A later implementation or tool change requires fresh
+qualification; editing a guide does not update an old proof. Per-test fields are
+authoritative for Verilator seed/run selection; legacy top-level fields remain
+for compatibility with existing manifests.

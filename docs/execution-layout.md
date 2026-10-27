@@ -1,10 +1,10 @@
-# Execution layout and external agents
+# Execution and data layout
 
-RTLProbe owns deterministic qualification, mutation mapping, execution, restoration,
-and evidence checks. The separate `rtlprobe-agents` repository owns Hermes skills,
-model instructions, and the orchestration launcher. The main repository includes
-no agent runtime, model prompt package, request/response workflow, or Hermes-specific
-provenance schema. Agent-side workflows and tests belong to `rtlprobe-agents`.
+RTLProbe owns deterministic qualification, mutation mapping, execution,
+restoration, evidence checks and curation. Its commands and machine contracts
+are usable directly by contributors or by external clients. Optional agent
+orchestration is maintained in the separate
+[rtlprobe-agents repository](https://github.com/simulbarua/rtlprobe-agents).
 
 ## Stable script interface
 
@@ -27,10 +27,9 @@ before `run` to pin the exact manifest it validated; the main runner checks that
 hash and all bundle files inside its execution transaction. It then validates
 source coordinates, approved operators, test/configuration, and resource policy.
 
-The agent repo's own `scripts/planner.py` performs preparation, response import,
-Hermes provenance, and agent-record checks. It imports core mapping/qualification
-helpers from this explicit main checkout. It calls this main script for hardware
-execution; no hardware/checker implementation is duplicated in the agent repo.
+External clients submit the same machine proposals or sealed bundles and are
+subject to the runner's independent validation. Model request preparation and
+provider-specific configuration are outside the runner interface.
 
 `check` verifies current qualified source/configuration/tools/implementation.
 `qualify` executes the baseline and checker control. `run` invokes the existing bounded batch runner. `audit-data` verifies saved case
@@ -45,8 +44,7 @@ default for compatibility; external agents should use the script interface.
 
 ## Case curation
 
-Use the runner directly; the separate agents launcher's action list needs its own
-update. These actions require no target config and acquire the existing
+These actions require no target config and acquire the existing
 `workspace_lock(data_root)` for the entire read/check/write transaction:
 
 ```sh
@@ -133,7 +131,7 @@ original RTL, mutation patch, operator metadata, case IDs, and acceptance record
 rtlprobe-data/
 ├── tools/dataset/vendor/<selected>/   Pinned separate upstream Git checkout
 ├── designs/<target_id>/               Config/dossier/current qualification pointer
-├── data/plans/                   Frozen requests, responses, and plans
+├── data/plans/                   Frozen machine proposals and client records
 ├── data/manifests/               Current case indexes
 ├── data/reviews/                 Human decisions and acceptance receipts
 ├── data/labels/                  Curator labels
@@ -162,10 +160,11 @@ The main `scripts/fetch-design.sh /absolute/target.json` uses an absolute
 the main Python fetch command and refuses to switch dirty/different existing
 checkouts. Source retrieval alone does not qualify a target.
 
-The backend still supports one existing deterministic Icarus TB, Verilator lint,
-Yosys synthesis, empty defines/parameters, and the current narrow AST operators.
-Additional build systems, languages, seeded tests, or testbench environments need
-explicit backend support. Repository discovery is separate, unfinished work.
+Select the execution backend explicitly through the manifest when needed:
+Icarus for the existing crypto targets, or the supported Verilator pre_dv/UVM
+flows. Backend-specific build options and admission constraints are described in
+[Verilator backends](verilator-backends.md). A parsed manifest or fetched source
+is not proof of functional qualification.
 
 ## Evidence migration
 
@@ -175,42 +174,31 @@ checks the internal consistency of recorded variant/executable paths and compare
 actual files/hashes in their current location; it does not rerun commands at old
 paths. All five simulation records must reference the same recorded case root.
 
-The original `workarea` prototype and its evidence are retained as a historical
-snapshot. The separated data copy retains the fourteen existing cases and their
-human decisions. A new qualification updates only the copied current dossier and
-adds a new sealed qualification directory. Previous dossier pointers were archived
-under `history/pre-separation-dossier/` before refreshing them.
+Preserve historical qualification pointers and evidence when refreshing a target;
+create a new qualification record instead of rewriting the prior one. Metadata
+auditing and content deduplication do not establish a replay on a new host.
+Acceptance records remain separate from sealed execution evidence.
 
-Accepted cases remain historical accepted evidence after a copy. Metadata auditing
-or content deduplication does not establish a new-host replay. Preserve provider
-usage as reported/unknown and retain human acceptance as a separate transition.
+## Setup on a new host
 
-## Setup on BaruaLabs
+1. Clone the runner and copy the complete external data tree while preserving
+   the source copy until verification succeeds.
+2. Create a Python 3.12 environment and install
+   `python -m pip install -r requirements-dataset.lock.txt`. Rebuild the
+   environment on that host rather than copying a platform-specific venv.
+3. Install Git, patch, Icarus, Verilator and Yosys as required by the selected
+   backend. A tool image or matching version banner alone is not qualification.
+4. Run `audit-data` against the copied data tree, then fresh `qualify` and `check`
+   with the explicit target manifest and host-specific backend environment.
+   Pending-control targets still require their remaining qualification gates.
 
-1. Transfer/clone the main code checkout, the separate agents checkout, and the full
-   data tree. Preserve the original development copy until verification succeeds.
-2. Rebuild the main Python environment with Python 3.12 and
-   `python -m pip install -r requirements-dataset.lock.txt`. Do not copy a Mac venv.
-3. Install/check native Git, patch, Icarus, Verilator, and Yosys for the destination.
-   The historical Docker tooling image is a separate environment and is not evidence
-   that this Python runner has been qualified in that image.
-4. Configure the agents repository's absolute code/data/Python/target-manifest paths, load its skill,
-   run `audit-data`, then perform fresh `qualify` and prepare a new request.
+The [tooling scripts](../tooling/README.md) collect raw artifacts. Their process
+exit status does not replace the qualified functional checker, mutation validation
+or restoration gates.
 
-The existing `tooling/` scripts remain available for raw artifact collection. Their
-process exit status is not the semantic mutation acceptance oracle. Agents must
-use the qualified runner script for bug validation and restoration.
+## Optional submodule use
 
-
-## Consumption as a submodule (added 2026-10-23)
-
-This repository may be consumed as a Git submodule pinned at `rtlprobe/`
-inside the `rtlprobe-agents` repository. Nothing in this repository may
-assume a particular parent directory. Two locations stay outside both
-repositories on every machine: `DATA_ROOT`, the external data root the
-runner is given explicitly, and `EVIDENCE_ROOT`, the folder holding sealed
-session evidence that older documents here cite (on the development Mac,
-`~/Work/ml_projects/RTLProbe/local/rtlprobe-data` and
-`~/Work/ml_projects/RTLProbe/local/reference/evidence`). Documents that cite
-evidence use those two names rather than relative paths that climb above
-the checkout.
+This repository may be consumed as a Git submodule, but no command assumes a
+particular parent checkout. Configure the runner with an absolute `DATA_ROOT`.
+Full experiment evidence can be maintained under a separate `EVIDENCE_ROOT`;
+large execution artifacts and curator-only records stay outside source checkouts.
