@@ -116,6 +116,68 @@ class CurationTests(unittest.TestCase):
             self.assertEqual(result[0]["reasons"], ["audit_failed:"+str(failure)])
             self.assertEqual(treehashes(self.root), before)
 
+    def test_register_read_zero_and_ambiguous_mixed_oracle_are_held(self):
+        variants = [
+            ({"source": "register_model_read_compare", "actual": "0x0000"}, "ral_read_zero_signature"),
+            ({"source": "register_model_read_compare", "actual": "000"}, "ral_read_zero_signature"),
+            ({"source": "register_model_read_compare", "actual": None}, "ambiguous_register_model_read_signature"),
+            ({"source": "register_model_read_compare", "actual": "0xx"}, "ambiguous_register_model_read_signature"),
+            ({"source": "other", "actual": "0x0"}, "ambiguous_mixed_oracle_signature"),
+            ({"actual": "0x0"}, "ambiguous_mixed_oracle_signature"),
+        ]
+        for ordinal, (signature, _) in enumerate(variants):
+            self.case(f"held-{ordinal}", ordinal, mutants=[{
+                "oracle_kind": "mixed_ral_read", "signature": [dict(signature, id="cp1")]}])
+        before = treehashes(self.root)
+        result = curation.promote_auto(self.root, first_n=0)
+        self.assertEqual([r["reasons"] for r in result], [[reason] for _, reason in variants])
+        self.assertTrue(all(r["action"] == "HOLD" for r in result))
+        self.audit.assert_not_called()
+        self.assertEqual(treehashes(self.root), before)
+
+    def test_mixed_oracle_unaffected_detectors_and_nonzero_read_proceed(self):
+        variants = [("scoreboard_check", "0x0"), ("sequence_tl_compare", "0x0"),
+                    ("register_model_read_compare", "0x9")]
+        for ordinal, (source, actual) in enumerate(variants):
+            self.case(f"good-{ordinal}", ordinal, mutants=[{
+                "oracle_kind": "mixed_ral_read", "signature": [{"id": "cp1", "source": source, "actual": actual}]}])
+        result = curation.promote_auto(self.root, first_n=0)
+        self.assertTrue(all(r["action"] == "PROMOTE" for r in result))
+        self.assertEqual(self.audit.call_count, len(variants))
+
+    def test_tool_screen_checks_all_replays_and_does_not_depend_on_oracle_label(self):
+        # No later replay may bypass the hold just because the first is benign.
+        self.case("later-zero", 1, mutants=[
+            {"signature": [{"id": "cp1", "source": "scoreboard_check", "actual": "0x0"}]},
+            {"signature": [{"id": "cp1", "source": "register_model_read_compare", "actual": "0X0"}]}])
+        self.assertEqual(curation.promote_auto(self.root, first_n=0)[0]["reasons"], ["ral_read_zero_signature"])
+
+    def test_human_receipt_does_not_clear_tool_defect_study_hold(self):
+        out = self.case("human-held", 1, mutants=[{
+            "oracle_kind": "mixed_ral_read", "signature": [{"id": "cp1", "source": "register_model_read_compare", "actual": "0x0"}]}])
+        sealed = treehashes(out)
+        self.approve("human-held")
+        before = treehashes(self.root)
+        report = curation.audit_data(self.root)
+        self.assertEqual(report["counts"]["accepted_core"], 1)
+        self.assertEqual(report["study_withheld_for_tool_defect"], [{
+            "case_id": "human-held", "state": "accepted_core", "reasons": ["ral_read_zero_signature"],
+            "required_action": "corroborate_dut_fault_and_revalidate_before_study"}])
+        self.assertEqual(treehashes(self.root), before)
+        self.assertEqual(treehashes(out), sealed)
+
+    def test_auto_receipt_is_rejected_when_tool_defect_is_discovered(self):
+        out = self.case("auto", 1)
+        curation.promote_auto(self.root, first_n=0)
+        record = load(out/"case.json")
+        # Simulate a newly applicable curation screening rule against a sealed
+        # accepted bundle; the receipt and all files must remain untouched.
+        before = treehashes(self.root)
+        with patch.object(curation, "tool_defect_hold_reasons", return_value=["ral_read_zero_signature"]):
+            with self.assertRaisesRegex(ValueError, "unresolved holds"):
+                curation.verify_receipt(self.root, self.summary("auto"), record)
+        self.assertEqual(treehashes(self.root), before)
+
     def test_dry_run_reads_audit_but_changes_no_content(self):
         self.case("candidate", 1)
         before = treehashes(self.root)

@@ -41,6 +41,36 @@ def _policy_path(root, record):
     return Path(root)/"data/reviews/policy"/(design+"__"+operator+".json")
 
 
+def tool_defect_hold_reasons(record):
+    """Screen sealed replay observations without changing historical acceptance.
+
+    The register-model read-back defect can produce a zero observation even
+    when the DUT is correct. Unknown provenance in a mixed-oracle detector is
+    also unresolved; a matching planner prediction does not resolve it.
+    """
+    reasons = set()
+    admitted_sources = {"scoreboard_check", "sequence_tl_compare", "register_model_read_compare"}
+    for replay in record.get("mutants") or []:
+        signature = replay.get("signature") or []
+        mixed = replay.get("oracle_kind") == "mixed_ral_read"
+        if mixed and not signature:
+            reasons.add("ambiguous_mixed_oracle_signature")
+        for check in signature:
+            source = check.get("source")
+            if mixed and source not in admitted_sources:
+                reasons.add("ambiguous_mixed_oracle_signature")
+            if source != "register_model_read_compare":
+                continue
+            actual = check.get("actual")
+            # Checker adapters emit decimal or 0x-prefixed hexadecimal strings.
+            # X/Z values and absent/unoriented observations remain unresolved.
+            if not isinstance(actual, str) or not re.fullmatch(r"(?:0[xX][0-9a-fA-F]+|[0-9]+)", actual.strip()):
+                reasons.add("ambiguous_register_model_read_signature")
+            elif int(actual, 16 if actual.strip().lower().startswith("0x") else 10) == 0:
+                reasons.add("ral_read_zero_signature")
+    return sorted(reasons)
+
+
 def sealed_hold_reasons(record):
     """Only bundle fields: never consult annotations or mutable curation policy."""
     reasons = []
@@ -56,6 +86,7 @@ def sealed_hold_reasons(record):
         reasons.append("unexpected_first_checkpoint")
     reasons.extend("check_failed:"+name for name, value in sorted(record.get("checks", {}).items())
                    if value is False)
+    reasons.extend(tool_defect_hold_reasons(record))
     return reasons
 
 
@@ -340,6 +371,7 @@ def audit_data(root):
         entries = _inventory(root)
         counts = Counter({"accepted_core": 0, "accepted_auto": 0, "validated_pending_review": 0, "rejected": 0})
         pairs = {}
+        withheld = []
         for entry in entries:
             summary, record = entry["summary"], entry["record"]
             counts[summary["state"]] += 1
@@ -353,6 +385,11 @@ def audit_data(root):
                     p["held_with_reasons"].append({"case_id": summary["case_id"], "rank": entry["rank"], "reasons": reasons})
             elif state in {"accepted_core", "accepted_auto", "rejected"}:
                 p[state] += 1
+            tool_holds = tool_defect_hold_reasons(record)
+            if state in {"accepted_core", "accepted_auto"} and tool_holds:
+                withheld.append({"case_id": summary["case_id"], "state": state, "reasons": tool_holds,
+                                 "required_action": "corroborate_dut_fault_and_revalidate_before_study"})
         return {"scope": "saved_metadata_and_manifests", "fresh_simulations": 0, "cases": len(entries),
                 "counts": dict(sorted(counts.items())), "first_n": DEFAULT_FIRST_N,
+                "study_withheld_for_tool_defect": withheld,
                 "pairs": [pairs[p] for p in sorted(pairs)]}

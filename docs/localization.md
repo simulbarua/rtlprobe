@@ -57,6 +57,11 @@ benchmark performance.
 - Separate ranker processes and JSON allowlists are not filesystem isolation.
   Tool-using models require an enforced access boundary before evaluation.
 
+The [sanitized export guide](sanitized-exports.md) describes the condition-specific
+directory contract, immutable specification projection and fail-closed OS
+isolation preflight. Export construction does not qualify targets or authorize
+a campaign, and an incomplete artifact cannot pass agent execution preflight.
+
 See the [experiment guide](../experiments/localization/README.md) for commands,
 dependencies and output layout. Full development reports and case-specific
 review dossiers are maintained in the separate agent repository; sealed run

@@ -21,13 +21,26 @@ Target operations (`fetch`, `check`, `qualify`, `run`) require an absolute
 `--target-config /path/to/target.json` before the action. There is no implicit
 target, inherited target selection, named-target allowlist, or data-root config override.
 `audit` and `audit-data` can operate without a target manifest.
-`run` accepts a machine-proposal JSONL file or a sealed bundle directory. It has no
-model/provider-specific assumptions. A client may supply `--bundle-sha256 HASH`
-before `run` to pin the exact manifest it validated; the main runner checks that
-hash and all bundle files inside its execution transaction. It then validates
+`run` requires a sealed bundle directory with `mutations.jsonl`, its immutable
+`manifest.json`, and a separate `plan_review.json` receipt. Plain JSONL execution
+is refused. The receipt uses `schema_version: "plan-review-1"`, the manifest's
+SHA-256, a named reviewer, a timezone-qualified `reviewed_at` timestamp, and one
+`{proposal_id, decision, note}` item per proposal. Decisions are `approve`,
+`reject`, or `edit`; `edit` requires a fresh plan, and rejected proposals are
+skipped and reported as `rejected_at_review` without preflight or execution.
+Every proposal must be decided exactly once. The receipt records supplied human
+decisions; generating a report does not approve a plan or accept a resulting case.
+
+Only `PLAN_REVIEW.md` and `plan_review.json` may be added beside the frozen plan
+files without rewriting the sealed manifest. Both sidecars stay outside that
+manifest; unrecognized additions and changes to sealed inputs are refused.
+Client tooling may generate the report and record decisions, but the runner
+independently enforces the receipt inside its execution transaction. A client may
+supply `--bundle-sha256 HASH` before `run` to pin the exact manifest it validated.
+The runner checks that hash and all sealed bundle files, then validates
 source coordinates, approved operators, test/configuration, and resource policy.
 
-External clients submit the same machine proposals or sealed bundles and are
+External clients submit reviewed sealed proposal bundles and are
 subject to the runner's independent validation. Model request preparation and
 provider-specific configuration are outside the runner interface.
 
@@ -91,6 +104,15 @@ Ranks 1 through N wait for human review. Later cases are held for non-pass autom
 validation, unconfirmed predictions, an independently checked first-checkpoint
 mismatch, any false check, a pair policy file, or a failed saved-evidence audit.
 Gate reasons use only sealed `case.json`; annotations never influence them.
+The screen includes every replay's detector provenance. Zero observations from
+register-model read comparisons are held as `ral_read_zero_signature`; missing
+or X/Z observations and unresolved mixed-oracle detector sources are held as
+ambiguous. Zero values from independent scoreboard or TL comparisons do not
+trigger that specific hold. Auto-receipt verification recomputes these holds.
+The audit's `study_withheld_for_tool_defect` list also reports affected human-
+accepted cases; a human acceptance receipt does not resolve a tool-origin doubt.
+Explicit corroboration/revalidation release and downstream study-export
+enforcement remain unimplemented.
 Eligible cases must pass `pilot.audit` immediately before promotion. Dry-run prints
 `PROMOTE` or `HOLD`, pair, rank, and reasons for each pending case, without changing
 file contents or creating curation/reservation records. Acquiring the controller

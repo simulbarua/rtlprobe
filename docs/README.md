@@ -8,6 +8,8 @@ experiments. Start with the [project README](../README.md).
 | [Execution and data layout](execution-layout.md) | Runner commands, configuration, curation, external data and evidence portability |
 | [Mutation operators](mutation-operators.md) | Approved edits, safety constraints, candidate extraction and read-only inspection commands |
 | [Verilator backends](verilator-backends.md) | Build requirements, manifest fields, checker contracts and qualification limits |
+| [Buggy evidence capture](evidence-capture.md) | Additive observational capture, raw VCD retention, source/signal/time mapping and integration limits |
+| [Sanitized condition exports](sanitized-exports.md) | C0–C4/M allowlisted views, shared candidates, manifest checks and isolation limits |
 | [Localization pilot](localization.md) | Experiment method, recorded baseline results, limitations and reproduction entry point |
 | [Target configuration](../targets/README.md) | Target manifests and admission gates |
 | [Specification stores](../targets/SPEC_STORE.md) | Source-backed requirements, curation and inference boundaries |

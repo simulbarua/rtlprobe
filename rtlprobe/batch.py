@@ -158,19 +158,31 @@ def execute(proposal, config, fp, design, key, before, after, out, remaining):
     return record
 
 
-def run(proposal_path, cap=10, validate_plan=None):
+def run(proposal_path, cap=10, validate_plan=None, *, execution_guard=None):
+    # Optional caller-owned read-only readiness check. It runs inside the writer
+    # lock and must not acquire dataset/profile locks or generate approvals.
+    def permitted():
+        if execution_guard is not None and (not callable(execution_guard) or execution_guard() is not True):
+            raise ValueError('External execution readiness guard refused batch progress')
+    permitted()
     # Entire read-check-execute-publish transaction is protected against concurrent writers.
     with workspace_lock():
+        permitted()
         design, config, fp = pilot.qualified()
         proposals = [json.loads(s) for s in Path(proposal_path).read_text().splitlines() if s.strip()]
+        rejected = set()
         if validate_plan is not None:
-            validate_plan(proposals, design, config, fp)
+            rejected = validate_plan(proposals, design, config, fp) or set()
         if not 1 <= len(proposals) <= min(cap, 10):
             raise ValueError("Campaign must contain 1 to 10 proposals")
         sites = [(p["path"], p["target"]["line"]) for p in proposals]
         if len(set(sites)) != len(sites):
             raise ValueError("Campaign contains repeated source sites")
-        prepared = [(p, *preflight(p, config, fp)) for p in proposals]
+        prepared = []
+        for p in proposals:
+            permitted()
+            if p['proposal_id'] not in rejected:
+                prepared.append((p, *preflight(p, config, fp)))
         existing = existing_cases(ROOT)
         for p, key, _, _ in prepared:
             if key in existing:
@@ -187,18 +199,27 @@ def run(proposal_path, cap=10, validate_plan=None):
         invocation = directory/"invocations"/(str(time.time_ns())+".json")
         executed_this_invocation = recovered_this_invocation = 0
         results = []
-        for proposal, key, before, after in prepared:
-            if key in existing:
+        by_id = {p["proposal_id"]: (p, key, before, after) for p, key, before, after in prepared}
+        for proposal in proposals:
+            # Refusal keeps earlier per-outcome reports/attempt artifacts intact.
+            # Never start the next case after readiness has been revoked.
+            permitted()
+            if proposal["proposal_id"] in rejected:
+                results.append({"proposal_id": proposal["proposal_id"],
+                                "disposition": "rejected_at_review", "state": "rejected_at_review"})
+            elif (key := by_id[proposal["proposal_id"]][1]) in existing:
                 summary = existing[key]
                 results.append({"proposal_id": proposal["proposal_id"], "disposition": "duplicate", **summary})
                 print(f"REUSED {summary['case_id']} {summary['state']}", flush=True)
             else:
+                _, key, before, after = by_id[proposal["proposal_id"]]
                 # Charge preserved attempts, including interrupted work, against this bounded campaign.
                 elapsed, cpu, disk = campaign_usage([k for _, k, _, _ in prepared])
                 remaining = min(config["limits"]["campaign_seconds"]-elapsed,
                                 config["limits"]["campaign_seconds"]-(time.monotonic()-started))
                 if remaining <= 0 or cpu >= config["limits"]["cpu_seconds"] or disk >= config["limits"]["disk_bytes"]:
                     raise RuntimeError("Campaign resource budget exhausted; completed cases preserved")
+                permitted()
                 state, out, recovered = reserve_attempt(ROOT, key, fp["sha256"], lambda: pilot.new_output("cases", config["case_prefix"]+"-"+key[:16], config))
                 if recovered:
                     recovered_this_invocation += 1
@@ -206,6 +227,7 @@ def run(proposal_path, cap=10, validate_plan=None):
                     if record["mutation_key"] != key or record["fingerprint"] != fp["sha256"]:
                         raise ValueError("Recovered terminal case identity mismatch")
                 else:
+                    permitted()
                     executed_this_invocation += 1
                     record = execute(proposal, config, fp, design, key, before, after, out, remaining)
                 if record["state"] == "validated_pending_review":
@@ -261,7 +283,8 @@ def main():
     run_parser = subs.add_parser("run")
     run_parser.add_argument("proposals")
     args = parser.parse_args()
-    run(args.proposals)
+    from .execution import run as reviewed_run
+    reviewed_run(args.proposals)
 
 
 if __name__ == "__main__":
