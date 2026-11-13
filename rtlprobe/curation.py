@@ -288,7 +288,7 @@ def promote_auto(root, first_n=DEFAULT_FIRST_N, dry_run=False):
     return results
 
 
-def accept(root, case_id, reviewer, decision, evidence, document=None):
+def accept(root, case_id, reviewer, decision, evidence, document=None, *, expected_bindings=None):
     from .lifecycle import verify_index
     _component(case_id)
     if decision not in {"approve", "reject"} or not reviewer.strip() or not evidence.strip():
@@ -299,6 +299,9 @@ def accept(root, case_id, reviewer, decision, evidence, document=None):
         if entry is None or entry["summary"]["state"] not in {"validated_pending_review", "accepted_auto"}:
             raise ValueError("Human decisions require a pending or accepted_auto case")
         paths, previous, label, _ = _records(root, entry)
+        if expected_bindings is not None and expected_bindings != {
+                **previous, 'case_manifest_sha256': entry['summary']['case_manifest_sha256']}:
+            raise ValueError('Case or review changed since inspection; reload before deciding')
         first_n, fraction = DEFAULT_FIRST_N, DEFAULT_FRACTION
         if entry["summary"]["state"] == "accepted_auto":
             old_path = root/entry["summary"]["acceptance_record"]

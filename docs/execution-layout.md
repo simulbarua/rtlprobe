@@ -45,7 +45,7 @@ subject to the runner's independent validation. Model request preparation and
 provider-specific configuration are outside the runner interface.
 
 `check` verifies current qualified source/configuration/tools/implementation.
-`qualify` executes the baseline and checker control. `run` invokes the existing bounded batch runner. `audit-data` verifies saved case
+`qualify` executes the baseline, checker control and restored baseline. `run` invokes the existing bounded batch runner. `audit-data` verifies saved case
 manifests and acceptance receipts without fresh execution. `audit CASE_DIRECTORY`
 re-parses saved logs and verifies the actual source/executable/patch evidence.
 
@@ -224,3 +224,36 @@ This repository may be consumed as a Git submodule, but no command assumes a
 particular parent checkout. Configure the runner with an absolute `DATA_ROOT`.
 Full experiment evidence can be maintained under a separate `EVIDENCE_ROOT`;
 large execution artifacts and curator-only records stay outside source checkouts.
+
+## Guarded qualification and revocation
+
+Fresh Icarus qualification requires original PASS, the declared isolated control
+being detected, exact reverse-edit restoration with whole-source identity, and a
+separate restored compile/run PASS. The current qualification reader requires
+that restored proof; historical sealed records remain unchanged and may refuse
+as stale or insufficient. The optional `pilot.qualify(execution_guard=...)`
+callback must return literal `True` before work, each native command and final
+publication. Its fixed Git/version probes also check the callback before/after
+each query and have a 15-second timeout. Guarded full qualification supports
+Icarus only.
+
+Reviewed execution pins the original review SHA-256 throughout its batch.
+Presence of `data/reviews/revocations/plan-<manifest-sha256>.json` or
+`data/reviews/revocations/review-<review-sha256>.json` under the configured data
+root refuses progress. Malformed or dangling markers still revoke; symlinked
+revocation paths refuse. Review replacement cannot renew a running batch, and
+future-dated reviews refuse. These markers deny work; they never issue approval.
+Command outcomes are retained before a post-command guard can refuse progress.
+An active child retains its enforced timeout; no immediate cancellation is
+implied. Application launch holds and scoped permissions remain caller policy.
+
+Guard objects may additionally implement `before_command(name, argv, cwd,
+timeout)` and `after_command(record)`, returning literal `True`. Runner commands
+and qualification Git/version probes call these hooks for exact command
+allowlisting and accounting. Native outcomes are durable before the after hook.
+A guarded qualifier may supply `destination=` for a fresh explicit path under
+`DATA/outputs/TARGET/qualification/`; the default path behavior is unchanged.
+`qualified(execution_guard=...)` guards its freshness probes.
+An optional `before_publication('qualification')` hook runs before the current
+dossier is advanced, so a caller can require the complete expected sequence.
+These interfaces do not create permits or relax an application's production hold.

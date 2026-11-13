@@ -1,11 +1,23 @@
 """Execute reviewed mutation proposals, with sealed inputs and separate review receipts."""
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from . import batch
-from .evidence import filehash, load, treehashes
+from .evidence import ROOT, filehash, load, treehashes
 
 REVIEW_SIDECARS = {'PLAN_REVIEW.md', 'plan_review.json'}
+
+
+def verify_review_not_revoked(directory, root=None):
+    """Presence-based private revocation markers; never issue a review decision."""
+    directory = Path(directory)
+    base = Path(ROOT if root is None else root)/'data/reviews/revocations'
+    if any(p.is_symlink() for p in [base, *base.parents]):
+        raise ValueError('Unsafe review revocation directory')
+    for kind, path in [('plan', directory/'manifest.json'), ('review', directory/'plan_review.json')]:
+        marker = base/(kind+'-'+filehash(path)+'.json')
+        if marker.exists() or marker.is_symlink():
+            raise ValueError('Plan or reviewer approval has been revoked')
 
 
 def verify_bundle(directory):
@@ -34,6 +46,7 @@ def review_decisions(directory, proposals, expected_manifest_sha256=None):
     path = directory/'plan_review.json'
     if not path.is_file():
         raise ValueError('A recorded pre-injection plan review is required')
+    verify_review_not_revoked(directory)
     def unique(pairs):
         result = {}
         for key, value in pairs:
@@ -48,7 +61,7 @@ def review_decisions(directory, proposals, expected_manifest_sha256=None):
         raise ValueError('Invalid or stale plan review')
     try:
         when = datetime.fromisoformat(review['reviewed_at'].replace('Z', '+00:00'))
-        if when.tzinfo is None:
+        if when.tzinfo is None or when > datetime.now(timezone.utc):
             raise ValueError('timezone required')
     except (ValueError, TypeError, AttributeError):
         raise ValueError('Plan review requires a timezone-qualified reviewed_at') from None
@@ -74,6 +87,19 @@ def run(path, expected_manifest_sha256=None, *, execution_guard=None):
     bundle = Path(path).resolve()
     if not bundle.is_dir():
         raise ValueError('Execution requires a sealed bundle directory with recorded plan review')
+    if expected_manifest_sha256 is not None and filehash(bundle/'manifest.json') != expected_manifest_sha256:
+        raise ValueError('Execution bundle differs from the caller-validated manifest')
+    review = bundle/'plan_review.json'
+    if not review.is_file() or review.is_symlink():
+        raise ValueError('A recorded pre-injection plan review is required')
+    review_hash = filehash(review)
+    def guard():
+        if review.is_symlink() or not review.is_file() or filehash(review) != review_hash:
+            raise ValueError('Reviewer approval changed during execution')
+        verify_review_not_revoked(bundle)
+        if execution_guard is not None and (not callable(execution_guard) or execution_guard() is not True):
+            raise ValueError('External execution readiness guard refused batch progress')
+        return True
     proposals = bundle/'mutations.jsonl'
     def validate(actual, design, config, fingerprint):
         if expected_manifest_sha256 is not None and filehash(bundle/'manifest.json') != expected_manifest_sha256:
@@ -87,5 +113,4 @@ def run(path, expected_manifest_sha256=None, *, execution_guard=None):
                for p in actual):
             raise ValueError('condition_invert case use is blocked until the adopted candidate-universe rule (T-19) is implemented')
         return rejected
-    options = {} if execution_guard is None else {'execution_guard': execution_guard}
-    return batch.run(proposals, validate_plan=validate, **options)
+    return batch.run(proposals, validate_plan=validate, execution_guard=guard)

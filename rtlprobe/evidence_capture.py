@@ -223,7 +223,7 @@ def build_inference_evidence(*, buggy_sources, top, dut_scope, raw_vcd, checker_
     trace = trace_index(raw_vcd, graph)
     checker = checker_evidence(context=checker_context, testbench_source=testbench_source,
         plain_buggy_log=plain_buggy_log, observed_buggy_log=observed_buggy_log, timebase=timebase, trace=trace)
-    reset, window = reset_failure_window(trace, checker['anchors'])
+    reset, window = reset_failure_window(trace, checker['anchors'], dut_scope=dut_scope)
     trace.update(reset=reset, analysis_window=window,
                  passing_test_windows=[w for w in checker['test_windows'] if w['outcome'] == 'pass'])
     if window is None or checker['anchor_status'] != 'complete':
@@ -337,8 +337,8 @@ def capture_observation(*, config, buggy_root, destination, expected_hashes, exe
         path = source_root/relative
         if path.is_symlink() or not path.resolve().is_relative_to(source_root) or filehash(path) != expected_hashes[relative]:
             raise ValueError('buggy source binding mismatch or unsafe source path')
-    sources = {path: (source_root/path).read_text() for path in config['rtl']}
-    testbench = (source_root/config['testbench']).read_text()
+    sources = {path: (source_root/path).read_bytes().decode('ascii') for path in config['rtl']}
+    testbench = (source_root/config['testbench']).read_bytes().decode('ascii')
     scope = resolve_dut_scope(testbench, top=config['top'], test_top=config['test_top'])
     graph, _ = build_structure(sources, top=config['top'], dut_scope=scope)
     observer, policy = observer_source(graph)
@@ -370,6 +370,7 @@ def capture_observation(*, config, buggy_root, destination, expected_hashes, exe
         result = runner.run(name+'_run', [sys.executable, str(CODE_ROOT/'rtlprobe/evidence_limits.py'),
             '--bytes', str(file_limit), '--', 'vvp', '-N', str(binary)], run_root, config['limits']['simulation_seconds'])
         records.append(result)
+        _guard(execution_guard)
         logs.append({'stdout': (output/result['stdout']).read_text(), 'stderr': (output/result['stderr']).read_text(),
                      'returncode': result['returncode'], 'timed_out': result['timed_out']})
         if any(filehash(run_root/path) != expected_hashes[path] for path in paths):
@@ -399,6 +400,7 @@ def capture_observation(*, config, buggy_root, destination, expected_hashes, exe
         raise RuntimeError('capture companion would exceed the declared disk budget; raw work retained')
     _guard(execution_guard)
     companion = publish_companion(output/'companion', evidence, provenance=provenance)
+    _guard(execution_guard)
     if require_complete and (provenance['capture_status'] != 'complete' or policy['missingness']):
         raise RuntimeError('capture incomplete; preserved companion at ' + str(companion))
     return companion

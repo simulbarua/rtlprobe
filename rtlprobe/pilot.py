@@ -11,8 +11,9 @@ from datetime import datetime, timezone
 from jsonschema import validate
 
 from .evidence import (CODE_ROOT, ROOT, Runner, environment, filehash, identity, load, manifest,
-                       save, treehashes, verify_manifest, workspace_lock)
-from .mutation import apply, locate, locate_constant, safe_path
+                       save, treehashes, verify_manifest, workspace_lock, require_execution_guard,
+                       begin_command, end_command)
+from .mutation import apply, locate, locate_constant, revert, safe_path
 from .oracle import classify, historical_checker
 from . import target
 
@@ -27,17 +28,24 @@ def schema(value, name):
     validate(value, load(CODE_ROOT/"rtlprobe/schemas"/(name+".json")))
 
 
-def inputs(config):
+def inputs(config, *, execution_guard=None):
     vendor = ROOT/config["vendor"]
-    revision = subprocess.check_output(["git", "-C", str(vendor), "rev-parse", "HEAD"], text=True).strip()
-    dirty = subprocess.check_output(["git", "-C", str(vendor), "status", "--porcelain"], text=True)
+    def query(args, **kwargs):
+        command = ['git', '-C', str(vendor), *args]
+        name = 'source_revision' if args[0] == 'rev-parse' else 'source_status' if args[0] == 'status' else 'source_inventory'
+        begin_command(execution_guard, name, command, None, 15)
+        result = subprocess.check_output(command, timeout=15, **kwargs)
+        end_command(execution_guard, {'id': name, 'returncode': 0, 'timed_out': False, 'interrupted': False})
+        return result
+    revision = query(['rev-parse', 'HEAD'], text=True).strip()
+    dirty = query(['status', '--porcelain'], text=True)
     if revision != config["revision"] or dirty.strip():
         raise ValueError("Upstream checkout must be clean and match the pinned revision")
     paths = config["rtl"] + [config["testbench"]] + config["collateral"]
     if config.get('backend') == 'verilator_uvm':
         # FuseSoC generators need the pinned project and vendored dependencies.
         # Unrelated symlink assets are omitted; none may be a selected source.
-        tracked = subprocess.check_output(['git', '-C', str(vendor), 'ls-files', '-z']).decode().split('\0')
+        tracked = query(['ls-files', '-z']).decode().split('\0')
         paths = [p for p in tracked if p and not (vendor/p).is_symlink()]
 
     for path in paths:
@@ -47,12 +55,13 @@ def inputs(config):
     return {path: filehash(vendor/path) for path in paths}
 
 
-def fingerprint(config):
+def fingerprint(config, *, execution_guard=None):
     code = {str(p.relative_to(CODE_ROOT)): filehash(p) for p in sorted((CODE_ROOT/"rtlprobe").rglob("*"))
             if p.is_file() and p.suffix in {".py", ".json"}}
     adapter = target.checker_path(config)
     code[str(adapter.relative_to(CODE_ROOT))] = filehash(adapter)
-    record = {"config": config, "files": inputs(config), "environment": environment(),
+    options = {} if execution_guard is None else {'execution_guard': execution_guard}
+    record = {"config": config, "files": inputs(config, **options), "environment": environment(**options),
               "implementation": code, "lock_sha256": filehash(CODE_ROOT/"requirements-dataset.lock.txt")}
     from .backends.common import fingerprint as backend_fingerprint
     record['environment']['backend'] = config.get('backend', 'icarus')
@@ -61,9 +70,11 @@ def fingerprint(config):
     return {"sha256": identity(record), "inputs": record}
 
 
-def snapshot(config, destination):
+def snapshot(config, destination, *, execution_guard=None):
+    require_execution_guard(execution_guard)
     destination.mkdir(parents=True, exist_ok=False)
-    for path in inputs(config):
+    options = {} if execution_guard is None else {'execution_guard': execution_guard}
+    for path in inputs(config, **options):
         dst = destination/path
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT/config["vendor"]/path, dst)
@@ -106,17 +117,36 @@ def new_output(kind, tag, config=None):
     return path
 
 
-def qualify():
+def qualify(*, execution_guard=None, destination=None):
+    def guard():
+        if execution_guard is not None and (not callable(execution_guard) or execution_guard() is not True):
+            raise ValueError('Qualification execution readiness guard refused progress')
+    guard()
     config = target.configuration(CONFIG)
     if config.get('backend', 'icarus') != 'icarus':
+        if execution_guard is not None:
+            raise ValueError('Guarded full qualification currently supports Icarus only')
         from .backends.proof import qualify_original
         return qualify_original(config)
-    fp = fingerprint(config)
-    out = new_output("qualification", fp["sha256"][:12], config)
-    runner = Runner(out, config["limits"])
+    options = {} if execution_guard is None else {'execution_guard': execution_guard}
+    fp = fingerprint(config, **options)
+    guard()
+    if destination is None:
+        out = new_output("qualification", fp["sha256"][:12], config)
+    else:
+        out = Path(destination)
+        if (not out.is_absolute() or out.is_symlink() or '..' in out.parts
+                or any(p.is_symlink() for p in out.parents)
+                or not out.is_relative_to(ROOT/'outputs'/config['target_id']/'qualification')):
+            raise ValueError('Qualification destination must be fresh under its target qualification root')
+        out.mkdir(parents=True, exist_ok=False)
+    runner = Runner(out, config["limits"], execution_guard=execution_guard)
     save(out/"fingerprint.json", fp)
     golden = out/"original"
-    snapshot(config, golden)
+    snapshot(config, golden, **options)
+    original_hashes = treehashes(golden)
+    if original_hashes != fp['inputs']['files']:
+        raise ValueError('Qualification snapshot differs from fingerprinted inputs')
     baseline = simulate(runner, config, "original", golden, compile_design(runner, config, "original", golden))
     if baseline["outcome"] != "pass":
         raise RuntimeError(f"Original failed qualification: {out}")
@@ -138,14 +168,27 @@ def qualify():
     detected = simulate(runner, config, "control", control, compile_design(runner, config, "control", control))
     if detected["outcome"] != "functional_fail":
         raise RuntimeError(f"Checker did not detect control: {out}")
-    if fingerprint(config) != fp:
+    guard()
+    restored = out/'restored'
+    shutil.copytree(control, restored)
+    (restored/spec['path']).write_bytes(revert((restored/spec['path']).read_bytes(), site))
+    if treehashes(restored) != original_hashes or treehashes(golden) != original_hashes:
+        raise ValueError('Qualification restoration source identity failed')
+    restored_verdict = simulate(runner, config, 'restored', restored,
+        compile_design(runner, config, 'restored', restored))
+    if restored_verdict['outcome'] != 'pass' or treehashes(restored) != original_hashes:
+        raise ValueError('Qualification restored PASS/source identity failed')
+    if fingerprint(config, **options) != fp:
         raise ValueError("Qualification inputs changed during execution")
     record = {"schema_version": "pilot-1", "design_id": config["design_id"], "status": "qualified",
               "fingerprint": fp["sha256"], "evidence": str(out.relative_to(ROOT)),
               "configuration": config, "baseline": baseline, "negative_control": detected,
+              "restored": restored_verdict, "restoration": {"source_hashes": original_hashes,
+                  "source_identity": True, "method": "exact reverse edit and whole-source identity"},
               "structure": structural, "scope": config["scope"],
               "tests": [{**config["test_metadata"], "id": config["test_id"]}]}
     schema(record, "design")
+    guard()
     save(out/"design.json", record)
     # Preserve the exact implementation behind this qualification fingerprint.
     for relative, expected in fp["inputs"]["implementation"].items():
@@ -154,28 +197,40 @@ def qualify():
         destination = out/"controller"/relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(CODE_ROOT/relative, destination)
+    (out/'controller').mkdir(exist_ok=True)
     shutil.copyfile(CODE_ROOT/"requirements-dataset.lock.txt", out/"controller/requirements-dataset.lock.txt")
     manifest(out)
+    guard()
+    if execution_guard is not None and hasattr(execution_guard, 'before_publication'):
+        if execution_guard.before_publication('qualification') is not True:
+            raise ValueError('Scoped qualification publication refused')
     DESIGN.mkdir(parents=True, exist_ok=True)
     save(DESIGN/"design.json", record)
     write_dossier(record, runner.records)
     print(f"QUALIFIED {out}")
 
 
-def qualified():
+def qualified(*, execution_guard=None):
     target.configuration(CONFIG)  # Fail clearly when no target has been selected.
     if target.configuration(CONFIG).get('control', {}).get('pending'):
         raise ValueError('Original-only proof is not qualification: control and restored PASS remain pending')
     design = load(DESIGN/"design.json")
     schema(design, "design")
     config = target.configuration(CONFIG)
-    fp = fingerprint(config)
+    options = {} if execution_guard is None else {'execution_guard': execution_guard}
+    fp = fingerprint(config, **options)
     if design["fingerprint"] != fp["sha256"] or design["status"] != "qualified":
         raise ValueError("Stale/unqualified dossier: run qualify with current inputs")
     out = ROOT/design["evidence"]
     verify_manifest(out)
     if load(out/"design.json") != design:
         raise ValueError("Dossier does not match sealed qualification evidence")
+    if config.get('backend', 'icarus') == 'icarus' and (
+            design.get('restored', {}).get('outcome') != 'pass'
+            or design.get('restoration', {}).get('source_identity') is not True
+            or design.get('restoration', {}).get('source_hashes') != fp['inputs']['files']
+            or treehashes(out/'restored') != fp['inputs']['files']):
+        raise ValueError('Current qualification requires restored identity and PASS proof')
     return design, config, fp
 
 

@@ -55,9 +55,10 @@ declared disk budget). Unsupported enforcement fails before capture. This is a
 per-file limit; aggregate disk usage is checked before commands and projected
 before companion publication, and is not a hard filesystem quota.
 
-A separate observer dumps the whole static DUT hierarchy for the whole run. Each
-supported static unpacked memory word is explicitly dumped; no memory, signal or
-window is selected using an injection site. The raw VCD is preserved verbatim.
+A separate observer explicitly dumps every mapped nonconstant DUT declaration
+for the whole run, including unused registers that a recursive module dump may
+omit. Each supported static unpacked memory word is explicitly dumped; no memory,
+signal or window is selected using an injection site. The raw VCD is preserved verbatim.
 Waveforms containing declarations outside the declared DUT scope are refused.
 Missing words/signals and unsupported dimensions remain explicit rather than
 being replaced with zeros. Budgets cap source/VCD size and companion publication;
@@ -96,8 +97,10 @@ with the unchanged checker's failure signature. Missing or inconsistent anchors
 fail closed. No nanosecond unit is inferred when upstream leaves it unspecified;
 settled VCD values cannot establish delta-cycle causality.
 
-The trace records the observed active-low crypto reset and the window through the
-first failing checker checkpoint, plus each passing checkpoint's task window.
+The trace records the observed active-low `reset_n` at the exact declared DUT
+interface and the window through the first failing checker checkpoint, plus each
+passing checkpoint's task window. Child-module reset aliases do not make that
+interface ambiguous and cannot substitute for a missing interface observation.
 The complete raw run remains in the companion; public condition exports must
 apply their declared windows. Later failing segments are not silently added to a
 first-failure condition. Missing reset, timebase, signal or anchor evidence is
@@ -105,6 +108,10 @@ reported as partial. Constant/function-source candidates retain mappings or
 explicit missingness; an absent runtime value is not a zero-valued observation.
 
 ## Integration and validation limits
+
+The [dataset artifact contract](dataset-artifacts.md) specifies versioned storage
+coordinates, complete raw-work retention, private/public boundaries and the
+distinction between format verification and actual execution provenance.
 
 The common candidate universe is supplied by `rtlprobe.candidates`, with stable
 source-bound identities. `evidence_structure.build_structure` provides graph and
@@ -116,6 +123,35 @@ Automatic per-new-case invocation is not part of `batch.run` yet. A launcher mus
 bind a validated buggy case, enforce the current dependency/approval hold, call
 capture and sanitized export, and verify target completeness before a case is
 study-ready. Existing accepted cases receive separate companions only; their
-sealed archives are not rewritten. Fixture tests mock all native execution.
+sealed archives are not rewritten. Most fixture tests mock native execution; a
+small Icarus observer fixture, when those tools are available, checks unused
+register retention, unknown values and child-reset alias handling. This fixture
+does not qualify a dataset target.
 Fresh target capture/signature/timebase validation and export-isolation tests are
 required separately before claiming operational readiness or releasing a hold.
+
+## Retained execution proof
+
+After guarded capture and parity verification, the trusted launcher calls
+`capture_execution.seal_capture_execution(directory, config=..., expected_hashes=...)`.
+It returns the absolute `capture-execution.json` path and its SHA-256 for external
+binding. Retain the complete capture directory; the private sidecar is separate
+from the unchanged `evidence-companion-1` manifest. Sources are read as ASCII
+bytes without newline translation.
+
+`verify_capture_execution` executes no tools. It checks the external proof hash,
+all retained files, current runner/checker/interpreter/HDL tool hashes, exact
+inputs and configuration, four ordered compile/run command histories, raw log
+hashes, bounded resource outcomes, regenerated observer/testbench bytes, compiled
+timebase, complete trace and unchanged checker parity. Start/process/run records
+must agree; missing, changed, extra or symlinked files refuse. An offline import
+can pass companion format validation while failing this operational check.
+
+The optional `Runner` execution guard must return literal `True`. It runs before
+each child launch and after the durable outcome is saved. Capture also checks
+the caller guard before publication. Revocation denies the next command or
+publication; a child already running remains bounded by its existing wall
+timeout. This does not claim immediate stop termination. The low-level runner
+does not choose the application's authorization policy. Local records and PIDs
+are integrity evidence within a trusted caller, not cryptographic attestation
+that a remote physical machine executed commands.

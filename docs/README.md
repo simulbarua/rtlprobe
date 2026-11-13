@@ -6,6 +6,7 @@ experiments. Start with the [project README](../README.md).
 | Guide | Contents |
 |---|---|
 | [Execution and data layout](execution-layout.md) | Runner commands, configuration, curation, external data and evidence portability |
+| [Dataset artifact contract](dataset-artifacts.md) | Versioned collection coordinates, required retention, completeness, provenance and private/public boundaries |
 | [Mutation operators](mutation-operators.md) | Approved edits, safety constraints, candidate extraction and read-only inspection commands |
 | [Verilator backends](verilator-backends.md) | Build requirements, manifest fields, checker contracts and qualification limits |
 | [Buggy evidence capture](evidence-capture.md) | Additive observational capture, raw VCD retention, source/signal/time mapping and integration limits |

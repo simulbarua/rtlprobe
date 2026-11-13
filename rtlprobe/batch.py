@@ -65,8 +65,8 @@ def review_text(record):
     return "\n".join(lines)+"\n"
 
 
-def execute(proposal, config, fp, design, key, before, after, out, remaining):
-    runner = Runner(out, {**config["limits"], "campaign_seconds": remaining})
+def execute(proposal, config, fp, design, key, before, after, out, remaining, *, execution_guard=None):
+    runner = Runner(out, {**config["limits"], "campaign_seconds": remaining}, execution_guard=execution_guard)
     save(out/"proposal.json", proposal)
     save(out/"fingerprint.json", fp)
     path = proposal["path"]
@@ -229,7 +229,8 @@ def run(proposal_path, cap=10, validate_plan=None, *, execution_guard=None):
                 else:
                     permitted()
                     executed_this_invocation += 1
-                    record = execute(proposal, config, fp, design, key, before, after, out, remaining)
+                    options = {} if execution_guard is None else {'execution_guard': execution_guard}
+                    record = execute(proposal, config, fp, design, key, before, after, out, remaining, **options)
                 if record["state"] == "validated_pending_review":
                     pilot.audit(out)  # Re-parse actual logs and verify hashes before publication.
                 summary = publish(ROOT, out, record)

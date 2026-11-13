@@ -183,12 +183,14 @@ def align_observations(observations, *, verdict, timebase, trace, target_id):
     return anchors
 
 
-def reset_failure_window(trace, anchors):
-    resets = [s for s in trace['signals'] if s['normalized_reference'].endswith('.reset_n')]
+def reset_failure_window(trace, anchors, *, dut_scope):
+    # Select the public DUT interface, independently of child aliases and labels.
+    # A matching child waveform cannot substitute for a missing interface signal.
+    resets = [s for s in trace['signals'] if s['normalized_reference'] == dut_scope + '.reset_n']
     failures = [a for a in anchors if a['outcome'] == 'functional_fail']
     window = None
     reset = {'status': 'unavailable', 'signal': None, 'asserted_tick': None, 'released_tick': None,
-             'reason': 'no unique observed active-low crypto reset and subsequent failing anchor'}
+             'reason': 'no unique observed DUT-interface active-low crypto reset and subsequent failing anchor'}
     if len(resets) == 1:
         signal = resets[0]
         asserted = next((at for at, value in signal['events'] if value == '0'), None)

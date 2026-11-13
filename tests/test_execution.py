@@ -1,5 +1,6 @@
 """Review and manifest gates execute inside the mutation transaction."""
 import json
+from datetime import datetime,timedelta,timezone
 from pathlib import Path
 import tempfile
 import unittest
@@ -16,6 +17,30 @@ def receipt(bundle, decisions):
 
 
 class ExecutionTests(unittest.TestCase):
+    def test_review_hash_revocation_and_changed_reviewer_stop_running_guard(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp).resolve();bundle=root/'bundle';bundle.mkdir()
+            (bundle/'mutations.jsonl').write_text('{"proposal_id":"p1"}\n');manifest(bundle);receipt(bundle,{'p1':'approve'})
+            def run(path,validate_plan,execution_guard):
+                self.assertEqual(validate_plan([{'proposal_id':'p1'}],{},{},{}),set())
+                self.assertIs(execution_guard(),True)
+                marker=root/'data/reviews/revocations'/('review-'+filehash(bundle/'plan_review.json')+'.json')
+                marker.parent.mkdir(parents=True);marker.symlink_to(root/'missing')
+                with self.assertRaisesRegex(ValueError,'revoked'):execution_guard()
+                marker.unlink()
+                value=json.loads((bundle/'plan_review.json').read_text());value['reviewer']='different fixture reviewer'
+                save(bundle/'plan_review.json',value)
+                with self.assertRaisesRegex(ValueError,'changed'):execution_guard()
+            with patch.object(execution,'ROOT',root),patch.object(execution.batch,'run',side_effect=run):
+                execution.run(bundle)
+
+    def test_future_dated_review_cannot_authorize_execution(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            bundle=Path(tmp);(bundle/'mutations.jsonl').write_text('{"proposal_id":"p1"}\n');manifest(bundle);receipt(bundle,{'p1':'approve'})
+            path=bundle/'plan_review.json';value=json.loads(path.read_text())
+            value['reviewed_at']=(datetime.now(timezone.utc)+timedelta(days=1)).isoformat();save(path,value)
+            with self.assertRaises(ValueError):execution.review_decisions(bundle,[{'proposal_id':'p1'}])
+
     def test_live_guard_revocation_preserves_first_report_and_prevents_second_attempt(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);bundle=root/'plan';bundle.mkdir()
@@ -27,7 +52,8 @@ class ExecutionTests(unittest.TestCase):
             receipt(bundle,{'p1':'approve','p2':'approve'})
             config={'target_id':'toy','limits':items[0]['limits'],'test_id':'test','case_prefix':'toy'}
             enabled=[True];attempts=[]
-            def execute(proposal,*args):
+            def execute(proposal,*args,**kwargs):
+                self.assertIs(kwargs['execution_guard'](),True)
                 attempts.append(proposal['proposal_id']);enabled[0]=False
                 return {'state':'unexposed','case_id':'case-first'}
             def publish(*args):return {'case_id':'case-first','state':'unexposed'}
@@ -59,7 +85,8 @@ class ExecutionTests(unittest.TestCase):
             bundle=Path(tmp);(bundle/'mutations.jsonl').write_text('{"proposal_id": "p1"}\n');manifest(bundle)
             receipt(bundle, {'p1':'approve'})
             accepted=[]
-            def run(path,validate_plan):
+            def run(path,validate_plan,**kwargs):
+                self.assertIs(kwargs['execution_guard'](),True)
                 items=[json.loads(s) for s in Path(path).read_text().splitlines()]
                 self.assertEqual(validate_plan(items,{}, {}, {}),set());accepted.append(items);return {'permitted':True}
             with patch.object(execution.batch,'run',side_effect=run):
@@ -70,7 +97,7 @@ class ExecutionTests(unittest.TestCase):
     def test_bundle_hash_pins_the_client_validated_input(self):
         with tempfile.TemporaryDirectory() as tmp:
             bundle=Path(tmp);(bundle/'mutations.jsonl').write_text('{}\n');manifest(bundle)
-            def run(path,validate_plan):
+            def run(path,validate_plan,**kwargs):
                 validate_plan([{}],{}, {}, {})
             with patch.object(execution.batch,'run',side_effect=run):
                 with self.assertRaisesRegex(ValueError,'caller-validated'):
@@ -126,7 +153,7 @@ class ExecutionTests(unittest.TestCase):
             bundle=Path(tmp);p={'proposal_id':'p1','operator':{'id':'condition_invert'}}
             (bundle/'mutations.jsonl').write_text(json.dumps(p)+'\n');manifest(bundle)
             receipt(bundle,{'p1':'approve'})
-            def run(path,validate_plan):
+            def run(path,validate_plan,**kwargs):
                 validate_plan([p],{}, {}, {})
             with patch.object(execution.batch,'run',side_effect=run):
                 with self.assertRaisesRegex(ValueError,'T-19'):execution.run(bundle)

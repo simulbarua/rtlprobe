@@ -354,13 +354,19 @@ def observer_source(graph, *, max_memory_words=MAX_MEMORY_WORDS):
     scope = graph['context']['dut_scope']
     if not SCOPE.fullmatch(scope):
         raise ValueError('unsafe DUT scope')
-    lines = ['module rtlprobe_observer;', 'integer comparison_ordinal = 0;', 'initial begin', '  $dumpfile("buggy.vcd");', f'  $dumpvars(0, {scope});']
-    missing, count = [], 0
+    lines = ['module rtlprobe_observer;', 'integer comparison_ordinal = 0;', 'initial begin', '  $dumpfile("buggy.vcd");']
+    missing, count, scalars = [], 0, 0
     for node in graph['nodes']:
         if not SCOPE.fullmatch(node['signal']):
             raise ValueError('observer requires safe static hierarchical identifiers')
         ranges = node['unpacked_ranges']
-        if not ranges or node['kind'] == 'constant':
+        if node['kind'] == 'constant':
+            continue
+        if not ranges:
+            # A recursive module dump can omit an unused declaration during
+            # elaboration. Explicit references retain its actual four-state value.
+            lines.append(f"  $dumpvars(0, {node['signal']});")
+            scalars += 1
             continue
         reason = memory_capture_reason(ranges, max_memory_words-count)
         if reason:
@@ -372,5 +378,5 @@ def observer_source(graph, *, max_memory_words=MAX_MEMORY_WORDS):
             lines.append(f"  $dumpvars(0, {node['signal']}[{index}]);")
         count += words
     lines.extend(['end', 'endmodule', ''])
-    return '\n'.join(lines), {'policy': 'entire DUT, full run, all supported static memory words; no label/site selection',
-                             'explicit_memory_words': count, 'missingness': missing}
+    return '\n'.join(lines), {'policy': 'all statically mapped DUT signals and supported memory words, full run; no label/site selection',
+                             'explicit_signals': scalars, 'explicit_memory_words': count, 'missingness': missing}

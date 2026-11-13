@@ -1,16 +1,18 @@
-"""Synthetic source/VCD/log and mocked Runner tests; never executes HDL tools."""
+"""Synthetic/mocked capture tests and one optional native Icarus software fixture."""
 import copy
 import json
 from pathlib import Path
+import shutil
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
 
 from rtlprobe.evidence import CODE_ROOT, filehash
 from rtlprobe.evidence_capture import (build_inference_evidence, validate_inference_evidence,
-    publish_companion, load_inference_evidence, capture_observation, source_hashes)
+    publish_companion, load_inference_evidence, capture_observation, source_hashes, trace_index)
 from rtlprobe.evidence_structure import build_structure, observer_source
-from rtlprobe.evidence_observer import instrument_testbench, compiled_timebase
+from rtlprobe.evidence_observer import instrument_testbench, compiled_timebase, reset_failure_window
 
 PASS = """-- Testbench for sha256 core started --
 *** TC 1 single block test case started.
@@ -91,6 +93,65 @@ def fixture(**changes):
 
 
 class EvidenceCaptureTests(unittest.TestCase):
+    def test_reset_uses_exact_dut_interface_even_with_child_aliases(self):
+        signals = [dict(normalized_reference='tb.dut.reset_n', events=[[0,'0'],[1,'1']]),
+                   dict(normalized_reference='tb.dut.child.reset_n', events=[[0,'1'],[9,'0']])]
+        anchors = [dict(outcome='functional_fail', tick=2)]
+        reset, window = reset_failure_window({'signals':signals}, anchors, dut_scope='tb.dut')
+        self.assertEqual((reset['signal'], reset['released_tick']), ('tb.dut.reset_n',1))
+        self.assertEqual((window['start_tick'],window['end_tick']), (0,2))
+        for unavailable in (signals[1:], signals+signals[:1]):
+            reset, window = reset_failure_window({'signals':unavailable}, anchors, dut_scope='tb.dut')
+            self.assertEqual(reset['status'],'unavailable')
+            self.assertIsNone(window)
+
+    @unittest.skipUnless(shutil.which('iverilog') and shutil.which('vvp'), 'Icarus observer fixture')
+    def test_native_observer_retains_unused_unknowns_and_reset_aliases(self):
+        source = '''module child(input wire reset_n, output wire y);
+assign y=reset_n;
+endmodule
+module m(input wire reset_n, output wire y);
+reg [5:0] unused;
+child u(.reset_n(reset_n),.y(y));
+endmodule
+'''
+        tb = '''module tb;
+reg reset_n=0; wire y;
+m dut(.reset_n(reset_n),.y(y));
+initial begin #1 reset_n=1; #1 $display("RESULT=%b",y); #1 $finish; end
+endmodule
+'''
+        graph,_ = build_structure({'rtl.v':source},top='m',dut_scope='tb.dut')
+        observer,policy = observer_source(graph)
+        self.assertIn('$dumpvars(0, tb.dut.unused);',observer)
+        self.assertNotIn('$dumpvars(0, tb.dut);',observer)
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            for name,text in [('rtl.v',source),('tb.v',tb),('observer.v',observer)]:
+                (root/name).write_text(text)
+            def run(argv):
+                result=subprocess.run(argv,cwd=root,capture_output=True,text=True,timeout=15)
+                self.assertEqual(result.returncode,0,result.stderr)
+                return result.stdout
+            run(['iverilog','-s','tb','-o','plain.vvp','rtl.v','tb.v'])
+            plain=run(['vvp','-N','plain.vvp'])
+            run(['iverilog','-s','tb','-s','rtlprobe_observer','-o','observed.vvp','rtl.v','tb.v','observer.v'])
+            observed=run(['vvp','-N','observed.vvp'])
+            self.assertEqual([l for l in observed.splitlines()
+                              if l != 'VCD info: dumpfile buggy.vcd opened for output.'],
+                             plain.splitlines())
+            self.assertIn('RESULT=1',plain)
+            trace=trace_index((root/'buggy.vcd').read_text(),graph)
+            self.assertEqual(trace['missing_signals'],[])
+            unused=next(s for s in trace['signals'] if s['normalized_reference']=='tb.dut.unused')
+            self.assertTrue(unused['events'])
+            self.assertTrue(all(set(value)=={'x'} for _,value in unused['events']))
+            reset,window=reset_failure_window(trace,[dict(outcome='functional_fail',tick=2)],dut_scope='tb.dut')
+            self.assertEqual((reset['asserted_tick'],reset['released_tick']),(0,1))
+            self.assertEqual(window['end_tick'],2)
+            self.assertEqual((root/'rtl.v').read_text(),source)
+            self.assertEqual((root/'tb.v').read_text(),tb)
+
     def test_full_raw_retention_time_binding_and_signature_parity(self):
         payload=fixture()
         self.assertIs(validate_inference_evidence(payload),payload)

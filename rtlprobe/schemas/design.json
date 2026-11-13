@@ -50,6 +50,20 @@
         }
       }
     },
+    "restored": {
+      "type": "object",
+      "required": ["outcome"],
+      "properties": {"outcome": {"const": "pass"}}
+    },
+    "restoration": {
+      "type": "object",
+      "required": ["source_hashes", "source_identity", "method"],
+      "properties": {
+        "source_hashes": {"type": "object"},
+        "source_identity": {"const": true},
+        "method": {"const": "exact reverse edit and whole-source identity"}
+      }
+    },
     "evidence": {
       "type": "string",
       "minLength": 1

@@ -95,6 +95,24 @@ def _sources(value):
     return {path: sha(text.encode()) for path, text in sorted(value.items())}
 
 
+def _public_log_text(text, testbenches):
+    """Relativize only Icarus finish diagnostics at a bound TB finish statement."""
+    result = []
+    for line in text.splitlines(keepends=True):
+        match = re.fullmatch(r'(.+):([1-9][0-9]*): (\$finish called at [0-9]+ \([^\r\n()]+\))(\r?\n)?', line)
+        if match and match[1].startswith('/') and '..' not in PurePosixPath(match[1]).parts:
+            for path, source in testbenches.items():
+                relative_path(path)
+                lines = source.splitlines()
+                number = int(match[2])
+                if (match[1].endswith('/'+path) and number <= len(lines)
+                        and re.search(r'\$finish\s*(?:\(|;)', lines[number-1])):
+                    line = f'{path}:{match[2]}: {match[3]}' + (match[4] or '')
+                    break
+        result.append(line)
+    return ''.join(result)
+
+
 def _common(common, sources, snapshot):
     """Project common evidence; a complete target manifest is never copied."""
     if not isinstance(common, dict) or set(common) != {'configuration', 'sources', 'logs', 'hierarchy'}:
@@ -143,6 +161,8 @@ def _common(common, sources, snapshot):
             raise ValueError('Log lacks a declared buggy-run provenance or verdict')
     if not any(log['outcome'] == 'functional_fail' for log in logs):
         missing.append('failing_run_log')
+    testbenches = {path: row['content'] for path,row in files.items() if 'testbench' in row['roles']}
+    logs = [{**log, 'text': _public_log_text(log['text'], testbenches)} for log in logs]
     hierarchy = common['hierarchy']
     if not isinstance(hierarchy, list):
         raise ValueError('Hierarchy must be a source-only instance list')
@@ -224,6 +244,8 @@ def public_checker(checker):
     """
     value = {'schema_version': PUBLIC_CHECKER_SCHEMA,
              **{key: checker[key] for key in sorted(PUBLIC_CHECKER_FIELDS)}}
+    value['plain_buggy_log'] = {**checker['plain_buggy_log'],
+        'stdout': _public_log_text(checker['plain_buggy_log']['stdout'], checker['testbench_source'])}
     return validate_public_checker(value)
 
 
@@ -264,38 +286,60 @@ def _vcd_window(raw_vcd, start, end):
     """Keep raw within-window record order and seed state immediately before it.
 
     This bounded adapter supports the one-record-per-line Icarus dumps produced
-    by the capture observer. Other layouts/directives fail explicitly. The full
+    by the capture observer, including comments and dumpvars/dumpall blocks.
+    Other layouts/directives fail explicitly. The full
     untouched dump remains in the curator companion.
     """
     from vcdvcd import VCDVCD
     marker = re.search(r'\$enddefinitions\s+\$end', raw_vcd)
     if marker is None or type(start) is not int or type(end) is not int or start < 0 or end < start:
         raise ValueError('Unsupported raw waveform/window')
-    parsed = VCDVCD(vcd_string=raw_vcd)
-    if start < parsed.begintime or end > parsed.endtime:
-        raise ValueError('Waveform window exceeds the captured buggy run')
     header, body = raw_vcd[:marker.end()], raw_vcd[marker.end():]
     seeded, selected, current = [], [], 0
-    for code, signal in sorted(parsed.data.items()):
-        previous = [bits for tick, bits in signal.tv if tick < start]
-        if previous:
-            seeded.append(previous[-1]+code if int(signal.size) == 1 else 'b'+previous[-1]+' '+code)
+    comment, dump = False, None
     for line in body.splitlines():
         line = line.strip()
         if not line:
             continue
+        if comment or re.match(r'\$comment(?:\s|$)', line):
+            end_comment = re.search(r'\$end(?:\s|$)', line)
+            if end_comment and line[end_comment.end():].strip():
+                raise ValueError('Unsupported trailing record after raw VCD comment')
+            comment = end_comment is None
+            continue
+        if line in {'$dumpvars', '$dumpall'}:
+            if dump is not None:
+                raise ValueError('Nested raw VCD dump directive')
+            dump = line
+            continue
+        if line == '$end':
+            if dump is None:
+                raise ValueError('Unmatched raw VCD end directive')
+            dump = None
+            continue
         tick = re.fullmatch(r'#([0-9]+)', line)
         if tick:
+            if dump is not None:
+                raise ValueError('Timestamp inside raw VCD dump block')
             current = int(tick[1])
             if start <= current <= end:
                 selected.append(line)
-            continue
-        if line in {'$dumpvars', '$end'}:
             continue
         if not (re.fullmatch(r'[01xXzZ][!-~]+', line) or re.fullmatch(r'[bB][01xXzZ]+\s+[!-~]+', line)):
             raise ValueError('Unsupported raw VCD value record/directive in window projection')
         if start <= current <= end:
             selected.append(line)
+    if comment or dump is not None:
+        raise ValueError('Unterminated raw VCD comment/dump block')
+    # Validate directive framing first: the third-party reader can wait forever
+    # for an $end on a truncated comment, even for an in-memory string.
+    parsed = VCDVCD(vcd_string=raw_vcd)
+    if start < parsed.begintime or end > parsed.endtime:
+        raise ValueError('Waveform window exceeds the captured buggy run')
+    for code, signal in sorted(parsed.data.items()):
+        previous = [bits for tick, bits in signal.tv if tick < start]
+        if previous:
+            seeded.append(previous[-1]+code if int(signal.size) == 1 else 'b'+previous[-1]+' '+code)
     return header+'\n#'+str(start)+'\n$dumpvars\n'+'\n'.join(seeded)+'\n$end\n'+'\n'.join(selected)+'\n#'+str(end)+'\n'
 
 
@@ -363,7 +407,8 @@ def export_evidence(destination, *, evidence, condition, neutral_id, common_cont
     for log in common['logs']:
         if (log['test_id'] != evidence['checker']['context']['test_id']
                 or log['outcome'] != evidence['checker']['verdict']['outcome']
-                or log['text'] != evidence['checker']['plain_buggy_log']['stdout']):
+                or log['text'] != _public_log_text(evidence['checker']['plain_buggy_log']['stdout'],
+                                                 evidence['checker']['testbench_source'])):
             raise ValueError('Common log does not match an audited buggy-run checker observation')
     if evidence['checker'].get('status') != 'complete':
         missing.append('complete_checker_evidence_and_observational_parity')

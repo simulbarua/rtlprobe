@@ -150,6 +150,40 @@ class SanitizedExportTests(unittest.TestCase):
         self.assertEqual([row['history']['capture_end_tick'] for row in aligned['windows']], [10, 30])
         self.assertNotIn('#40', raw_files['raw/pass-001.vcd'].decode())
 
+    def test_icarus_parameter_comment_and_empty_dumpall_preserve_window(self):
+        decorated = VCD.replace('#0', '$comment Show the parameter values. $end\n$dumpall\n$end\n#0', 1)
+        self.assertEqual(export._vcd_window(decorated, 0, 10), export._vcd_window(VCD, 0, 10))
+
+    def test_finish_path_normalization_is_bound_and_keeps_private_log_immutable(self):
+        source='module tb;\ninitial $finish;\nendmodule\n'
+        text='checker verdict unchanged\n/home/private/case/work/src/tb.v:2: $finish called at 42 (1s)\n'
+        normalized=export._public_log_text(text,{'src/tb.v':source})
+        self.assertEqual(normalized,'checker verdict unchanged\nsrc/tb.v:2: $finish called at 42 (1s)\n')
+        self.assertIn('/home/private/',text)
+        for changed in (text.replace('tb.v:2','other.v:2'),text.replace('tb.v:2','tb.v:1'),
+                        text.replace('$finish called','$display called')):
+            self.assertEqual(export._public_log_text(changed,{'src/tb.v':source}),changed)
+            with self.assertRaises(ValueError):export.leakage_check(changed)
+
+    def test_dumpall_values_and_multiline_comments_preserve_order_and_seed(self):
+        from vcdvcd import VCDVCD
+        raw = VCD.replace('#10\n1!', '#10\n$comment metadata\n#999\nignored text\n$end\n$dumpall\n1!')
+        raw = raw.rstrip()+'\n$end\n#20\n0!\n'
+        window = export._vcd_window(raw, 5, 15)
+        self.assertEqual(VCDVCD(vcd_string=window)['tb.dut.a'].tv, [(5,'0'),(10,'1')])
+        self.assertIn('#10\n1!\n1"\n1#',window)
+        self.assertNotIn('ignored text',window)
+        self.assertNotIn('#999',window)
+        self.assertNotIn('#20',window)
+
+    def test_malformed_and_unknown_waveform_directives_refuse(self):
+        for body in ('$unsupported\n', '$end\n', '$dumpall\n$dumpvars\n$end\n$end\n',
+                     '$dumpall\n#0\n$end\n', '$comment unterminated\n',
+                     '$comment text $end trailing\n', '$dumpall\n'):
+            with self.subTest(body=body), self.assertRaises(ValueError), patch(
+                    'vcdvcd.VCDVCD', side_effect=AssertionError('Malformed framing reached third-party reader')):
+                export._vcd_window(VCD+body,0,10)
+
     def test_checked_windows_export_identical_raw_information_to_c2_c4_and_m(self):
         from rtlprobe.evidence_observer import compiled_timebase
         source = ('module dut(input wire reset_n, input wire [255:0] digest_in, output wire [255:0] digest);\n'

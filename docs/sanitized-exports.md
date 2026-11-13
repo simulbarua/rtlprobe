@@ -1,5 +1,9 @@
 # Sanitized localization exports
 
+The [dataset artifact contract](dataset-artifacts.md) defines the required
+collection layers, exact source coordinates, all six views and private linkage.
+Export readiness alone does not attest actual native capture or study admission.
+
 `rtlprobe.sanitized_export` creates one write-once, read-only evidence directory
 per condition from an audited buggy-evidence companion bundle. It does not run
 simulations or a localizer, accept defects, supply a study protocol decision, or
@@ -71,6 +75,12 @@ task windows and observational-verification metadata remain in the private
 companion. They are not copied into C0/C3 or the raw-control condition through
 nested checker fields. The verifier enforces the public schema and rederives its
 verdict using the installed admitted checker; exported Python source is data.
+Icarus `$finish` diagnostics expose only the relative testbench path when their
+absolute source suffix and line identify a finish statement in the bound
+testbench. The line number, simulation time and diagnostic text are preserved.
+The same deterministic projection applies to common and checker logs; the
+private captured log remains byte-identical. Other host paths still refuse
+export, and the unchanged checker verdict is rederived from the public log.
 Older exports containing the full private checker object must be regenerated;
 their existing sealed files are never rewritten in place.
 
@@ -91,7 +101,11 @@ before each window; later failing task windows are withheld. The full unmodified
 capture remains in the curator companion. A window requires checked anchors,
 timebase and reset evidence; a missing window is not replaced with the full run.
 The bounded raw adapter supports the capture observer's Icarus record layout;
-unsupported layouts or directives fail explicitly.
+Comments and `$dumpvars`/`$dumpall` blocks emitted by Icarus are supported.
+Comments and block delimiters carry no value changes; dump-block value records
+retain their original order and window selection. Nested/unclosed blocks,
+unmatched terminators, timestamps inside dump blocks, trailing comment records
+and other directives refuse projection. Unsupported layouts fail explicitly.
 
 There is no signal, graph-edge or text truncation within these declared views.
 Raw window bytes are identical across C2, C4 and M for the same capture. The

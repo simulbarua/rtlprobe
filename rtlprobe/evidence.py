@@ -95,15 +95,38 @@ def verify_manifest(path):
         raise ValueError("Artifact manifest mismatch (missing, changed, or additional files)")
 
 
-def environment():
+def require_execution_guard(execution_guard):
+    if execution_guard is not None and (not callable(execution_guard) or execution_guard() is not True):
+        raise ValueError('External execution readiness guard refused command progress')
+
+
+def begin_command(guard, name, command, cwd, timeout):
+    require_execution_guard(guard)
+    if guard is not None and hasattr(guard, 'before_command'):
+        if guard.before_command(name, [str(x) for x in command], str(Path(cwd or Path.cwd())), timeout) is not True:
+            raise ValueError('Scoped command authorization refused')
+
+
+def end_command(guard, record):
+    if guard is not None and hasattr(guard, 'after_command'):
+        if guard.after_command(record) is not True:
+            raise ValueError('Scoped command accounting refused')
+    require_execution_guard(guard)
+
+
+def environment(*, execution_guard=None):
     commands = {"iverilog": ["-V"], "vvp": ["-V"], "yosys": ["-V"],
                 "verilator": ["--version"], "git": ["--version"], "patch": ["--version"]}
     tools = {}
     for name, args in commands.items():
+        require_execution_guard(execution_guard)
         exe = shutil.which(name)
         if not exe:
             raise RuntimeError(f"Missing required tool: {name}")
+        begin_command(execution_guard, 'version_'+name, [exe, *args], None, 15)
         result = subprocess.run([exe, *args], capture_output=True, text=True, timeout=15)
+        end_command(execution_guard, {'id': 'version_'+name, 'returncode': result.returncode,
+                                      'timed_out': False, 'interrupted': False})
         output = result.stdout + result.stderr
         tools[name] = {"executable": str(Path(exe).resolve()), "sha256": filehash(exe),
                        "version": output.strip(), "version_exit_code": result.returncode}
@@ -115,7 +138,9 @@ def environment():
 
 
 class Runner:
-    def __init__(self, out, limits):
+    def __init__(self, out, limits, *, execution_guard=None):
+        self.execution_guard = execution_guard
+        self.guard()
         self.out = Path(out)
         self.out.mkdir(parents=True, exist_ok=True)
         self.limits = limits
@@ -123,7 +148,11 @@ class Runner:
         self.cpu_start = resource.getrusage(resource.RUSAGE_CHILDREN)
         self.records = []
 
+    def guard(self):
+        require_execution_guard(self.execution_guard)
+
     def run(self, name, command, cwd, timeout, *, env_extra=None):
+        self.guard()
         elapsed = time.monotonic() - self.started
         cpu = resource.getrusage(resource.RUSAGE_CHILDREN)
         used_cpu = cpu.ru_utime + cpu.ru_stime - self.cpu_start.ru_utime - self.cpu_start.ru_stime
@@ -152,6 +181,7 @@ class Runner:
         def limit_memory():
             resource.setrlimit(resource.RLIMIT_AS, (memory, memory))
         with (directory/"stdout.log").open("wb") as stdout, (directory/"stderr.log").open("wb") as stderr:
+            begin_command(self.execution_guard, name, command, cwd, limit)
             proc = subprocess.Popen(command, cwd=cwd, stdout=stdout, stderr=stderr,
                                     env=env, start_new_session=True,
                                     preexec_fn=limit_memory if memory and memory_supported else None)
@@ -185,8 +215,10 @@ class Runner:
         save(directory/"run.json", record)
         self.records.append(record)
         save(self.out/"commands.json", self.records)
+        end_command(self.execution_guard, record)
         if interrupted:
             raise KeyboardInterrupt("Command interrupted; logs and process outcome preserved")
+        self.guard()
         return record
 
     def require(self, name, command, cwd, timeout, *, env_extra=None):

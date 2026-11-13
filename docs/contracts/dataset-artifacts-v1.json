@@ -1,0 +1,125 @@
+{
+  "contract_id": "rtlprobe-dataset-artifacts-1",
+  "version": 1,
+  "purpose": "Collection artifact and retention contract; not an execution, acceptance or study-admission receipt",
+  "scope": {
+    "targets": [
+      "sha256",
+      "chacha"
+    ],
+    "backend": "icarus",
+    "additional_targets": "Require independent adapter and artifact verification"
+  },
+  "coordinates": {
+    "paths": "Canonical relative POSIX paths within the pinned upstream source snapshot",
+    "source_identity": "SHA256 of exact source bytes; no whitespace or newline normalization",
+    "lines_and_columns": "One-based",
+    "byte_spans": "Zero-based half-open [start_byte, end_byte)",
+    "candidate_unit": "One row per path/module/anchor line, with all constituent site_spans retained",
+    "ast_identity": "Source-hash-bound path and per-file index; parent_index is per file",
+    "scoring": "Not selected by this contract; retain line and constituent-span representations"
+  },
+  "companion": {
+    "schema_version": "evidence-companion-1",
+    "snapshot_kind": "buggy",
+    "files": [
+      "ast.json",
+      "buggy.vcd",
+      "inference.json",
+      "observer-policy.json",
+      "observer.v",
+      "provenance.json"
+    ],
+    "manifest": "manifest.json",
+    "payload_keys": [
+      "alignment",
+      "buggy_sources",
+      "candidates",
+      "checker",
+      "graph",
+      "source_hashes",
+      "trace"
+    ],
+    "validators": [
+      "rtlprobe.evidence_capture.load_inference_evidence",
+      "rtlprobe.evidence_capture.validate_inference_evidence"
+    ],
+    "provenance_limit": "Manifest integrity and payload rederivation do not attest real native execution"
+  },
+  "subartifact_versions": {
+    "candidates": "candidate-inventory-1",
+    "candidate_rule": "source-syntax-line-v2",
+    "graph": "buggy-dependencies-1",
+    "alignment": "buggy-alignment-1",
+    "trace": "buggy-trace-1",
+    "checker": "buggy-checker-1",
+    "observed_testbench_policy": "checker-observer-1",
+    "executed_capture_provenance": "capture-provenance-1",
+    "offline_import_provenance": "offline-import-1",
+    "public_checker": "public-buggy-checker-1",
+    "export": "sanitized-localization-export-1",
+    "private_execution_proof": "capture-execution-1"
+  },
+  "required_conditions": [
+    "C0",
+    "C1",
+    "C2",
+    "C3",
+    "C4",
+    "M"
+  ],
+  "common_export_files": [
+    "candidates.json",
+    "checker.json",
+    "common.json"
+  ],
+  "condition_modalities": {
+    "C0": [],
+    "C1": [
+      "structure"
+    ],
+    "C2": [
+      "waveform"
+    ],
+    "C3": [
+      "specification"
+    ],
+    "C4": [
+      "structure",
+      "waveform",
+      "specification"
+    ],
+    "M": [
+      "raw_structure",
+      "raw_waveform",
+      "specification"
+    ]
+  },
+  "private_retention": [
+    "Sealed validation sources, compile/run stdout/stderr, verdicts, command records and original/restored proofs",
+    "Case index, fingerprint, manifest, human reviews and acceptance/proposal/label lineage",
+    "Unchanged existing testbench/checker/collateral and exact source/config/tool/implementation references",
+    "Complete capture work directory, both raw buggy logs, original and observed testbench, compiled timebase input and command records",
+    "Immutable companion including full raw VCD, all supported memory words, AST, graph, candidates, reset/checkpoint/time mappings and provenance",
+    "All six exports and private linkage to the exact case, companion and frozen specification store",
+    "All-outcome batch/collection/review/feedback ledgers and explicit missingness/completeness reports"
+  ],
+  "missingness": {
+    "unsupported": "Explicit reason/status, never inferred zero or successful support",
+    "coverage": "Unavailable for current crypto manifests; no measured RTL coverage or Ochiai claim",
+    "memory": "One static unpacked dimension; up to 4096 explicit words by current observer default; unsupported shapes/ranges stay partial",
+    "time": "Integer VCD ticks plus recorded resolution and compiled testbench exponents; no inferred nanoseconds or delta-cycle causality"
+  },
+  "admission": {
+    "independent_states": [
+      "validated",
+      "accepted",
+      "artifact_complete",
+      "collection_eligible",
+      "study_eligible"
+    ],
+    "artifact_complete_requires": "All required artifacts and links, exact-byte source identity, complete mappings/parity/windows, genuine retained execution provenance, six strict same-case exports, fixed specs and leakage checks",
+    "partial_artifacts": "May be retained with explicit missingness; cannot satisfy full-contract artifact completeness",
+    "runtime_enforcement": "Individual validators remain authoritative; the catalog is not runtime policy. Agent collection/readiness now require an externally hash-bound capture-execution-1 proof, retained raw work, bounded command history and rederived complete capture alongside six same-case exports. A trusted guarded caller is required; local files do not cryptographically attest physical execution. Complete recovery and live authorization remain separate gates."
+  }
+}

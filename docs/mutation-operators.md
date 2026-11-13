@@ -19,6 +19,13 @@ All five currently have `approved` registry status. Operator approval is separat
 from target qualification, candidate-rule adoption and case acceptance. Consult
 the registry for the complete per-operator preconditions and exclusions.
 
+The generic proposal-to-runner interface can derive and preflight all five
+operators. A caller may deliberately admit a smaller subset; do not infer an
+agent transport's allowlist from this registry. Reviewed execution currently
+refuses non-rejected `condition_invert` proposals pending its candidate-rule
+adoption/integration gate. A positive in-memory edit/preflight test is not a
+live target validation, case acceptance or permission to remove that restriction.
+
 Mutation location and application use pinned `pyslang==12.0.0` for Verilog and
 SystemVerilog. Historical mapper identifiers remain provenance only; recorded
 source identities and freshly derived spans must still agree. Pyverilog remains
