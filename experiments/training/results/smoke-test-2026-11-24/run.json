@@ -1,0 +1,6868 @@
+{
+ "result_label": "in_sample_smoke_test",
+ "package": "rtlprobe-baseline-starter-2026-11-22",
+ "package_check": {
+  "status": "passed",
+  "cases": 20,
+  "views": 120,
+  "candidate_rows_per_condition": 7180
+ },
+ "split": {
+  "mode": "dev-smoke",
+  "result_label": "in_sample_smoke_test",
+  "train": [
+   "sample-0618f8e1e5187b85",
+   "sample-1122a5b028122e96",
+   "sample-325c228358b61f79",
+   "sample-396cf71a13e7940d",
+   "sample-62b5acf29915babe",
+   "sample-63fbe6cab121aca9",
+   "sample-74db84b7d7b44563",
+   "sample-7a67dd842d2c0d77",
+   "sample-80f48792aa5dcee1",
+   "sample-8b616ac581289943",
+   "sample-9c3583c45dfe4cd6",
+   "sample-a2878ac348deabe0",
+   "sample-aa46b7836d116ee1",
+   "sample-aae55aa66d8f981b",
+   "sample-d072562bc9370100",
+   "sample-d7d834622d0d7bff",
+   "sample-db8b10d10e51f9af",
+   "sample-de199f7e3651ad72",
+   "sample-e3483996a4a6b374",
+   "sample-ee027cf7b83c592c"
+  ],
+  "validation": [],
+  "test": [
+   "sample-0618f8e1e5187b85",
+   "sample-1122a5b028122e96",
+   "sample-325c228358b61f79",
+   "sample-396cf71a13e7940d",
+   "sample-62b5acf29915babe",
+   "sample-63fbe6cab121aca9",
+   "sample-74db84b7d7b44563",
+   "sample-7a67dd842d2c0d77",
+   "sample-80f48792aa5dcee1",
+   "sample-8b616ac581289943",
+   "sample-9c3583c45dfe4cd6",
+   "sample-a2878ac348deabe0",
+   "sample-aa46b7836d116ee1",
+   "sample-aae55aa66d8f981b",
+   "sample-d072562bc9370100",
+   "sample-d7d834622d0d7bff",
+   "sample-db8b10d10e51f9af",
+   "sample-de199f7e3651ad72",
+   "sample-e3483996a4a6b374",
+   "sample-ee027cf7b83c592c"
+  ]
+ },
+ "feature_version": "rtlprobe-baseline-features-v2",
+ "encoder": {
+  "model": "microsoft/unixcoder-base",
+  "revision": "5604afdc964f6c53782a6813140ade5216b99006",
+  "pooling": "mean_last_hidden",
+  "max_len": 256
+ },
+ "model_config_sha256": "ad4a21c9c963b8ecd7c93ab79e21d837d87474326b3b0ce4faccd02006faf689",
+ "lgbm_params": {
+  "objective": "lambdarank",
+  "n_estimators": 200,
+  "learning_rate": 0.05,
+  "num_leaves": 15,
+  "min_child_samples": 20,
+  "subsample": 0.8,
+  "subsample_freq": 1,
+  "colsample_bytree": 0.8,
+  "deterministic": true,
+  "force_row_wise": true,
+  "verbose": -1
+ },
+ "logreg_params": {
+  "C": 1.0,
+  "solver": "lbfgs",
+  "max_iter": 5000
+ },
+ "mlp_params": {
+  "hidden": [
+   32,
+   16
+  ],
+  "dropout": 0.1,
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "epochs": 300
+ },
+ "models": [
+  "logreg",
+  "lgbm",
+  "mlp"
+ ],
+ "seeds": [
+  0,
+  1,
+  2
+ ],
+ "python": "3.12.10",
+ "platform": "Windows-11-10.0.26200-SP0",
+ "conditions": {
+  "C0": {
+   "features": [
+    "log_overlap",
+    "anchor_resolved",
+    "anchor_mention",
+    "anchor_src_distance",
+    "emb_log_sim",
+    "universe_size"
+   ],
+   "columns": [
+    "log_overlap",
+    "anchor_resolved",
+    "anchor_mention",
+    "anchor_src_distance",
+    "emb_log_sim",
+    "universe_size",
+    "missing:anchor_src_distance",
+    "kind:AssignmentExpression",
+    "kind:ConditionalStatement",
+    "kind:Declarator",
+    "kind:NonblockingAssignmentExpression"
+   ],
+   "features_sha256": "3b93dfdc51ebaf3fc689b26ee8ee6ff2ab6e776d40b8f3ec2db341477258124f",
+   "anchors": [
+    "digest"
+   ],
+   "rows": {
+    "train": 7180,
+    "test": 7180
+   },
+   "partitions": {
+    "test": {
+     "models": {
+      "logreg": {
+       "per_seed": [
+        {
+         "seed": 0,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.05,
+         "top10": 0.1,
+         "mrr": 0.04188673184166272,
+         "median_rank": 39.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 23.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 76.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 205.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 125.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 12.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 76.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 74.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 93.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 13.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 38.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 10.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 19.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 24.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 40.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 34.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 125.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 17.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 43.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 5.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 184.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 1,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.05,
+         "top10": 0.1,
+         "mrr": 0.04188673184166272,
+         "median_rank": 39.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 23.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 76.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 205.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 125.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 12.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 76.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 74.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 93.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 13.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 38.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 10.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 19.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 24.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 40.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 34.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 125.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 17.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 43.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 5.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 184.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 2,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.05,
+         "top10": 0.1,
+         "mrr": 0.04188673184166272,
+         "median_rank": 39.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 23.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 76.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 205.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 125.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 12.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 76.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 74.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 93.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 13.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 38.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 10.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 19.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 24.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 40.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 34.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 125.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 17.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 43.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 5.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 184.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        }
+       ],
+       "mean": {
+        "defects": 20.0,
+        "top1": 0.0,
+        "top5": 0.05000000000000001,
+        "top10": 0.10000000000000002,
+        "mrr": 0.04188673184166272,
+        "median_rank": 39.0,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       },
+       "sd": {
+        "defects": 0.0,
+        "top1": 0.0,
+        "top5": 6.938893903907228e-18,
+        "top10": 1.3877787807814457e-17,
+        "mrr": 0.0,
+        "median_rank": 0.0,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       }
+      },
+      "lgbm": {
+       "per_seed": [
+        {
+         "seed": 0,
+         "defects": 20,
+         "top1": 0.85,
+         "top5": 0.95,
+         "top10": 1.0,
+         "mrr": 0.8983766233766233,
+         "median_rank": 1.0,
+         "cases_with_ties_at_bug": 2,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 5.5,
+           "ties_with_bug": 1,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 3.5,
+           "ties_with_bug": 1,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 1,
+         "defects": 20,
+         "top1": 0.85,
+         "top5": 0.95,
+         "top10": 1.0,
+         "mrr": 0.8983766233766233,
+         "median_rank": 1.0,
+         "cases_with_ties_at_bug": 2,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 5.5,
+           "ties_with_bug": 1,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 3.5,
+           "ties_with_bug": 1,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 2,
+         "defects": 20,
+         "top1": 0.85,
+         "top5": 0.95,
+         "top10": 1.0,
+         "mrr": 0.8983766233766233,
+         "median_rank": 1.0,
+         "cases_with_ties_at_bug": 2,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 5.5,
+           "ties_with_bug": 1,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 3.5,
+           "ties_with_bug": 1,
+           "n": 359
+          }
+         ]
+        }
+       ],
+       "mean": {
+        "defects": 20.0,
+        "top1": 0.85,
+        "top5": 0.9499999999999998,
+        "top10": 1.0,
+        "mrr": 0.8983766233766234,
+        "median_rank": 1.0,
+        "cases_with_ties_at_bug": 2.0,
+        "missed_true_site": 0.0
+       },
+       "sd": {
+        "defects": 0.0,
+        "top1": 0.0,
+        "top5": 1.1102230246251565e-16,
+        "top10": 0.0,
+        "mrr": 1.1102230246251565e-16,
+        "median_rank": 0.0,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       }
+      },
+      "mlp": {
+       "per_seed": [
+        {
+         "seed": 0,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.2,
+         "top10": 0.3,
+         "mrr": 0.1166406234225005,
+         "median_rank": 20.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 7.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 31.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 128.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 63.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 11.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 25.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 31.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 37.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 3.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 22.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 5.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 8.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 17.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 29.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 71.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 18.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 15.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 96.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 1,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.1,
+         "top10": 0.25,
+         "mrr": 0.08260063420790205,
+         "median_rank": 21.5,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 10.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 42.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 137.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 73.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 15.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 31.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 36.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 66.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 8.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 23.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 20.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 4.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 8.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 19.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 29.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 77.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 11.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 14.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 106.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 2,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.05,
+         "top10": 0.25,
+         "mrr": 0.07345100118291172,
+         "median_rank": 21.5,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 12.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 37.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 131.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 58.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 16.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 28.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 34.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 40.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 7.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 23.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 14.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 6.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 13.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 20.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 29.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 59.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 3.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 8.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 9.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 112.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        }
+       ],
+       "mean": {
+        "defects": 20.0,
+        "top1": 0.0,
+        "top5": 0.11666666666666668,
+        "top10": 0.26666666666666666,
+        "mrr": 0.09089741960443809,
+        "median_rank": 21.0,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       },
+       "sd": {
+        "defects": 0.0,
+        "top1": 0.0,
+        "top5": 0.062360956446232366,
+        "top10": 0.02357022603955158,
+        "mrr": 0.018582489127073835,
+        "median_rank": 0.7071067811865476,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       }
+      }
+     },
+     "references": {
+      "random": {
+       "defects": 20,
+       "top1": 0.002785515320334262,
+       "top5": 0.01392757660167131,
+       "top10": 0.02785515320334262,
+       "mrr": 0.01799980547203115,
+       "median_rank": 180.0,
+       "cases_with_ties_at_bug": 0,
+       "missed_true_site": 0
+      },
+      "source_order": {
+       "defects": 20,
+       "top1": 0.0,
+       "top5": 0.0,
+       "top10": 0.0,
+       "mrr": 0.018763185203815046,
+       "median_rank": 123.5,
+       "cases_with_ties_at_bug": 0,
+       "missed_true_site": 0
+      },
+      "lexical_log_overlap": {
+       "defects": 20,
+       "top1": 0.0,
+       "top5": 0.0,
+       "top10": 0.0,
+       "mrr": 0.009774513749785213,
+       "median_rank": 139.0,
+       "cases_with_ties_at_bug": 19,
+       "missed_true_site": 0
+      }
+     }
+    }
+   }
+  },
+  "C1": {
+   "features": [
+    "log_overlap",
+    "anchor_resolved",
+    "anchor_mention",
+    "anchor_src_distance",
+    "emb_log_sim",
+    "universe_size",
+    "graph_mapped",
+    "graph_back_dist",
+    "graph_reachable",
+    "graph_register_depth",
+    "graph_is_register",
+    "graph_fanin",
+    "graph_fanout",
+    "module_dist"
+   ],
+   "columns": [
+    "log_overlap",
+    "anchor_resolved",
+    "anchor_mention",
+    "anchor_src_distance",
+    "emb_log_sim",
+    "universe_size",
+    "graph_mapped",
+    "graph_back_dist",
+    "graph_reachable",
+    "graph_register_depth",
+    "graph_is_register",
+    "graph_fanin",
+    "graph_fanout",
+    "module_dist",
+    "missing:anchor_src_distance",
+    "missing:graph_back_dist",
+    "missing:graph_register_depth",
+    "kind:AssignmentExpression",
+    "kind:ConditionalStatement",
+    "kind:Declarator",
+    "kind:NonblockingAssignmentExpression"
+   ],
+   "features_sha256": "e374af9a75f062460dbfbdb7da70d24f37d52c6556cb75255f516f36b70f6d32",
+   "anchors": [
+    "digest"
+   ],
+   "rows": {
+    "train": 7180,
+    "test": 7180
+   },
+   "partitions": {
+    "test": {
+     "models": {
+      "logreg": {
+       "per_seed": [
+        {
+         "seed": 0,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.0,
+         "top10": 0.05,
+         "mrr": 0.03821400420586833,
+         "median_rank": 41.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 11.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 56.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 136.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 157.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 13.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 56.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 53.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 71.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 16.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 40.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 19.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 42.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 43.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 24.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 37.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 80.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 8.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 22.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 15.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 117.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 1,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.0,
+         "top10": 0.05,
+         "mrr": 0.03821400420586833,
+         "median_rank": 41.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 11.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 56.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 136.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 157.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 13.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 56.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 53.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 71.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 16.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 40.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 19.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 42.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 43.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 24.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 37.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 80.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 8.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 22.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 15.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 117.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 2,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.0,
+         "top10": 0.05,
+         "mrr": 0.03821400420586833,
+         "median_rank": 41.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 11.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 56.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 136.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 157.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 13.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 56.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 53.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 71.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 16.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 40.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 19.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 42.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 43.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 24.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 37.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 80.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 8.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 22.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 15.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 117.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        }
+       ],
+       "mean": {
+        "defects": 20.0,
+        "top1": 0.0,
+        "top5": 0.0,
+        "top10": 0.05000000000000001,
+        "mrr": 0.03821400420586833,
+        "median_rank": 41.0,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       },
+       "sd": {
+        "defects": 0.0,
+        "top1": 0.0,
+        "top5": 0.0,
+        "top10": 6.938893903907228e-18,
+        "mrr": 0.0,
+        "median_rank": 0.0,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       }
+      },
+      "lgbm": {
+       "per_seed": [
+        {
+         "seed": 0,
+         "defects": 20,
+         "top1": 0.85,
+         "top5": 1.0,
+         "top10": 1.0,
+         "mrr": 0.9003968253968253,
+         "median_rank": 1.0,
+         "cases_with_ties_at_bug": 2,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 4.5,
+           "ties_with_bug": 1,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 3.5,
+           "ties_with_bug": 1,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 1,
+         "defects": 20,
+         "top1": 0.85,
+         "top5": 1.0,
+         "top10": 1.0,
+         "mrr": 0.9003968253968253,
+         "median_rank": 1.0,
+         "cases_with_ties_at_bug": 2,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 4.5,
+           "ties_with_bug": 1,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 3.5,
+           "ties_with_bug": 1,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 2,
+         "defects": 20,
+         "top1": 0.85,
+         "top5": 1.0,
+         "top10": 1.0,
+         "mrr": 0.9003968253968253,
+         "median_rank": 1.0,
+         "cases_with_ties_at_bug": 2,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 4.5,
+           "ties_with_bug": 1,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 3.5,
+           "ties_with_bug": 1,
+           "n": 359
+          }
+         ]
+        }
+       ],
+       "mean": {
+        "defects": 20.0,
+        "top1": 0.85,
+        "top5": 1.0,
+        "top10": 1.0,
+        "mrr": 0.9003968253968253,
+        "median_rank": 1.0,
+        "cases_with_ties_at_bug": 2.0,
+        "missed_true_site": 0.0
+       },
+       "sd": {
+        "defects": 0.0,
+        "top1": 0.0,
+        "top5": 0.0,
+        "top10": 0.0,
+        "mrr": 0.0,
+        "median_rank": 0.0,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       }
+      },
+      "mlp": {
+       "per_seed": [
+        {
+         "seed": 0,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.2,
+         "top10": 0.25,
+         "mrr": 0.10183775794363906,
+         "median_rank": 19.5,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 16.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 23.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 103.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 57.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 23.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 22.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 62.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 3.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 30.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 17.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 4.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 4.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 14.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 39.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 49.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 13.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 10.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 15.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 84.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 1,
+         "defects": 20,
+         "top1": 0.05,
+         "top5": 0.15,
+         "top10": 0.25,
+         "mrr": 0.13734213611320534,
+         "median_rank": 20.5,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 11.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 27.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 101.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 50.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 20.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 21.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 62.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 3.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 27.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 22.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 7.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 18.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 32.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 66.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 6.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 13.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 17.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 82.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 2,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.2,
+         "top10": 0.25,
+         "mrr": 0.10039491295176965,
+         "median_rank": 23.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 7.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 30.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 105.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 56.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 28.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 27.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 67.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 3.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 34.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 12.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 4.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 5.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 19.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 38.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 53.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 13.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 16.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 14.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 84.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        }
+       ],
+       "mean": {
+        "defects": 20.0,
+        "top1": 0.016666666666666666,
+        "top5": 0.18333333333333335,
+        "top10": 0.25,
+        "mrr": 0.11319160233620468,
+        "median_rank": 21.0,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       },
+       "sd": {
+        "defects": 0.0,
+        "top1": 0.023570226039551587,
+        "top5": 0.02357022603955159,
+        "top10": 0.0,
+        "mrr": 0.0170871620757257,
+        "median_rank": 1.4719601443879744,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       }
+      }
+     },
+     "references": {
+      "random": {
+       "defects": 20,
+       "top1": 0.002785515320334262,
+       "top5": 0.01392757660167131,
+       "top10": 0.02785515320334262,
+       "mrr": 0.01799980547203115,
+       "median_rank": 180.0,
+       "cases_with_ties_at_bug": 0,
+       "missed_true_site": 0
+      },
+      "source_order": {
+       "defects": 20,
+       "top1": 0.0,
+       "top5": 0.0,
+       "top10": 0.0,
+       "mrr": 0.018763185203815046,
+       "median_rank": 123.5,
+       "cases_with_ties_at_bug": 0,
+       "missed_true_site": 0
+      },
+      "lexical_log_overlap": {
+       "defects": 20,
+       "top1": 0.0,
+       "top5": 0.0,
+       "top10": 0.0,
+       "mrr": 0.009774513749785213,
+       "median_rank": 139.0,
+       "cases_with_ties_at_bug": 19,
+       "missed_true_site": 0
+      }
+     }
+    }
+   }
+  },
+  "C2": {
+   "features": [
+    "log_overlap",
+    "anchor_resolved",
+    "anchor_mention",
+    "anchor_src_distance",
+    "emb_log_sim",
+    "universe_size",
+    "wave_available",
+    "wave_changed",
+    "wave_toggles_log1p",
+    "wave_time_since_change",
+    "wave_has_xz"
+   ],
+   "columns": [
+    "log_overlap",
+    "anchor_resolved",
+    "anchor_mention",
+    "anchor_src_distance",
+    "emb_log_sim",
+    "universe_size",
+    "wave_available",
+    "wave_changed",
+    "wave_toggles_log1p",
+    "wave_time_since_change",
+    "wave_has_xz",
+    "missing:anchor_src_distance",
+    "missing:wave_changed",
+    "missing:wave_toggles_log1p",
+    "missing:wave_time_since_change",
+    "missing:wave_has_xz",
+    "kind:AssignmentExpression",
+    "kind:ConditionalStatement",
+    "kind:Declarator",
+    "kind:NonblockingAssignmentExpression"
+   ],
+   "features_sha256": "ef1a2e05940e478005ae72ee18ce7de0844c3bd426576cf456591327223d554b",
+   "anchors": [
+    "digest"
+   ],
+   "rows": {
+    "train": 7180,
+    "test": 7180
+   },
+   "partitions": {
+    "test": {
+     "models": {
+      "logreg": {
+       "per_seed": [
+        {
+         "seed": 0,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.05,
+         "top10": 0.15,
+         "mrr": 0.05825930142241438,
+         "median_rank": 39.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 42.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 104.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 216.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 88.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 10.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 100.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 99.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 108.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 16.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 36.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 7.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 16.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 17.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 38.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 31.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 91.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 31.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 40.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 195.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 1,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.05,
+         "top10": 0.15,
+         "mrr": 0.05825930142241438,
+         "median_rank": 39.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 42.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 104.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 216.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 88.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 10.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 100.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 99.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 108.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 16.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 36.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 7.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 16.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 17.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 38.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 31.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 91.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 31.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 40.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 195.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 2,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.05,
+         "top10": 0.15,
+         "mrr": 0.05825930142241438,
+         "median_rank": 39.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 42.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 104.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 216.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 88.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 10.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 100.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 99.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 108.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 16.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 36.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 7.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 16.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 17.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 38.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 31.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 91.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 31.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 40.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 195.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        }
+       ],
+       "mean": {
+        "defects": 20.0,
+        "top1": 0.0,
+        "top5": 0.05000000000000001,
+        "top10": 0.15,
+        "mrr": 0.05825930142241439,
+        "median_rank": 39.0,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       },
+       "sd": {
+        "defects": 0.0,
+        "top1": 0.0,
+        "top5": 6.938893903907228e-18,
+        "top10": 0.0,
+        "mrr": 6.938893903907228e-18,
+        "median_rank": 0.0,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       }
+      },
+      "lgbm": {
+       "per_seed": [
+        {
+         "seed": 0,
+         "defects": 20,
+         "top1": 0.9,
+         "top5": 1.0,
+         "top10": 1.0,
+         "mrr": 0.9285714285714285,
+         "median_rank": 1.0,
+         "cases_with_ties_at_bug": 2,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 3.5,
+           "ties_with_bug": 1,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 3.5,
+           "ties_with_bug": 1,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 1,
+         "defects": 20,
+         "top1": 0.9,
+         "top5": 1.0,
+         "top10": 1.0,
+         "mrr": 0.9285714285714285,
+         "median_rank": 1.0,
+         "cases_with_ties_at_bug": 2,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 3.5,
+           "ties_with_bug": 1,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 3.5,
+           "ties_with_bug": 1,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 2,
+         "defects": 20,
+         "top1": 0.9,
+         "top5": 1.0,
+         "top10": 1.0,
+         "mrr": 0.9285714285714285,
+         "median_rank": 1.0,
+         "cases_with_ties_at_bug": 2,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 3.5,
+           "ties_with_bug": 1,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 3.5,
+           "ties_with_bug": 1,
+           "n": 359
+          }
+         ]
+        }
+       ],
+       "mean": {
+        "defects": 20.0,
+        "top1": 0.9,
+        "top5": 1.0,
+        "top10": 1.0,
+        "mrr": 0.9285714285714285,
+        "median_rank": 1.0,
+        "cases_with_ties_at_bug": 2.0,
+        "missed_true_site": 0.0
+       },
+       "sd": {
+        "defects": 0.0,
+        "top1": 0.0,
+        "top5": 0.0,
+        "top10": 0.0,
+        "mrr": 0.0,
+        "median_rank": 0.0,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       }
+      },
+      "mlp": {
+       "per_seed": [
+        {
+         "seed": 0,
+         "defects": 20,
+         "top1": 0.05,
+         "top5": 0.3,
+         "top10": 0.4,
+         "mrr": 0.18098416370489318,
+         "median_rank": 15.5,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 26.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 137.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 52.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 7.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 22.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 26.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 20.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 11.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 17.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 5.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 14.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 26.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 56.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 3.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 3.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 8.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 114.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 1,
+         "defects": 20,
+         "top1": 0.05,
+         "top5": 0.3,
+         "top10": 0.35,
+         "mrr": 0.16026066903629604,
+         "median_rank": 23.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 3.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 34.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 132.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 45.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 4.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 31.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 33.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 36.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 20.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 26.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 12.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 16.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 33.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 46.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 3.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 5.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 7.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 102.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 2,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.35,
+         "top10": 0.45,
+         "mrr": 0.14187201857488288,
+         "median_rank": 15.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 6.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 29.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 120.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 30.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 3.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 27.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 26.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 25.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 5.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 16.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 5.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 3.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 14.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 25.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 36.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 3.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 6.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 5.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 93.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        }
+       ],
+       "mean": {
+        "defects": 20.0,
+        "top1": 0.03333333333333333,
+        "top5": 0.31666666666666665,
+        "top10": 0.39999999999999997,
+        "mrr": 0.16103895043869068,
+        "median_rank": 17.833333333333332,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       },
+       "sd": {
+        "defects": 0.0,
+        "top1": 0.023570226039551587,
+        "top5": 0.02357022603955158,
+        "top10": 0.04082482904638631,
+        "mrr": 0.015976947260010428,
+        "median_rank": 3.6590830666833583,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       }
+      }
+     },
+     "references": {
+      "random": {
+       "defects": 20,
+       "top1": 0.002785515320334262,
+       "top5": 0.01392757660167131,
+       "top10": 0.02785515320334262,
+       "mrr": 0.01799980547203115,
+       "median_rank": 180.0,
+       "cases_with_ties_at_bug": 0,
+       "missed_true_site": 0
+      },
+      "source_order": {
+       "defects": 20,
+       "top1": 0.0,
+       "top5": 0.0,
+       "top10": 0.0,
+       "mrr": 0.018763185203815046,
+       "median_rank": 123.5,
+       "cases_with_ties_at_bug": 0,
+       "missed_true_site": 0
+      },
+      "lexical_log_overlap": {
+       "defects": 20,
+       "top1": 0.0,
+       "top5": 0.0,
+       "top10": 0.0,
+       "mrr": 0.009774513749785213,
+       "median_rank": 139.0,
+       "cases_with_ties_at_bug": 19,
+       "missed_true_site": 0
+      }
+     }
+    }
+   }
+  },
+  "C3": {
+   "features": [
+    "log_overlap",
+    "anchor_resolved",
+    "anchor_mention",
+    "anchor_src_distance",
+    "emb_log_sim",
+    "universe_size",
+    "spec_sim_max"
+   ],
+   "columns": [
+    "log_overlap",
+    "anchor_resolved",
+    "anchor_mention",
+    "anchor_src_distance",
+    "emb_log_sim",
+    "universe_size",
+    "spec_sim_max",
+    "missing:anchor_src_distance",
+    "kind:AssignmentExpression",
+    "kind:ConditionalStatement",
+    "kind:Declarator",
+    "kind:NonblockingAssignmentExpression"
+   ],
+   "features_sha256": "9f32a8fc7e4ffd1557cb06ead8f18a58aae11f40aba61d2a15100ac2179459ad",
+   "anchors": [
+    "digest"
+   ],
+   "rows": {
+    "train": 7180,
+    "test": 7180
+   },
+   "partitions": {
+    "test": {
+     "models": {
+      "logreg": {
+       "per_seed": [
+        {
+         "seed": 0,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.05,
+         "top10": 0.15,
+         "mrr": 0.05311278804662391,
+         "median_rank": 37.5,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 37.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 53.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 183.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 121.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 37.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 48.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 69.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 97.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 12.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 26.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 13.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 9.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 23.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 38.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 24.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 47.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 8.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 43.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 3.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 172.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 1,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.05,
+         "top10": 0.15,
+         "mrr": 0.05311278804662391,
+         "median_rank": 37.5,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 37.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 53.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 183.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 121.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 37.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 48.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 69.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 97.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 12.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 26.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 13.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 9.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 23.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 38.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 24.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 47.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 8.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 43.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 3.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 172.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 2,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.05,
+         "top10": 0.15,
+         "mrr": 0.05311278804662391,
+         "median_rank": 37.5,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 37.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 53.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 183.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 121.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 37.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 48.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 69.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 97.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 12.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 26.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 13.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 9.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 23.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 38.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 24.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 47.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 8.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 43.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 3.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 172.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        }
+       ],
+       "mean": {
+        "defects": 20.0,
+        "top1": 0.0,
+        "top5": 0.05000000000000001,
+        "top10": 0.15,
+        "mrr": 0.053112788046623914,
+        "median_rank": 37.5,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       },
+       "sd": {
+        "defects": 0.0,
+        "top1": 0.0,
+        "top5": 6.938893903907228e-18,
+        "top10": 0.0,
+        "mrr": 6.938893903907228e-18,
+        "median_rank": 0.0,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       }
+      },
+      "lgbm": {
+       "per_seed": [
+        {
+         "seed": 0,
+         "defects": 20,
+         "top1": 1.0,
+         "top5": 1.0,
+         "top10": 1.0,
+         "mrr": 1.0,
+         "median_rank": 1.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 1,
+         "defects": 20,
+         "top1": 1.0,
+         "top5": 1.0,
+         "top10": 1.0,
+         "mrr": 1.0,
+         "median_rank": 1.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 2,
+         "defects": 20,
+         "top1": 1.0,
+         "top5": 1.0,
+         "top10": 1.0,
+         "mrr": 1.0,
+         "median_rank": 1.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        }
+       ],
+       "mean": {
+        "defects": 20.0,
+        "top1": 1.0,
+        "top5": 1.0,
+        "top10": 1.0,
+        "mrr": 1.0,
+        "median_rank": 1.0,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       },
+       "sd": {
+        "defects": 0.0,
+        "top1": 0.0,
+        "top5": 0.0,
+        "top10": 0.0,
+        "mrr": 0.0,
+        "median_rank": 0.0,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       }
+      },
+      "mlp": {
+       "per_seed": [
+        {
+         "seed": 0,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.2,
+         "top10": 0.3,
+         "mrr": 0.08512642948288737,
+         "median_rank": 20.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 15.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 37.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 126.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 82.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 19.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 27.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 49.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 51.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 4.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 21.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 9.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 4.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 5.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 17.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 32.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 23.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 4.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 12.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 8.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 119.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 1,
+         "defects": 20,
+         "top1": 0.05,
+         "top5": 0.15,
+         "top10": 0.3,
+         "mrr": 0.13504798655999478,
+         "median_rank": 20.5,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 15.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 37.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 128.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 71.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 12.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 33.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 53.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 54.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 6.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 25.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 15.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 4.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 16.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 36.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 29.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 6.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 9.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 118.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 2,
+         "defects": 20,
+         "top1": 0.05,
+         "top5": 0.2,
+         "top10": 0.35,
+         "mrr": 0.1430715717702043,
+         "median_rank": 20.5,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 18.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 23.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 103.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 72.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 17.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 23.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 49.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 45.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 9.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 23.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 18.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 4.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 10.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 37.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 26.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 3.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 8.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 101.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        }
+       ],
+       "mean": {
+        "defects": 20.0,
+        "top1": 0.03333333333333333,
+        "top5": 0.18333333333333335,
+        "top10": 0.31666666666666665,
+        "mrr": 0.12108199593769549,
+        "median_rank": 20.333333333333332,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       },
+       "sd": {
+        "defects": 0.0,
+        "top1": 0.023570226039551584,
+        "top5": 0.02357022603955159,
+        "top10": 0.02357022603955158,
+        "mrr": 0.02563456714699854,
+        "median_rank": 0.23570226039551584,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       }
+      }
+     },
+     "references": {
+      "random": {
+       "defects": 20,
+       "top1": 0.002785515320334262,
+       "top5": 0.01392757660167131,
+       "top10": 0.02785515320334262,
+       "mrr": 0.01799980547203115,
+       "median_rank": 180.0,
+       "cases_with_ties_at_bug": 0,
+       "missed_true_site": 0
+      },
+      "source_order": {
+       "defects": 20,
+       "top1": 0.0,
+       "top5": 0.0,
+       "top10": 0.0,
+       "mrr": 0.018763185203815046,
+       "median_rank": 123.5,
+       "cases_with_ties_at_bug": 0,
+       "missed_true_site": 0
+      },
+      "lexical_log_overlap": {
+       "defects": 20,
+       "top1": 0.0,
+       "top5": 0.0,
+       "top10": 0.0,
+       "mrr": 0.009774513749785213,
+       "median_rank": 139.0,
+       "cases_with_ties_at_bug": 19,
+       "missed_true_site": 0
+      }
+     }
+    }
+   }
+  },
+  "C4": {
+   "features": [
+    "log_overlap",
+    "anchor_resolved",
+    "anchor_mention",
+    "anchor_src_distance",
+    "emb_log_sim",
+    "universe_size",
+    "graph_mapped",
+    "graph_back_dist",
+    "graph_reachable",
+    "graph_register_depth",
+    "graph_is_register",
+    "graph_fanin",
+    "graph_fanout",
+    "module_dist",
+    "wave_available",
+    "wave_changed",
+    "wave_toggles_log1p",
+    "wave_time_since_change",
+    "wave_has_xz",
+    "spec_sim_max"
+   ],
+   "columns": [
+    "log_overlap",
+    "anchor_resolved",
+    "anchor_mention",
+    "anchor_src_distance",
+    "emb_log_sim",
+    "universe_size",
+    "graph_mapped",
+    "graph_back_dist",
+    "graph_reachable",
+    "graph_register_depth",
+    "graph_is_register",
+    "graph_fanin",
+    "graph_fanout",
+    "module_dist",
+    "wave_available",
+    "wave_changed",
+    "wave_toggles_log1p",
+    "wave_time_since_change",
+    "wave_has_xz",
+    "spec_sim_max",
+    "missing:anchor_src_distance",
+    "missing:graph_back_dist",
+    "missing:graph_register_depth",
+    "missing:wave_changed",
+    "missing:wave_toggles_log1p",
+    "missing:wave_time_since_change",
+    "missing:wave_has_xz",
+    "kind:AssignmentExpression",
+    "kind:ConditionalStatement",
+    "kind:Declarator",
+    "kind:NonblockingAssignmentExpression"
+   ],
+   "features_sha256": "37b1a2e35ef8eb336a10df5526f483ca4b7cf404fd6b53dea5d3dbf079ca1f76",
+   "anchors": [
+    "digest"
+   ],
+   "rows": {
+    "train": 7180,
+    "test": 7180
+   },
+   "partitions": {
+    "test": {
+     "models": {
+      "logreg": {
+       "per_seed": [
+        {
+         "seed": 0,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.05,
+         "top10": 0.1,
+         "mrr": 0.057485482359564424,
+         "median_rank": 32.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 33.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 58.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 141.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 89.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 15.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 52.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 72.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 60.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 19.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 32.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 32.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 16.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 23.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 31.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 29.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 42.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 27.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 9.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 132.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 1,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.05,
+         "top10": 0.1,
+         "mrr": 0.057485482359564424,
+         "median_rank": 32.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 33.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 58.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 141.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 89.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 15.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 52.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 72.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 60.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 19.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 32.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 32.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 16.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 23.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 31.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 29.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 42.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 27.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 9.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 132.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 2,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.05,
+         "top10": 0.1,
+         "mrr": 0.057485482359564424,
+         "median_rank": 32.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 33.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 58.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 141.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 89.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 15.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 52.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 72.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 60.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 19.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 32.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 32.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 16.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 23.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 31.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 29.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 42.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 27.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 9.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 132.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        }
+       ],
+       "mean": {
+        "defects": 20.0,
+        "top1": 0.0,
+        "top5": 0.05000000000000001,
+        "top10": 0.10000000000000002,
+        "mrr": 0.05748548235956443,
+        "median_rank": 32.0,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       },
+       "sd": {
+        "defects": 0.0,
+        "top1": 0.0,
+        "top5": 6.938893903907228e-18,
+        "top10": 1.3877787807814457e-17,
+        "mrr": 6.938893903907228e-18,
+        "median_rank": 0.0,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       }
+      },
+      "lgbm": {
+       "per_seed": [
+        {
+         "seed": 0,
+         "defects": 20,
+         "top1": 1.0,
+         "top5": 1.0,
+         "top10": 1.0,
+         "mrr": 1.0,
+         "median_rank": 1.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 1,
+         "defects": 20,
+         "top1": 1.0,
+         "top5": 1.0,
+         "top10": 1.0,
+         "mrr": 1.0,
+         "median_rank": 1.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 2,
+         "defects": 20,
+         "top1": 1.0,
+         "top5": 1.0,
+         "top10": 1.0,
+         "mrr": 1.0,
+         "median_rank": 1.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        }
+       ],
+       "mean": {
+        "defects": 20.0,
+        "top1": 1.0,
+        "top5": 1.0,
+        "top10": 1.0,
+        "mrr": 1.0,
+        "median_rank": 1.0,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       },
+       "sd": {
+        "defects": 0.0,
+        "top1": 0.0,
+        "top5": 0.0,
+        "top10": 0.0,
+        "mrr": 0.0,
+        "median_rank": 0.0,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       }
+      },
+      "mlp": {
+       "per_seed": [
+        {
+         "seed": 0,
+         "defects": 20,
+         "top1": 0.05,
+         "top5": 0.35,
+         "top10": 0.5,
+         "mrr": 0.17357343292770444,
+         "median_rank": 8.5,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 6.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 13.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 92.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 16.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 4.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 11.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 18.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 17.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 3.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 22.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 6.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 5.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 6.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 31.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 23.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 4.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 4.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 5.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 88.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 1,
+         "defects": 20,
+         "top1": 0.05,
+         "top5": 0.3,
+         "top10": 0.5,
+         "mrr": 0.17429665354656385,
+         "median_rank": 10.0,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 5.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 13.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 100.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 26.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 4.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 9.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 27.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 23.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 8.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 31.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 8.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 1.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 11.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 35.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 18.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 4.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 6.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 3.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 86.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        },
+        {
+         "seed": 2,
+         "defects": 20,
+         "top1": 0.0,
+         "top5": 0.35,
+         "top10": 0.5,
+         "mrr": 0.1573791923296399,
+         "median_rank": 9.5,
+         "cases_with_ties_at_bug": 0,
+         "missed_true_site": 0,
+         "per_case": [
+          {
+           "case": "sample-0618f8e1e5187b85",
+           "rank": 6.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-1122a5b028122e96",
+           "rank": 12.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-325c228358b61f79",
+           "rank": 96.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-396cf71a13e7940d",
+           "rank": 14.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-62b5acf29915babe",
+           "rank": 4.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-63fbe6cab121aca9",
+           "rank": 11.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-74db84b7d7b44563",
+           "rank": 21.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-7a67dd842d2c0d77",
+           "rank": 23.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-80f48792aa5dcee1",
+           "rank": 3.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-8b616ac581289943",
+           "rank": 32.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-9c3583c45dfe4cd6",
+           "rank": 8.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-a2878ac348deabe0",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aa46b7836d116ee1",
+           "rank": 5.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-aae55aa66d8f981b",
+           "rank": 7.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d072562bc9370100",
+           "rank": 37.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-d7d834622d0d7bff",
+           "rank": 16.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-db8b10d10e51f9af",
+           "rank": 2.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-de199f7e3651ad72",
+           "rank": 4.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-e3483996a4a6b374",
+           "rank": 5.0,
+           "ties_with_bug": 0,
+           "n": 359
+          },
+          {
+           "case": "sample-ee027cf7b83c592c",
+           "rank": 85.0,
+           "ties_with_bug": 0,
+           "n": 359
+          }
+         ]
+        }
+       ],
+       "mean": {
+        "defects": 20.0,
+        "top1": 0.03333333333333333,
+        "top5": 0.3333333333333333,
+        "top10": 0.5,
+        "mrr": 0.1684164262679694,
+        "median_rank": 9.333333333333334,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       },
+       "sd": {
+        "defects": 0.0,
+        "top1": 0.023570226039551587,
+        "top5": 0.02357022603955158,
+        "top10": 0.0,
+        "mrr": 0.007810085862649875,
+        "median_rank": 0.6236095644623235,
+        "cases_with_ties_at_bug": 0.0,
+        "missed_true_site": 0.0
+       }
+      }
+     },
+     "references": {
+      "random": {
+       "defects": 20,
+       "top1": 0.002785515320334262,
+       "top5": 0.01392757660167131,
+       "top10": 0.02785515320334262,
+       "mrr": 0.01799980547203115,
+       "median_rank": 180.0,
+       "cases_with_ties_at_bug": 0,
+       "missed_true_site": 0
+      },
+      "source_order": {
+       "defects": 20,
+       "top1": 0.0,
+       "top5": 0.0,
+       "top10": 0.0,
+       "mrr": 0.018763185203815046,
+       "median_rank": 123.5,
+       "cases_with_ties_at_bug": 0,
+       "missed_true_site": 0
+      },
+      "lexical_log_overlap": {
+       "defects": 20,
+       "top1": 0.0,
+       "top5": 0.0,
+       "top10": 0.0,
+       "mrr": 0.009774513749785213,
+       "median_rank": 139.0,
+       "cases_with_ties_at_bug": 19,
+       "missed_true_site": 0
+      }
+     }
+    }
+   }
+  }
+ },
+ "seconds": 27.9
+}

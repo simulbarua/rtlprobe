@@ -1,0 +1,12 @@
+# Direct dependencies of the training pipeline (exact versions used).
+# Full resolved set: requirements-training.lock.txt
+# torch: CPU wheel works (the neural ranker trains on CPU; the frozen
+# encoder uses a GPU only if one is available). For CUDA 12.4 install with
+#   --extra-index-url https://download.pytorch.org/whl/cu124
+lightgbm==4.7.0
+scikit-learn==1.9.1
+numpy==2.5.4
+scipy==1.18.1
+joblib==1.6.0
+torch==2.6.0
+transformers==5.20.1

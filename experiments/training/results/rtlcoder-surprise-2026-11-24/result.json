@@ -1,0 +1,193 @@
+{
+ "result_label": "no_training_reference",
+ "method": {
+  "model": "ishorn5/RTLCoder-Deepseek-v1.1",
+  "revision": "0e2a613d4fff24c110ebf27d15151f20d480f8b6",
+  "precision": "8bit-bitsandbytes",
+  "window": 1024,
+  "overlap": 256,
+  "tokenization": "per-line",
+  "score": "max_token_surprise"
+ },
+ "samples": [
+  "sample-0618f8e1e5187b85",
+  "sample-1122a5b028122e96",
+  "sample-325c228358b61f79",
+  "sample-396cf71a13e7940d",
+  "sample-62b5acf29915babe",
+  "sample-63fbe6cab121aca9",
+  "sample-74db84b7d7b44563",
+  "sample-7a67dd842d2c0d77",
+  "sample-80f48792aa5dcee1",
+  "sample-8b616ac581289943",
+  "sample-9c3583c45dfe4cd6",
+  "sample-a2878ac348deabe0",
+  "sample-aa46b7836d116ee1",
+  "sample-aae55aa66d8f981b",
+  "sample-d072562bc9370100",
+  "sample-d7d834622d0d7bff",
+  "sample-db8b10d10e51f9af",
+  "sample-de199f7e3651ad72",
+  "sample-e3483996a4a6b374",
+  "sample-ee027cf7b83c592c"
+ ],
+ "python": "3.12.10",
+ "platform": "Windows-11-10.0.26200-SP0",
+ "gpu": "NVIDIA GeForce RTX 4070 SUPER",
+ "metrics": {
+  "surprise_max": {
+   "defects": 20,
+   "top1": 0.15,
+   "top5": 0.55,
+   "top10": 0.6,
+   "mrr": 0.30308316423095116,
+   "median_rank": 5.0,
+   "cases_with_ties_at_bug": 0,
+   "missed_true_site": 0
+  },
+  "surprise_mean": {
+   "defects": 20,
+   "top1": 0.05,
+   "top5": 0.2,
+   "top10": 0.3,
+   "mrr": 0.1459192195807936,
+   "median_rank": 23.0,
+   "cases_with_ties_at_bug": 0,
+   "missed_true_site": 0
+  },
+  "random": {
+   "defects": 20,
+   "top1": 0.002785515320334262,
+   "top5": 0.01392757660167131,
+   "top10": 0.02785515320334262,
+   "mrr": 0.01799980547203115,
+   "median_rank": 180.0,
+   "cases_with_ties_at_bug": 0,
+   "missed_true_site": 0
+  },
+  "per_case_max": [
+   {
+    "case": "sample-0618f8e1e5187b85",
+    "rank": 43.0,
+    "ties_with_bug": 0,
+    "n": 359
+   },
+   {
+    "case": "sample-1122a5b028122e96",
+    "rank": 4.0,
+    "ties_with_bug": 0,
+    "n": 359
+   },
+   {
+    "case": "sample-325c228358b61f79",
+    "rank": 1.0,
+    "ties_with_bug": 0,
+    "n": 359
+   },
+   {
+    "case": "sample-396cf71a13e7940d",
+    "rank": 11.0,
+    "ties_with_bug": 0,
+    "n": 359
+   },
+   {
+    "case": "sample-62b5acf29915babe",
+    "rank": 26.0,
+    "ties_with_bug": 0,
+    "n": 359
+   },
+   {
+    "case": "sample-63fbe6cab121aca9",
+    "rank": 3.0,
+    "ties_with_bug": 0,
+    "n": 359
+   },
+   {
+    "case": "sample-74db84b7d7b44563",
+    "rank": 3.0,
+    "ties_with_bug": 0,
+    "n": 359
+   },
+   {
+    "case": "sample-7a67dd842d2c0d77",
+    "rank": 5.0,
+    "ties_with_bug": 0,
+    "n": 359
+   },
+   {
+    "case": "sample-80f48792aa5dcee1",
+    "rank": 2.0,
+    "ties_with_bug": 0,
+    "n": 359
+   },
+   {
+    "case": "sample-8b616ac581289943",
+    "rank": 2.0,
+    "ties_with_bug": 0,
+    "n": 359
+   },
+   {
+    "case": "sample-9c3583c45dfe4cd6",
+    "rank": 31.0,
+    "ties_with_bug": 0,
+    "n": 359
+   },
+   {
+    "case": "sample-a2878ac348deabe0",
+    "rank": 13.0,
+    "ties_with_bug": 0,
+    "n": 359
+   },
+   {
+    "case": "sample-aa46b7836d116ee1",
+    "rank": 28.0,
+    "ties_with_bug": 0,
+    "n": 359
+   },
+   {
+    "case": "sample-aae55aa66d8f981b",
+    "rank": 11.0,
+    "ties_with_bug": 0,
+    "n": 359
+   },
+   {
+    "case": "sample-d072562bc9370100",
+    "rank": 5.0,
+    "ties_with_bug": 0,
+    "n": 359
+   },
+   {
+    "case": "sample-d7d834622d0d7bff",
+    "rank": 5.0,
+    "ties_with_bug": 0,
+    "n": 359
+   },
+   {
+    "case": "sample-db8b10d10e51f9af",
+    "rank": 1.0,
+    "ties_with_bug": 0,
+    "n": 359
+   },
+   {
+    "case": "sample-de199f7e3651ad72",
+    "rank": 9.0,
+    "ties_with_bug": 0,
+    "n": 359
+   },
+   {
+    "case": "sample-e3483996a4a6b374",
+    "rank": 22.0,
+    "ties_with_bug": 0,
+    "n": 359
+   },
+   {
+    "case": "sample-ee027cf7b83c592c",
+    "rank": 1.0,
+    "ties_with_bug": 0,
+    "n": 359
+   }
+  ]
+ },
+ "development_only_cases": 20,
+ "seconds": 67.8
+}

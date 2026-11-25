@@ -1,0 +1,4 @@
+# Extra dependencies for rtlcoder_surprise.py only (8-bit RTLCoder on a CUDA GPU).
+# Install on top of requirements-training.in / .lock.txt with the CUDA build of torch.
+accelerate==1.15.0
+bitsandbytes==0.50.2
