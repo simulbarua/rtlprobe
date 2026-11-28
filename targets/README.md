@@ -1,8 +1,7 @@
 # RTL target manifests and checker adapters
 
 Each target has an explicit JSON manifest and a trusted local Python checker
-adapter. These are hardware integration assets owned by RTLProbe; agents select
-and consume them without embedding repository names in their runtime.
+adapter. The runner loads both from the selected target configuration.
 
 The manifest declares `target_id`, `case_prefix`, repository-lineage `split_group`,
 `design_id`, `repository_url`, full pinned `revision`, data-relative `vendor`,

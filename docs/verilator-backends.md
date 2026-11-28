@@ -60,7 +60,7 @@ export PATH="/absolute/python-env/bin:$PATH"
 
 The UVM build's configured source revision is recorded in the target manifest;
 install the matching tools and Python build dependencies for that backend.
-These commands require no local trial directory or agent checkout.
+Run these commands from the RTLProbe checkout.
 Run the regular CLI `qualify` action with the scratch `--data-root` and selected
 `--target-config`. Its pending-control branch executes every admitted test on a
 fresh original binary, emits `ORIGINAL_PROOF` lines, and seals

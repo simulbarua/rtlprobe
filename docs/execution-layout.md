@@ -2,9 +2,7 @@
 
 RTLProbe owns deterministic qualification, mutation mapping, execution,
 restoration, evidence checks and curation. Its commands and machine contracts
-are usable directly by contributors or by external clients. Optional agent
-orchestration is maintained in the separate
-[rtlprobe-agents repository](https://github.com/simulbarua/rtlprobe-agents).
+are usable directly by contributors or by external clients.
 
 ## Stable script interface
 
@@ -40,10 +38,6 @@ supply `--bundle-sha256 HASH` before `run` to pin the exact manifest it validate
 The runner checks that hash and all sealed bundle files, then validates
 source coordinates, approved operators, test/configuration, and resource policy.
 
-External clients submit reviewed sealed proposal bundles and are
-subject to the runner's independent validation. Model request preparation and
-provider-specific configuration are outside the runner interface.
-
 `check` verifies current qualified source/configuration/tools/implementation.
 `qualify` executes the baseline, checker control and restored baseline. `run` invokes the existing bounded batch runner. `audit-data` verifies saved case
 manifests and acceptance receipts without fresh execution. `audit CASE_DIRECTORY`
@@ -52,8 +46,8 @@ re-parses saved logs and verifies the actual source/executable/patch evidence.
 `RTLPROBE_DATA_ROOT` is set before imports by the script. Code/schema/registry and
 Python dependency pins resolve from the code repository; source checkouts, mutable
 dossiers, plans, state, and outputs resolve from the selected data root. The script
-rejects a data root overlapping its code repository. The main script does not read model prompt settings; those are an agent-side concern. Direct library imports retain a repository-local
-default for compatibility; external agents should use the script interface.
+rejects a data root overlapping its code repository. Direct library imports
+retain a repository-local data root for compatibility.
 
 ## Case curation
 

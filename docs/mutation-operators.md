@@ -20,8 +20,7 @@ from target qualification, candidate-rule adoption and case acceptance. Consult
 the registry for the complete per-operator preconditions and exclusions.
 
 The generic proposal-to-runner interface can derive and preflight all five
-operators. A caller may deliberately admit a smaller subset; do not infer an
-agent transport's allowlist from this registry. Reviewed execution currently
+operators. A caller may admit a smaller subset. Reviewed execution currently
 refuses non-rejected `condition_invert` proposals pending its candidate-rule
 adoption/integration gate. A positive in-memory edit/preflight test is not a
 live target validation, case acceptance or permission to remove that restriction.

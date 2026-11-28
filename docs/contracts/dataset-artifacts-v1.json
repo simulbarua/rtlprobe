@@ -120,6 +120,6 @@
     ],
     "artifact_complete_requires": "All required artifacts and links, exact-byte source identity, complete mappings/parity/windows, genuine retained execution provenance, six strict same-case exports, fixed specs and leakage checks",
     "partial_artifacts": "May be retained with explicit missingness; cannot satisfy full-contract artifact completeness",
-    "runtime_enforcement": "Individual validators remain authoritative; the catalog is not runtime policy. Agent collection/readiness now require an externally hash-bound capture-execution-1 proof, retained raw work, bounded command history and rederived complete capture alongside six same-case exports. A trusted guarded caller is required; local files do not cryptographically attest physical execution. Complete recovery and live authorization remain separate gates."
+    "runtime_enforcement": "Individual validators remain authoritative; the catalog is not runtime policy. To verify a complete case export, require an externally hash-bound capture-execution-1 proof, retained raw work, bounded command history and rederived complete capture alongside six same-case exports. A trusted guarded caller is required; local files do not cryptographically attest physical execution. Complete recovery and live authorization remain separate gates."
   }
 }

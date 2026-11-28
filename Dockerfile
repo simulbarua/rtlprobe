@@ -1,7 +1,6 @@
 # RTLProbe tooling pipeline environment
 #
-# Pinned to the native toolchain that qualified every accepted case, as
-# recorded in the agents repository's environment/toolchain-versions-mac-2026-09.txt:
+# The image pins these native toolchain versions:
 #
 #   Icarus Verilog 13.0   built from git tag v13_0
 #   Verilator 5.046       built from git tag v5.046

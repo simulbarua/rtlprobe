@@ -4,7 +4,7 @@ This experiment replays one saved SHA-256 case with the existing upstream
 testbench and checker, captures a VCD, exports three inference bundles, runs
 deterministic ranking heuristics, and evaluates predictions afterward.
 It is separate from case admission and does not change dataset approvals.
-It is not a trained model, a general target adapter, or a deployment workflow.
+It ranks candidates with a fixed heuristic.
 
 Read the [method, recorded results and limits](../../docs/localization.md).
 

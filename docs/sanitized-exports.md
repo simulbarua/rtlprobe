@@ -141,21 +141,19 @@ provenance and accepts an additional curator-only `--private-token-file` list.
 Neither that list nor the private provenance is copied to inference inputs.
 
 Incomplete inputs fail by default. `--allow-partial` creates an explicitly
-incomplete artifact for software development/review; it cannot pass agent
-execution preflight. Unsupported graph/alignment/trace/checker state remains
+incomplete artifact for software development and review. It fails the
+isolation preflight. Unsupported graph/alignment/trace/checker state remains
 missing evidence rather than being silently marked complete. A directory
 marked complete concerns artifact availability, not qualification, independent
 checker validity, final protocol adoption or all project prerequisites.
 
-A read-only directory is not OS filesystem isolation. Agent execution must
-add `isolation_preflight(path, expected_manifest_sha256=..., backend="bubblewrap")`
-and launch the actual process using its returned `launch_prefix`. The preflight
+For an isolated localizer, call
+`isolation_preflight(path, expected_manifest_sha256=..., backend="bubblewrap")`
+and launch the process using the returned `launch_prefix`. The preflight
 uses an offline namespace with only the evidence tree and fixed system runtime
 directories; it does not mount home directories, the curator tree, credentials
 or repositories. Missing bubblewrap or an AppArmor/user-namespace rejection
-blocks execution. There is no unsandboxed fallback. A provider/network bridge,
-an admitted localizer runtime and project launch authorization remain separate
-requirements; the preflight never authorizes a project run by itself.
+blocks execution. Run-specific authorization is separate from this preflight.
 
 The software tests use synthetic sources, logs, VCD text and specification
 stores. These tests establish contract checks, not target qualification or

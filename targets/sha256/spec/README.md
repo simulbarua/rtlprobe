@@ -1,7 +1,7 @@
 # SHA-256 specification store
 
 Status: curated, awaiting independent review; not frozen.
-Curator: Codex. Curation and retrieval date: 2026-10-23 (America/Los_Angeles).
+Curation and retrieval date: 2026-10-23 (America/Los_Angeles).
 
 ## Sources and provenance
 

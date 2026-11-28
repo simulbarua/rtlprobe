@@ -22,6 +22,7 @@ rtlprobe/
 ├── rtlprobe/       Python pipeline and research implementation
 ├── targets/        RTL target configurations and reproduction instructions
 ├── tests/          Tests of RTLProbe software
+├── experiments/    Localization experiments and training baselines
 ├── docs/           Technical and research documentation
 ├── meetings/       Team and advisor meeting notes
 ├── scripts/        Setup and maintenance helpers
@@ -31,11 +32,11 @@ rtlprobe/
 └── tooling/        Existing pipeline scripts and tooling notes
 ```
 
-The deterministic qualification/mutation runner uses an explicitly selected target
-manifest, with no default repository or two-repository allowlist. The main repository owns its scripts, contracts, operators,
-checker, and evidence handling. Agent skills, model prompts, and orchestration live
-in the separate `rtlprobe-agents` repository. Experiment data lives at an explicitly
-configured external root. See [execution layout and script interface](docs/execution-layout.md).
+The runner qualifies targets, executes reviewed mutations, and verifies evidence.
+Select a target manifest and an external experiment data root using the
+[runner command-line interface](docs/execution-layout.md). See the
+[training pipeline](experiments/training/README.md) for model training, dataset
+splits, and evaluation.
 Human acceptance, automatic promotion, sampling, and separate acceptance counts are documented in [case curation](docs/execution-layout.md#case-curation).
 The SHA-256 and ChaCha targets have real pilot evidence. Other targets need a compatible manifest,
 existing testbench, trusted checker adapter, and fresh qualification. The backend is
@@ -79,10 +80,6 @@ The root `.dockerignore` excludes downloaded sources, generated evidence, local
 environments, and Git metadata from image builds. These exclusions do not affect
 the repository bind mount used when running the pipeline.
 
-Agent implementations, model prompts, and provider integrations belong in a
-separate repository. RTLProbe's execution and research implementation should be
-usable through ordinary configuration files and commands.
-
 ## Execution backends
 
 Target manifests select `backend: icarus` (the default), `verilator_predv`, or
@@ -97,7 +94,7 @@ dossier. These proofs do not enable case generation. Control/restored-PASS,
 structural admission, specification stores, and host qualification remain gates.
 
 See [backend operation](docs/verilator-backends.md) for pinned tools, reproduction,
-checker contracts, limitations, and deployment follow-ups.
+checker contracts, and qualification requirements.
 
 ## Mutation operators and candidate syntax
 
@@ -111,11 +108,7 @@ See [mutation operators](docs/mutation-operators.md) for constraints and read-on
 inspection commands, and [localization](docs/localization.md) for the experimental
 graph/trace pipeline and its limits.
 
-## Documentation and contribution boundaries
+## Documentation
 
-Start with the [documentation index](docs/README.md). This repository contains
-maintained technical guides and reproducible capstone methods/results. Agent
-session reports, work orders, audits, planning and individual case-review dossiers
-belong in the separate [rtlprobe-agents repository](https://github.com/simulbarua/rtlprobe-agents).
-The [documentation policy](docs/README.md#documentation-policy) records the
-ownership rules for contributors.
+The [documentation index](docs/README.md) links the runner guides, dataset
+formats, reproduction instructions, and capstone experiments.

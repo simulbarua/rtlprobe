@@ -1,8 +1,7 @@
 """Condition-specific, hash-bound buggy-evidence exports.
 
-This module never executes a target or a localizer. A sealed export directory
-is an artifact boundary, not OS process isolation; agent execution additionally
-requires the fail-closed isolation preflight below and the caller's launch gates.
+The module builds and verifies sealed evidence exports. The caller can use the
+isolation preflight to prepare an evidence-only execution environment.
 """
 import argparse
 import hashlib
@@ -587,19 +586,18 @@ def isolation_preflight(directory, *, expected_manifest_sha256=None, backend=Non
 
     The returned prefix must wrap the actual localizer process. No /home,
     /Users, /opt, credentials, repository, curator tree, or host network is
-    mounted. A provider/network bridge and active project launch decisions are
-    separate prerequisites; this does not authorize an inference run.
+    mounted. The caller authorizes and starts the inference run separately.
     """
     if expected_manifest_sha256 is None:
-        raise RuntimeError('Agent execution requires a trusted external export-manifest hash')
+        raise RuntimeError('Localizer execution requires a trusted external export-manifest hash')
     manifest = verify_export(directory, expected_manifest_sha256=expected_manifest_sha256)
     if not manifest.get('ready') or manifest.get('missing'):
-        raise RuntimeError('Partial evidence export cannot start an agent')
+        raise RuntimeError('Partial evidence export cannot start a localizer')
     if backend != 'bubblewrap':
-        raise RuntimeError('Agent execution requires an explicitly selected enforced OS isolation backend')
+        raise RuntimeError('Localizer execution requires an explicitly selected enforced OS isolation backend')
     executable = shutil.which('bwrap')
     if executable is None:
-        raise RuntimeError('bubblewrap is unavailable; agent execution remains blocked')
+        raise RuntimeError('bubblewrap is unavailable; localizer execution remains blocked')
     prefix = [executable, '--unshare-all', '--die-with-parent', '--new-session', '--clearenv',
               '--setenv', 'PATH', '/usr/bin:/bin', '--tmpfs', '/tmp', '--dev', '/dev']
     for runtime in ('/usr/bin', '/usr/lib', '/lib', '/lib64', '/bin'):
@@ -610,7 +608,7 @@ def isolation_preflight(directory, *, expected_manifest_sha256=None, backend=Non
     try:
         result = subprocess.run([*prefix, '/bin/sh', '-c', probe], capture_output=True, text=True, timeout=timeout)
     except (OSError, subprocess.TimeoutExpired) as error:
-        raise RuntimeError('OS isolation preflight failed; agent execution remains blocked') from error
+        raise RuntimeError('OS isolation preflight failed; localizer execution remains blocked') from error
     if result.returncode:
         raise RuntimeError('OS isolation preflight rejected execution: '+result.stderr.strip())
     return {'backend': 'bubblewrap', 'export_manifest_sha256': sha((Path(directory)/'manifest.json').read_bytes()),

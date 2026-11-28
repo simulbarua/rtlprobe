@@ -24,7 +24,7 @@ new companions, exports and metadata are additive and independently hash-bound.
 | Private linkage and status | Case/index/review hashes → actual capture work/provenance → companion manifest → every condition manifest → frozen full/public spec identities. Retain all batch outcomes, partial attempts, review/feedback and completeness/missingness. | Private ledger; no curator case/operator IDs or labels in inference views. Recover every referenced root, including external companions and exports. |
 
 The saved sealed case supplies historical validation evidence. A new companion
-does not rewrite those executions or imply that Hermes authored the old case.
+preserves the execution records and case authorship.
 Actual current target qualification and scoped capture authorization remain
 separate prerequisites, supplied by the caller. The raw VCD is retained in full
 inside the private companion, together with raw buggy logs and unchanged oracle.
@@ -149,19 +149,14 @@ current code/tools and resource outcomes. Symlinks, changed or extra work files,
 partial captures and offline-import provenance refuse. See the
 [capture guide](evidence-capture.md#retained-execution-proof).
 
-The agent collection/readiness consumers require this proof and reverify it
-before completion; six valid exports alone are insufficient. A trusted guarded
-caller must bind the proof to the actual operation. These local files are not
+Verifying a complete case export requires this proof in addition to the six
+same-case exports. A trusted caller must bind the proof to the actual operation. These local files are not
 cryptographic attestation of physical execution. This is stricter operational
 admission, not a change to companion v1, coordinates or historical acceptance.
 It does not implement a universal recovery or authorization validator.
 
-Likewise, current backup freshness checks over case/review/learning files do not
-by themselves prove recovery of external companions/exports, qualification
-proofs or every runtime/job reference. Retention and restore verification must
-cover the entire linkage closure. Preserve explicit missingness until those
-checks and actual target evidence pass; no historical acceptance is revoked or
-promoted merely by this contract definition.
+Restore verification must cover every root referenced by the case, capture,
+qualification, and export records.
 
 For working APIs and limitations, see [capture](evidence-capture.md),
 [sanitized exports](sanitized-exports.md), [execution layout](execution-layout.md)

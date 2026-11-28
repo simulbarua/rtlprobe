@@ -1,7 +1,5 @@
-# Version control and local assistant state
-**/.git
-**/.codex
-**/.agents
+# Hidden directories and local state
+**/.*
 
 # Local environments, dependencies, and caches
 **/.venv*

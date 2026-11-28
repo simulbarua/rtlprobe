@@ -1,7 +1,7 @@
 # ChaCha specification store
 
 Status: curated, awaiting independent review; not frozen.
-Curator: Codex. Curation and local retrieval date: 2026-10-23 (America/Los_Angeles).
+Curation and local retrieval date: 2026-10-23 (America/Los_Angeles).
 The owner supplied both published documents locally; their bytes were hashed by
 the curator. No network retrieval was performed during this continuation.
 
