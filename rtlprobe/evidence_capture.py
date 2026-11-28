@@ -18,7 +18,7 @@ from .candidates import extract_candidates
 from .evidence import CODE_ROOT, Runner, filehash, identity
 from .evidence_structure import (build_structure, observer_source, IDENT, SCOPE,
                                  MAX_MEMORY_WORDS, memory_capture_reason)
-from .evidence_observer import (instrument_testbench, compiled_timebase, observation_lines,
+from .evidence_observer import (AES_ASSERTION_TEST, AES_EXTENDED_TEST, instrument_testbench, compiled_timebase, observation_lines,
                                 align_observations, align_test_windows, reset_failure_window)
 from .mutation import safe_path, sha
 from .oracle import classify
@@ -67,7 +67,7 @@ def source_hashes(sources):
     return result
 
 
-def resolve_dut_scope(testbench, *, top, test_top):
+def resolve_dut_scope(testbench, *, top, test_top, fixed_parameters=False):
     """Resolve exactly one unparameterized static top instance in the existing TB."""
     if not IDENT.fullmatch(top) or not IDENT.fullmatch(test_top):
         raise ValueError('simple module names required')
@@ -79,8 +79,14 @@ def resolve_dut_scope(testbench, *, top, test_top):
         from .sv_frontend import walk, ancestors
         for node in walk(module):
             if kind(node) == 'HierarchyInstantiation' and node.type.valueText == top:
-                if node.parameters is not None or any('Generate' in kind(p) for p in ancestors(node)):
+                if any('Generate' in kind(p) for p in ancestors(node)):
+                    raise ValueError('DUT instantiation must be static and outside generates')
+                if node.parameters is not None and not fixed_parameters:
                     raise ValueError('DUT instantiation must be static and unparameterized')
+                if node.parameters is not None and not re.fullmatch(
+                        r"#\s*\(\s*\.[A-Za-z_]\w*\s*\(\d+\s*\)(?:\s*,\s*\.[A-Za-z_]\w*\s*\(\d+\s*\))*\s*\)",
+                        ' '.join(parsed.text(node.parameters).split())):
+                    raise ValueError('Fixed DUT requires literal named parameter overrides')
                 for child in node.instances:
                     if hasattr(child, 'decl'):
                         if child.decl.dimensions:
@@ -172,21 +178,37 @@ def _log(value):
     return value
 
 
+def capture_adapter(context):
+    target_id = context['target_id']
+    if (target_id, context['test_id']) == ('aes', AES_ASSERTION_TEST):
+        return 'targets/aes/extended_v2/checker.py'
+    if (target_id, context['test_id']) in {('sha1', 'sha1_extended_v1'), ('aes', AES_EXTENDED_TEST)}:
+        return f'targets/{target_id}/extended/checker.py'
+    return f'targets/{target_id}/checker.py'
+
+
 def checker_evidence(*, context, testbench_source, plain_buggy_log, observed_buggy_log,
                      timebase=None, trace=None):
-    if set(context) != {'target_id', 'test_id', 'checkpoints'} or context['target_id'] not in {'sha256', 'chacha'}:
-        raise ValueError('only declared crypto checker contexts are available')
-    adapter = f"targets/{context['target_id']}/checker.py"
-    config = {'checker': {'path': adapter}, 'test_metadata': {'checkpoints': context['checkpoints']}}
+    if set(context) != {'target_id', 'test_id', 'checkpoints'} or context['target_id'] not in {'sha1', 'sha256', 'chacha', 'aes', 'axis_fifo'}:
+        raise ValueError('only declared checker contexts are available')
+    adapter = capture_adapter(context)
+    config = {'target_id':context['target_id'], 'test_id':context['test_id'],
+              'checker': {'path': adapter}, 'test_metadata': {'checkpoints': context['checkpoints']}}
     plain, observed = _log(plain_buggy_log), _log(observed_buggy_log)
     memory_warnings = []
     if trace is not None:
         memory_warnings = [f"VCD warning: array word {s['normalized_reference']} will conflict with an escaped identifier."
                            for s in trace['signals'] if s['source_signals']
                            and re.search(r'\[\d+\]$', s['normalized_reference'])]
-    cleaned, observations, windows = observation_lines(observed['stdout'], context['checkpoints'],
-                                                      permitted_memory_warnings=memory_warnings)
     before = classify(**plain, config=config)
+    terminal = before.get('terminal_failure') is True
+    observed_checkpoints = [point['id'] for point in before['checkpoints']] if terminal else context['checkpoints']
+    # The public checker rederives the verdict from the unchanged log alone.
+    # An actual observation or trace still requires the terminal interface sample.
+    require_terminal_sample = terminal and (trace is not None or observed != plain)
+    cleaned, observations, windows = observation_lines(observed['stdout'], observed_checkpoints,
+                                                       permitted_memory_warnings=memory_warnings,
+                                                       terminal=require_terminal_sample)
     after = classify(**{**observed, 'stdout': cleaned}, config=config)
     if before != after or before['outcome'] not in {'pass', 'functional_fail'}:
         raise ValueError('observational instrumentation changed checker semantics or logs are incomplete')
@@ -197,7 +219,7 @@ def checker_evidence(*, context, testbench_source, plain_buggy_log, observed_bug
         if not isinstance(text, str):
             raise ValueError('invalid testbench source')
     anchors = align_observations(observations, verdict=before, timebase=timebase, trace=trace,
-                                 target_id=context['target_id']) if trace is not None else []
+                                 target_id=context['target_id'], test_id=context['test_id']) if trace is not None else []
     test_windows = align_test_windows(windows, anchors, timebase, trace) if trace is not None else []
     return {'schema_version': 'buggy-checker-1', 'context': context,
             'testbench_source': testbench_source, 'adapter_source': {adapter: (CODE_ROOT/adapter).read_text()},
@@ -216,14 +238,17 @@ def build_inference_evidence(*, buggy_sources, top, dut_scope, raw_vcd, checker_
     hashes = source_hashes(buggy_sources)
     if not isinstance(testbench_source, dict) or len(testbench_source) != 1:
         raise ValueError('one unchanged existing testbench source required')
-    if resolve_dut_scope(next(iter(testbench_source.values())), top=top,
-                         test_top=dut_scope.split('.')[0]) != dut_scope:
+    testbench = next(iter(testbench_source.values()))
+    fixed = (checker_context.get('target_id'), checker_context.get('test_id')) == ('axis_fifo', 'axis_fifo_frame_v1')
+    if resolve_dut_scope(testbench, top=top, test_top=dut_scope.split('.')[0], fixed_parameters=fixed) != dut_scope:
         raise ValueError('DUT scope differs from existing testbench hierarchy')
-    graph, alignment = build_structure(buggy_sources, top=top, dut_scope=dut_scope)
+    graph, alignment = build_structure(buggy_sources, top=top, dut_scope=dut_scope,
+                                       testbench=testbench if fixed else None)
     trace = trace_index(raw_vcd, graph)
     checker = checker_evidence(context=checker_context, testbench_source=testbench_source,
         plain_buggy_log=plain_buggy_log, observed_buggy_log=observed_buggy_log, timebase=timebase, trace=trace)
-    reset, window = reset_failure_window(trace, checker['anchors'], dut_scope=dut_scope)
+    reset, window = reset_failure_window(trace, checker['anchors'], dut_scope=dut_scope,
+                                         target_id=checker_context['target_id'])
     trace.update(reset=reset, analysis_window=window,
                  passing_test_windows=[w for w in checker['test_windows'] if w['outcome'] == 'pass'])
     if window is None or checker['anchor_status'] != 'complete':
@@ -317,8 +342,8 @@ def capture_observation(*, config, buggy_root, destination, expected_hashes, exe
     integration must bind expected_hashes to the validated buggy case snapshot.
     """
     _guard(execution_guard)
-    if config.get('backend', 'icarus') != 'icarus' or config.get('target_id') not in {'sha256', 'chacha'}:
-        raise ValueError('observational capture currently supports only crypto Icarus targets')
+    if config.get('backend', 'icarus') != 'icarus' or config.get('target_id') not in {'sha1', 'sha256', 'chacha', 'aes', 'axis_fifo'}:
+        raise ValueError('observational capture currently supports only admitted Icarus targets')
     if not file_limit_supported():
         raise RuntimeError('capture requires enforced per-file RLIMIT_FSIZE support')
     source_root, output = Path(buggy_root).resolve(), Path(destination).resolve()
@@ -339,10 +364,12 @@ def capture_observation(*, config, buggy_root, destination, expected_hashes, exe
             raise ValueError('buggy source binding mismatch or unsafe source path')
     sources = {path: (source_root/path).read_bytes().decode('ascii') for path in config['rtl']}
     testbench = (source_root/config['testbench']).read_bytes().decode('ascii')
-    scope = resolve_dut_scope(testbench, top=config['top'], test_top=config['test_top'])
-    graph, _ = build_structure(sources, top=config['top'], dut_scope=scope)
+    fixed = (config['target_id'], config['test_id']) == ('axis_fifo', 'axis_fifo_frame_v1')
+    scope = resolve_dut_scope(testbench, top=config['top'], test_top=config['test_top'], fixed_parameters=fixed)
+    graph, _ = build_structure(sources, top=config['top'], dut_scope=scope,
+                               testbench=testbench if fixed else None)
     observer, policy = observer_source(graph)
-    observed_testbench, checker_policy = instrument_testbench(testbench, config['target_id'])
+    observed_testbench, checker_policy = instrument_testbench(testbench, config['target_id'], test_id=config['test_id'])
     _guard(execution_guard)
     output.mkdir(parents=True, exist_ok=False)
     run_root = output/'work'
@@ -356,19 +383,17 @@ def capture_observation(*, config, buggy_root, destination, expected_hashes, exe
     (run_root/'observed_tb.v').write_text(observed_testbench)
     runner = runner_factory(output, config['limits'])
     records, logs = [], []
-    for name, observed in [('plain_buggy', False), ('observed_buggy', True)]:
-        binary = run_root/(name+'.vvp')
-        command = ['iverilog', *config['compile_flags'], '-s', config['test_top'], '-o', str(binary),
-                   *[str(run_root/'observed_tb.v') if observed and path == config['testbench'] else str(run_root/path) for path in paths]]
-        if observed:
-            command += ['-s', 'rtlprobe_observer', str(run_root/'observer.v')]
+    from .capture_execution import command_plan
+    plan = iter(command_plan(output, config, file_limit))
+    for compile_step, run_step in zip(plan, plan, strict=True):
         _guard(execution_guard)
         if any(filehash(run_root/path) != expected_hashes[path] for path in paths):
             raise ValueError('copied buggy source/testbench binding changed before compilation')
-        records.append(runner.require(name+'_compile', command, run_root, config['limits']['compile_seconds']))
+        name, command, timeout = compile_step
+        records.append(runner.require(name, command, run_root, timeout))
         _guard(execution_guard)
-        result = runner.run(name+'_run', [sys.executable, str(CODE_ROOT/'rtlprobe/evidence_limits.py'),
-            '--bytes', str(file_limit), '--', 'vvp', '-N', str(binary)], run_root, config['limits']['simulation_seconds'])
+        name, command, timeout = run_step
+        result = runner.run(name, command, run_root, timeout)
         records.append(result)
         _guard(execution_guard)
         logs.append({'stdout': (output/result['stdout']).read_text(), 'stderr': (output/result['stderr']).read_text(),
@@ -383,7 +408,7 @@ def capture_observation(*, config, buggy_root, destination, expected_hashes, exe
         timebase=compiled_timebase((run_root/'observed_buggy.vvp').read_text(), config['test_top']))
     provenance = {'schema_version': 'capture-provenance-1', 'snapshot_kind': 'buggy',
                   'input_hashes': expected_hashes, 'target_config_sha256': identity(config),
-                  'checker_adapter_sha256': filehash(CODE_ROOT/f"targets/{config['target_id']}/checker.py"),
+                  'checker_adapter_sha256': filehash(CODE_ROOT/capture_adapter(config)),
                   'records': records, 'observer_policy': policy,
                   'checker_observer_policy': checker_policy,
                   'observed_testbench_sha256': sha(observed_testbench.encode()),

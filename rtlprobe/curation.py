@@ -1,7 +1,7 @@
 """Curator-only transitions. Public actions serialize through workspace_lock."""
 
 from collections import Counter, defaultdict
-from contextlib import redirect_stdout
+from contextlib import nullcontext, redirect_stdout
 from datetime import datetime, timezone
 import io
 import json
@@ -10,7 +10,8 @@ from pathlib import Path
 import random
 import re
 
-from .evidence import CODE_ROOT, digest, filehash, identity, load, save, workspace_lock, write_once
+from . import measurement
+from .evidence import CODE_ROOT, digest, filehash, identity, load, save, save_bytes, workspace_lock, write_once
 
 DEFAULT_FIRST_N = 5
 DEFAULT_FRACTION = 0.10
@@ -74,6 +75,8 @@ def tool_defect_hold_reasons(record):
 def sealed_hold_reasons(record):
     """Only bundle fields: never consult annotations or mutable curation policy."""
     reasons = []
+    if 'recovery_provenance' in record:
+        reasons.append('recovered_attempt_requires_human_review')
     if record.get("automated_validation") != "pass":
         reasons.append("automated_validation_not_pass")
     if record.get("prediction_agreement") != "confirmed":
@@ -233,30 +236,72 @@ def _event(entry, previous, destination, first_n, fraction):
             "previous_record_hashes": previous, "recorded_at": _now()}
 
 
+def _publication_files(root, cid):
+    _component(cid)
+    data = Path(root)/"data"
+    return (data/"reviews"/(cid+".acceptance.json"), data/"reviews"/(cid+".json"),
+            data/"labels"/(cid+".json"), data/"manifests"/(cid+".json"))
+
+
+def _recover_publications(root):
+    """Restore an interrupted transaction under the caller's workspace lock."""
+    for journal in sorted((Path(root)/"data/state/curation").glob("*.json")):
+        files = _publication_files(root, journal.stem)
+        records = load(journal)
+        if len(records) != len(files):
+            raise ValueError("Incomplete curation recovery journal")
+        before = [row["before"].encode() if row["before"] is not None else None for row in records]
+        current = [path.read_bytes() if path.is_file() else None for path in files]
+        updated = [value is not None and digest(value) == row["after_sha256"]
+                   for value, row in zip(current, records)]
+        if any(value != old and not new for value, old, new in zip(current, before, updated)):
+            raise ValueError("Curation recovery found a record outside the saved transaction")
+        if not all(updated):
+            for path, value, old in zip(files, current, before):
+                if value != old:
+                    if old is None:
+                        path.unlink()
+                    else:
+                        save_bytes(path, old)
+        journal.unlink()
+
+
+@measurement.measured('acceptance', 'acceptance_commit')
 def _publish(root, entry, paths, label, event, review=None):
-    """Caller holds lock. Preserve replaced events before updating current pointers."""
+    """Index last. The journal restores exact prior bytes on an interrupted write."""
     validate_receipt(event)
     root = Path(root)
     cid, state = event["case_id"], event["to_state"]
-    event_path = root/"data/reviews"/(cid+".acceptance.json")
+    files = _publication_files(root, cid)
+    event_path = files[0]
     if event_path.exists():
-        old = load(event_path)
         old_hash = filehash(event_path)
         if event["previous_record_hashes"].get("acceptance_sha256") != old_hash:
             raise ValueError("Refusing to overwrite an unbound acceptance event")
-        write_once(root/"data/reviews/history"/cid/(old_hash+".acceptance.json"), old)
-        save(event_path, event)
-    else:
-        write_once(event_path, event)
-    if review is not None:
-        save(paths["review"], review)
-    label.update(status=state)
-    save(paths["label"], label)
+        write_once(root/"data/reviews/history"/cid/(old_hash+".acceptance.json"), load(event_path))
+    def encoded_hash(value):
+        return digest((json.dumps(value, indent=2, sort_keys=True)+"\n").encode())
     summary = dict(entry["summary"], state=state, validated_pending_review=0,
                    accepted_core=int(state == "accepted_core"), accepted_auto=int(state == "accepted_auto"),
-                   acceptance_record=str(event_path.relative_to(root)), acceptance_sha256=filehash(event_path),
-                   human_review_record=str(paths["review"].relative_to(root)), human_review_sha256=filehash(paths["review"]))
-    save(paths["index"], summary)
+                   acceptance_record=str(event_path.relative_to(root)), acceptance_sha256=encoded_hash(event),
+                   human_review_record=str(paths["review"].relative_to(root)),
+                   human_review_sha256=encoded_hash(review) if review is not None else filehash(paths["review"]))
+    values = (event, review, dict(label, status=state), summary)
+    journal = root/"data/state/curation"/(cid+".json")
+    transaction = []
+    for path, value in zip(files, values):
+        old = path.read_bytes() if path.exists() else None
+        transaction.append(dict(before=old.decode() if old is not None else None,
+                                after_sha256=encoded_hash(value) if value is not None else digest(old)))
+    write_once(journal, transaction)
+    try:
+        for path, value in zip(files, values):
+            if value is not None:
+                save(path, value)
+    except BaseException:
+        _recover_publications(root)
+        raise
+    journal.unlink()
     return summary
 
 
@@ -266,6 +311,8 @@ def promote_auto(root, first_n=DEFAULT_FIRST_N, dry_run=False):
         raise ValueError("first-n must be a nonnegative integer")
     results = []
     with workspace_lock(root):
+        if not dry_run:
+            _recover_publications(root)
         for entry in _inventory(root):
             summary = entry["summary"]
             if summary["state"] != "validated_pending_review":
@@ -288,13 +335,14 @@ def promote_auto(root, first_n=DEFAULT_FIRST_N, dry_run=False):
     return results
 
 
-def accept(root, case_id, reviewer, decision, evidence, document=None, *, expected_bindings=None):
+def accept(root, case_id, reviewer, decision, evidence, document=None, *, expected_bindings=None, publication_guard=nullcontext):
     from .lifecycle import verify_index
     _component(case_id)
     if decision not in {"approve", "reject"} or not reviewer.strip() or not evidence.strip():
         raise ValueError("A reviewer, approve/reject decision, and evidence text are required")
     root = Path(root)
     with workspace_lock(root):
+        _recover_publications(root)
         entry = next((e for e in _inventory(root) if e["summary"]["case_id"] == case_id), None)
         if entry is None or entry["summary"]["state"] not in {"validated_pending_review", "accepted_auto"}:
             raise ValueError("Human decisions require a pending or accepted_auto case")
@@ -329,13 +377,14 @@ def accept(root, case_id, reviewer, decision, evidence, document=None, *, expect
         # Match evidence.save's exact serialized bytes before any mutable record is replaced.
         event["human_review_sha256"] = digest((json.dumps(review, indent=2, sort_keys=True)+"\n").encode())
         validate_receipt(event)
-        if decision == "reject" and samples:
-            policy_path = _policy_path(root, entry["record"])
-            if not policy_path.exists():
-                write_once(policy_path, {"full_review": True, "pair": pair(entry["record"]),
-                                         "rejected_case_id": case_id, "recorded_at": event["recorded_at"],
-                                         "samples": samples})
-        summary = _publish(root, entry, paths, label, event, review)
+        with publication_guard():
+            if decision == "reject" and samples:
+                policy_path = _policy_path(root, entry["record"])
+                if not policy_path.exists():
+                    write_once(policy_path, {"full_review": True, "pair": pair(entry["record"]),
+                                             "rejected_case_id": case_id, "recorded_at": event["recorded_at"],
+                                             "samples": samples})
+            summary = _publish(root, entry, paths, label, event, review)
         verify_index(root, summary)
         return summary
 

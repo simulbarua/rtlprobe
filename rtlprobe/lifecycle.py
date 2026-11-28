@@ -1,8 +1,11 @@
 """Content identity, immutable publication, and bounded whole-case recovery."""
 
 import os
+from . import measurement
+
 from pathlib import Path
 
+from . import command_tree
 from .evidence import filehash, identity, load, save, verify_manifest, write_once
 
 
@@ -76,18 +79,37 @@ def reserve_attempt(root, key, fingerprint, new_directory):
         if (out/"manifest.json").exists():
             verify_manifest(out)
             return state, out, True
+        supervised = {}
+        for started in out.glob("commands/*/started.json"):
+            if "tree_launch_id" in load(started):
+                try:
+                    _, supervised[started.parent] = command_tree.exit_receipt(started.parent)
+                except (OSError, ValueError) as exc:
+                    raise RuntimeError("Process-tree exit is unverified; retry remains blocked") from exc
+            elif not any((started.parent/name).is_file() for name in ("process.json", "run.json")):
+                raise RuntimeError("Command ownership was never recorded; reconcile before recovery")
         for process_file in out.glob("commands/*/process.json"):
+            if process_file.parent in supervised:
+                continue
             if (process_file.parent/"run.json").exists():
                 continue
-            pid = load(process_file)["pid"]
-            try:
-                os.kill(pid, 0)
-            except ProcessLookupError:
-                pass
-            else:
+            process_record = load(process_file)
+            if "group_id" in process_record:
+                raise RuntimeError("Supervised command is missing its bound launch record")
+            pid = process_record["pid"]
+            if type(pid) is not int or pid <= 0:
+                raise ValueError("Invalid process identity in interrupted attempt")
+            for probe in (os.killpg, os.kill):
+                try:
+                    probe(pid, 0)
+                except ProcessLookupError:
+                    continue
                 raise RuntimeError("An interrupted attempt may still have a live tool process; refusing concurrent recovery")
         previous["status"] = "interrupted"
-        write_once(out/"INTERRUPTED.json", {"status": "interrupted", "reason": "No sealed terminal case; preserving partial artifacts"})
+        interrupted = {"status": "interrupted", "reason": "No sealed terminal case; preserving partial artifacts"}
+        if supervised:
+            interrupted["tree_exit_sha256"] = {str(path.relative_to(out)): digest for path, digest in supervised.items()}
+        write_once(out/"INTERRUPTED.json", interrupted)
     if len(state["attempts"]) >= 2:
         raise RuntimeError("Interrupted-case retry budget exhausted (maximum two attempts)")
     out = new_directory()
@@ -101,6 +123,7 @@ def complete_attempt(root, state, record):
     save(Path(root)/"data/state"/(state["mutation_key"]+".json"), state)
 
 
+@measurement.measured('publication')
 def publish(root, out, record):
     root, out = Path(root), Path(out)
     verify_manifest(out)

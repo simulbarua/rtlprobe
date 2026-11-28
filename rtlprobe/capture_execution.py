@@ -47,10 +47,14 @@ def command_plan(root, config, file_limit):
     result = []
     for name, observed in [('plain_buggy', False), ('observed_buggy', True)]:
         binary = work/(name+'.vvp')
-        command = ['iverilog', *config['compile_flags'], '-s', config['test_top'], '-o', str(binary),
-                   *[str(work/'observed_tb.v') if observed and p == config['testbench'] else str(work/p) for p in paths]]
+        command = ['iverilog', *config['compile_flags'], '-s', config['test_top'], '-o', str(binary)]
+        if observed and config.get('target_id') in {'aes', 'axis_fifo'}:
+            command += ['-s', 'rtlprobe_observer']
+        command += [str(work/'observed_tb.v') if observed and p == config['testbench'] else str(work/p) for p in paths]
         if observed:
-            command += ['-s', 'rtlprobe_observer', str(work/'observer.v')]
+            if config.get('target_id') not in {'aes', 'axis_fifo'}:
+                command += ['-s', 'rtlprobe_observer']
+            command.append(str(work/'observer.v'))
         result.append((name+'_compile', command, config['limits']['compile_seconds']))
         result.append((name+'_run', [sys.executable, str(CODE_ROOT/'rtlprobe/evidence_limits.py'),
             '--bytes', str(file_limit), '--', 'vvp', '-N', str(binary)], config['limits']['simulation_seconds']))
@@ -58,11 +62,11 @@ def command_plan(root, config, file_limit):
 
 
 def verify_capture_execution(proof_path, *, expected_sha256, config, expected_hashes):
-    from .evidence_capture import load_inference_evidence
+    from .evidence_capture import capture_adapter, load_inference_evidence
     from .evidence_observer import instrument_testbench, compiled_timebase
     from .evidence_structure import observer_source
-    if config.get('target_id') not in {'sha256', 'chacha'} or config.get('backend', 'icarus') != 'icarus':
-        raise ValueError('Capture execution verification supports only crypto Icarus targets')
+    if config.get('target_id') not in {'sha1', 'sha256', 'chacha', 'aes', 'axis_fifo'} or config.get('backend', 'icarus') != 'icarus':
+        raise ValueError('Capture execution verification supports only admitted Icarus targets')
     proof_path = Path(proof_path)
     if (not proof_path.is_absolute() or '..' in proof_path.parts or proof_path.name != PROOF
             or proof_path.is_symlink() or not proof_path.is_file() or filehash(proof_path) != expected_sha256):
@@ -87,12 +91,13 @@ def verify_capture_execution(proof_path, *, expected_sha256, config, expected_ha
             or any(value[k]['status'] != 'complete' for k in ('graph', 'alignment', 'trace', 'checker'))):
         raise ValueError('Capture execution companion is partial or belongs to different source bytes')
     provenance = _load(root/'companion/provenance.json')
-    observed_tb, checker_policy = instrument_testbench((work/config['testbench']).read_bytes().decode('ascii'), config['target_id'])
+    testbench = (work/config['testbench']).read_bytes().decode('ascii')
+    observed_tb, checker_policy = instrument_testbench(testbench, config['target_id'], test_id=config['test_id'])
     observer, policy = observer_source(value['graph'])
     file_limit = min(64*1024*1024, config['limits'].get('disk_bytes', 256*1024*1024)//4)
     if (provenance.get('schema_version') != 'capture-provenance-1' or provenance.get('snapshot_kind') != 'buggy'
             or provenance.get('input_hashes') != expected_hashes or provenance.get('target_config_sha256') != identity(config)
-            or provenance.get('checker_adapter_sha256') != filehash(CODE_ROOT/f"targets/{config['target_id']}/checker.py")
+            or provenance.get('checker_adapter_sha256') != filehash(CODE_ROOT/capture_adapter(config))
             or provenance.get('capture_status') != 'complete' or policy['missingness']
             or provenance.get('observer_policy') != policy or provenance.get('checker_observer_policy') != checker_policy
             or (work/'observed_tb.v').read_bytes() != observed_tb.encode()
@@ -116,11 +121,14 @@ def verify_capture_execution(proof_path, *, expected_sha256, config, expected_ha
                 or type(record.get('returncode')) is not int
                 or (name.endswith('_compile') and record['returncode'] != 0)):
             raise ValueError('Capture command differs from the bounded actual command plan')
-        for field in ('elapsed_seconds', 'cpu_seconds', 'timeout_seconds'):
+        for field in ('elapsed_seconds', 'cpu_seconds'):
             n = record.get(field)
             if type(n) not in (int, float) or not math.isfinite(n) or n < 0:
                 raise ValueError('Capture command resource accounting missing or invalid')
-        if not 0 < record['timeout_seconds'] <= timeout or record['elapsed_seconds'] > record['timeout_seconds']+1:
+        limit = record['timeout_seconds']
+        if (limit is None and timeout is not None or limit is not None and (type(limit) not in (int, float)
+                or not math.isfinite(limit) or limit <= 0 or timeout is not None and limit > timeout
+                or record['elapsed_seconds'] > limit+1)):
             raise ValueError('Capture command exceeded its declared bound')
         start = _load(directory/'started.json'); process = _load(directory/'process.json')
         when = datetime.fromisoformat(record['started_at'])
@@ -137,8 +145,9 @@ def verify_capture_execution(proof_path, *, expected_sha256, config, expected_ha
             if (log != {'stdout': (directory/'stdout.log').read_text(), 'stderr': (directory/'stderr.log').read_text(),
                         'returncode': record['returncode'], 'timed_out': record['timed_out']}):
                 raise ValueError('Capture raw run logs differ from the companion checker')
-    if (sum(r['elapsed_seconds'] for r in records) > config['limits']['campaign_seconds']
-            or sum(r['cpu_seconds'] for r in records) > config['limits']['cpu_seconds']
+    wall, cpu = config['limits']['campaign_seconds'], config['limits']['cpu_seconds']
+    if (wall is not None and sum(r['elapsed_seconds'] for r in records) > wall
+            or cpu is not None and sum(r['cpu_seconds'] for r in records) > cpu
             or sum(p.stat().st_size for p in root.rglob('*') if p.is_file()) > config['limits']['disk_bytes']):
         raise ValueError('Capture execution exceeds its aggregate resource policy')
     if proof['files'] != _files(root) or filehash(proof_path) != expected_sha256:

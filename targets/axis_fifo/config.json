@@ -1,0 +1,100 @@
+{
+  "schema_version": "pilot-1",
+  "target_id": "axis_fifo",
+  "case_prefix": "axis_fifo",
+  "split_group": "forencich_axis",
+  "design_id": "forencich_axis_fifo",
+  "repository_url": "https://github.com/alexforencich/verilog-axis.git",
+  "revision": "48ff7a7e2ef782cf778d47910cf85835c64b1bce",
+  "vendor": "tools/dataset/vendor/axis_fifo",
+  "top": "axis_fifo",
+  "test_top": "tb_axis_fifo",
+  "test_id": "axis_fifo_frame_v1",
+  "rtl": [
+    "rtl/axis_fifo.v"
+  ],
+  "testbench": "targets/axis_fifo/tb_axis_fifo.v",
+  "collateral": [
+    "COPYING",
+    "README.md",
+    "tox.ini",
+    "tb/axis_fifo/test_axis_fifo.py"
+  ],
+  "compile_flags": [
+    "-g2012"
+  ],
+  "defines": [],
+  "parameters": {},
+  "seed": null,
+  "stimulus": "Fixed 16-bit, eight-beat frame FIFO with sidebands, pause, bad-frame and oversize rollback, reset, and pointer wrap.",
+  "track": "synthesizable",
+  "limits": {
+    "compile_seconds": 30,
+    "simulation_seconds": 15,
+    "synthesis_seconds": 120,
+    "campaign_seconds": 300,
+    "cpu_seconds": 240,
+    "disk_bytes": 268435456,
+    "workers": 1,
+    "max_candidates": 1,
+    "fallback_tests": 0
+  },
+  "scope": "One pinned frame FIFO configuration with 24 sampled public-interface comparisons.",
+  "checker": {
+    "path": "targets/axis_fifo/checker.py"
+  },
+  "test_metadata": {
+    "checker": "Known-value public RTL interface comparisons after settled clock edges.",
+    "checkpoints": [
+      "uncommitted_hidden",
+      "commit_pulse",
+      "stalled_valid",
+      "stalled_data",
+      "first_not_last",
+      "id_forwarded",
+      "dest_forwarded",
+      "user_forwarded",
+      "second_data",
+      "partial_keep",
+      "final_last",
+      "bad_frame_pulse",
+      "bad_frame_hidden",
+      "oversize_pulse",
+      "oversize_hidden",
+      "rollback_recovers",
+      "pause_deferred",
+      "pause_at_boundary",
+      "pause_valid_suppressed",
+      "resume_valid",
+      "reset_discards_queued",
+      "reset_discards_partial",
+      "reset_accepts_clean_frame",
+      "wrap_preserves_data"
+    ]
+  },
+  "specification": {
+    "url": "https://github.com/alexforencich/verilog-axis/tree/48ff7a7e2ef782cf778d47910cf85835c64b1bce#axis_fifo-module",
+    "version": "48ff7a7e2ef782cf778d47910cf85835c64b1bce",
+    "section": "axis_fifo module and parameter/interface descriptions",
+    "classification": "documented_requirement",
+    "requirement": "Frame FIFO commits valid complete frames, preserves enabled sidebands, and supports frame-boundary pause."
+  },
+  "coverage": {
+    "status": "unavailable",
+    "reason": "Directed behavioral checkpoints. Structural instrumentation does not supply per-test code coverage."
+  },
+  "control": {
+    "path": "rtl/axis_fifo.v",
+    "line": 236,
+    "statement": "wire [KEEP_WIDTH-1:0]  m_axis_tkeep_pipe  = KEEP_ENABLE ? m_axis[KEEP_OFFSET +: KEEP_WIDTH] : {KEEP_WIDTH{1'b1}};",
+    "operator": {
+      "id": "condition_invert",
+      "version": "1.0"
+    },
+    "reset_identifiers": [
+      "rst"
+    ]
+  },
+  "test_scope": "test_specific",
+  "testbench_asset_sha256": "aa6e65d6649e03195d5eb5cd1197b37bbb414a29b0c325c23b4220f0935ac2b5"
+}

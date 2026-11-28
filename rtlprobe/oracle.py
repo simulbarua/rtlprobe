@@ -52,7 +52,16 @@ def classify(stdout, stderr='', returncode=0, timed_out=False, *, config, contro
             raise ValueError('Functional verdict contradicts simulator status')
         if 'test_metadata' in config:
             checks = result.get('checkpoints', [])
-            if [c.get('id') for c in checks] != config['test_metadata']['checkpoints']:
+            declared = config['test_metadata']['checkpoints']
+            if result.get('terminal_failure') is True:
+                if ((config.get('target_id'), config.get('test_id')) != ('aes', 'aes_core_extended_v2')
+                        or result['outcome'] != 'functional_fail' or result.get('reason') != 'checker_terminal_failure'
+                        or not 0 < len(checks) <= len(declared)
+                        or checks[-1].get('failure_kind') not in {'protocol', 'transaction_cycle_limit'}
+                        or checks[-1].get('outcome') != 'functional_fail'):
+                    raise ValueError('Unexpected terminal checker verdict')
+                declared = declared[:len(checks)]
+            if [c.get('id') for c in checks] != declared:
                 raise ValueError('Checker verdict omits or reorders declared checkpoints')
             failed = [c for c in checks if c.get('outcome') == 'functional_fail']
             if (any(c.get('outcome') not in {'pass', 'functional_fail'} for c in checks)

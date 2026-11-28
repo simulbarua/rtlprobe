@@ -17,11 +17,13 @@ def selected():
     return path.resolve()
 
 
-def validate(config):
+def validate(config, *, root=None):
     from .backends import IDS
     backend = config.get('backend', 'icarus')
     if backend not in IDS:
         raise ValueError('Unknown backend')
+    if config.get('test_scope', 'shared') not in ('shared', 'test_specific'):
+        raise ValueError('Unknown target test scope')
     for key in ('target_id', 'case_prefix', 'split_group'):
         if not isinstance(config.get(key), str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]*', config[key]):
             raise ValueError(f'Target manifest requires a safe {key}')
@@ -34,7 +36,8 @@ def validate(config):
     if not re.fullmatch(r'[0-9a-f]{40}', config.get('revision', '')):
         raise ValueError('Target revision must be a full pinned Git commit')
     vendor = safe_path(config['vendor'])
-    if not (ROOT/vendor).resolve().is_relative_to(ROOT):
+    data = Path(ROOT if root is None else root).resolve()
+    if not (data/vendor).resolve().is_relative_to(data):
         raise ValueError('Vendor path escapes data directory')
     paths = config['rtl'] + [config['testbench']] + config['collateral']
     if not config['rtl'] or len(paths) != len(set(paths)):
@@ -69,12 +72,12 @@ def checker_path(config, root=CODE_ROOT):
     return path
 
 
-def configuration(path=None):
+def configuration(path=None, *, root=None):
     path = path or selected()
     if path is None:
         raise ValueError('Select an explicit --target-config manifest; there is no default target')
     try:
-        return validate(load(path))
+        return validate(load(path), root=root)
     except (KeyError, TypeError) as error:
         raise ValueError(f'Incomplete or malformed target manifest: {error}') from error
 

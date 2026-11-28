@@ -6,7 +6,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from rtlprobe import batch
-from rtlprobe.evidence import (ROOT, Runner, filehash, load, manifest, save, workspace_lock, write_once)
+from rtlprobe.evidence import (ROOT, Runner, digest, filehash, load, manifest, save, workspace_lock, write_once)
 from rtlprobe.lifecycle import (mutation_key, publish, reserve_attempt, verify_index)
 from rtlprobe.mutation import apply, locate_constant
 from test_pilot import PASS, classify
@@ -132,26 +132,54 @@ class RecoveryTests(unittest.TestCase):
 
 class OutcomeTests(unittest.TestCase):
     """Exercise early-stop dispositions through the real case controller, with mocked tools."""
-    def run_disposition(self, outcome):
+    def run_disposition(self, outcome, *, targeted=False, third=False, disagree=False):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);out=root/"case";out.mkdir()
             config=load(ROOT/"targets/sha256/config.json")
+            if targeted:
+                config['test_scope'] = 'test_specific'
             proposal={"path":config['rtl'][0],"target":{"line":1,"column_1based":1,"before":"+","after":"-","statement":"a + b;"},
-                      "family":"datapath_arithmetic","lineage_id":"site","activation":"test","prediction":{"first_checkpoint":"tc1"}}
+                      "family":"datapath_arithmetic","lineage_id":"site","activation":"test","prediction":{"first_checkpoint":"tc1"},
+                      'primary_test': config['test_id'], 'fallback_tests': []}
+            if third:
+                proposal['prediction']['third_run_reason'] = 'The activation depends on a testbench race.'
             design={"structure":{"status":"pass"},"evidence":"qualification"}
+            sources = {proposal['path']: b'a + b;', config['testbench']: b'testbench'}
+            fp = {'sha256': 'fp', 'inputs': {'files': {name: digest(data) for name, data in sources.items()}}}
             def snapshot(c,d):
-                d.mkdir(parents=True);p=d/config['rtl'][0];p.parent.mkdir(parents=True);p.write_bytes(b"a + b;")
+                for name, data in sources.items():
+                    p = d/name
+                    p.parent.mkdir(parents=True, exist_ok=True)
+                    p.write_bytes(data)
             def restore(name,cmd,cwd,timeout):
                 (cwd/config['rtl'][0]).write_bytes(b"a + b;")
             good={"outcome":"pass","signature":None,"source_hashes":{},"executable_sha256":"bin"}
             first=dict(good,outcome=outcome)
+            runs = ['mutant_1']
+            results = [first]
+            if outcome == 'functional_fail':
+                first['signature'] = [{'id': 'tc1', 'expected': '01', 'actual': '02'}]
+                runs.extend(['mutant_2', 'mutant_3'] if third else ['mutant_2'])
+                results.extend([first] * (len(runs) - 1))
+                if disagree:
+                    results[-1] = dict(first, signature=[{'id': 'tc2'}])
+            runs.append('restored')
+            results.append(good)
+            if targeted:
+                runs.insert(0, 'original')
+                results.insert(0, good)
+            binding = {'qualification_manifest_sha256': 'a'*64}
             with patch.object(batch.pilot,"snapshot",side_effect=snapshot), patch.object(batch.pilot,"compile_design",return_value=out/"binary"), \
-                 patch.object(batch.pilot,"simulate",side_effect=[good,first,good]) as sim, \
+                 patch.object(batch.pilot,"simulate",side_effect=results) as sim, \
+                 patch.object(batch.pilot,'verified_original',return_value=(good,binding)) as verify_original, \
+                 patch.object(batch.pilot,'fingerprint',return_value=fp), \
                  patch.object(batch.Runner,"require",side_effect=restore), patch.object(batch.pilot,"schema"), \
-                 patch.object(batch.pilot,"structure") as synthesis:
-                record=batch.execute(proposal,config,{"sha256":"fp"},design,"key",b"a + b;",b"a - b;",out,60)
-                self.assertEqual(sim.call_count,3) # Original, one mutant, restored; no pointless replays.
-                synthesis.assert_not_called()
+                 patch.object(batch.pilot,"structure",return_value={'status': 'pass'}) as synthesis:
+                record=batch.execute(proposal,config,fp,design,"key",b"a + b;",b"a - b;",out,60)
+                self.assertEqual([call.args[2] for call in sim.call_args_list], runs)
+                self.assertEqual(verify_original.call_count, int(not targeted))
+                self.assertEqual(record['original_reuse'], None if targeted else binding)
+                self.assertEqual(synthesis.call_count, int(outcome == 'functional_fail' and not disagree))
                 return record
 
     def test_survivor_is_unexposed_not_equivalent(self):
@@ -161,6 +189,16 @@ class OutcomeTests(unittest.TestCase):
     def test_timeout_is_not_a_functional_bug(self):
         record=self.run_disposition("timeout_unclassified")
         self.assertEqual(record['state'],"infrastructure_error")
+
+    def test_reuses_baseline_and_accepts_two_matching_failures(self):
+        record = self.run_disposition('functional_fail')
+        self.assertEqual(record['state'], 'validated_pending_review')
+        self.assertTrue(record['checks']['two_consistent_mutant_failures'])
+
+    def test_test_specific_original_is_fresh_and_requested_third_must_match(self):
+        record = self.run_disposition('functional_fail', targeted=True, third=True, disagree=True)
+        self.assertEqual(record['state'], 'flaky')
+        self.assertFalse(record['checks']['three_consistent_mutant_failures'])
 
 
 if __name__ == "__main__": unittest.main()

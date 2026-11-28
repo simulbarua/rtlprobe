@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from rtlprobe.evidence import Runner, manifest, verify_manifest
+from rtlprobe.evidence import CODE_ROOT, Runner, filehash, identity, load, manifest, save, treehashes, verify_manifest
 from rtlprobe.mutation import apply, locate, safe_path
 from rtlprobe.oracle import classify as dispatch
 
@@ -13,7 +13,7 @@ CHECKER = {"checker": {"path": "targets/sha256/checker.py"}}
 
 def classify(*args, **kwargs):
     return dispatch(*args, config=CHECKER, **kwargs)
-from rtlprobe.pilot import gates
+from rtlprobe.pilot import gates, validation_plan, verified_original
 
 PASS = """-- Testbench for sha256 core started --
 *** TC 1 single block test case started.
@@ -114,6 +114,58 @@ class EvidenceTests(unittest.TestCase):
         runs[2]["signature"] = [{"id": "other"}]
         self.assertFalse(all(gates(good, runs, good, True).values()))
         self.assertFalse(all(gates(good, [bad]*3, good, False).values()))
+
+    def test_original_pass_reuse_requires_exact_sealed_test_evidence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            bundle = Path(tmp)
+            config = load(CODE_ROOT/'targets/sha256/config.json')
+            source = bundle/'original'
+            source.mkdir()
+            (source/'fixture.v').write_bytes(FIXTURE)
+            checker = bundle/'controller'/config['checker']['path']
+            checker.parent.mkdir(parents=True)
+            checker.write_bytes((CODE_ROOT/config['checker']['path']).read_bytes())
+            inputs = {'config': config, 'files': treehashes(source), 'environment': {'tool': 'fixture'},
+                      'implementation': {config['checker']['path']: filehash(checker)}}
+            fp = {'inputs': inputs, 'sha256': identity(inputs)}
+            binary = bundle/'original.vvp'
+            binary.write_bytes(b'fixture executable')
+            saved = dict(classify(PASS), run_id='original', test_id=config['test_id'], seed=config['seed'],
+                         source_hashes=inputs['files'], executable_sha256=filehash(binary))
+            logs = bundle/'commands/original'
+            logs.mkdir(parents=True)
+            (logs/'stdout.log').write_text(PASS)
+            (logs/'stderr.log').write_text('')
+            status = {'cwd': str(source), 'returncode': 0, 'timed_out': False, 'interrupted': False}
+            save(logs/'run.json', dict(status, command=['vvp', '-N', str(binary)],
+                                      stdout='commands/original/stdout.log', stderr='commands/original/stderr.log'))
+            compile_args = ['iverilog', *config['compile_flags'], '-s', config['test_top'], '-o', str(binary),
+                            *config['rtl'], config['testbench']]
+            save(bundle/'commands/original_compile/run.json', dict(status, command=compile_args))
+            save(bundle/'original.json', saved)
+            save(bundle/'fingerprint.json', fp)
+            design = {'schema_version':'pilot-1', 'design_id':config['design_id'], 'status':'qualified',
+                      'configuration':config, 'fingerprint':fp['sha256'], 'baseline':saved,
+                      'negative_control':{'outcome':'functional_fail'}, 'structure':{}, 'tests':[], 'evidence':'qualification'}
+            save(bundle/'design.json', design)
+            manifest(bundle)
+            self.assertEqual(verified_original(bundle, fp), (saved, {'qualification_manifest_sha256': filehash(bundle/'manifest.json')}))
+            changed = dict(inputs, environment={'tool': 'different fixture'})
+            with self.assertRaisesRegex(ValueError, 'fingerprint'):
+                verified_original(bundle, {'inputs': changed, 'sha256': identity(changed)})
+            (logs/'stdout.log').write_text(FAIL)
+            manifest(bundle)
+            with self.assertRaisesRegex(ValueError, 'outcomes'):
+                verified_original(bundle, fp)
+
+    def test_multiple_tests_use_a_fresh_original_unless_a_shared_suite_is_selected(self):
+        config = {'test_id':'suite', 'admitted_tests':[{'id':'suite'}, {'id':'targeted'}]}
+        proposal = {'primary_test':'suite', 'fallback_tests':[], 'prediction':{}}
+        self.assertEqual(validation_plan(config, proposal), {'original':'fresh', 'mutant_runs':2})
+        self.assertEqual(validation_plan(dict(config, test_scope='shared'), proposal),
+                         {'original':'reuse_qualification', 'mutant_runs':2})
+        with self.assertRaisesRegex(ValueError, 'qualified selected test'):
+            validation_plan(config, dict(proposal, primary_test='targeted'))
 
     def test_timeout_preserves_command_record(self):
         import sys

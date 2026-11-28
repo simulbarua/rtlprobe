@@ -12,7 +12,10 @@ import subprocess
 import sys
 import time
 import fcntl
-from contextlib import contextmanager
+from . import command_tree
+from . import measurement
+
+from contextlib import contextmanager, nullcontext
 from datetime import datetime, timezone
 from importlib.metadata import version
 
@@ -32,15 +35,19 @@ def identity(value):
     return digest(json.dumps(value, sort_keys=True, separators=(",", ":")).encode())
 
 
-def save(path, value):
+def save_bytes(path, data):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
-    with tmp.open("w") as stream:
-        stream.write(json.dumps(value, indent=2, sort_keys=True) + "\n")
+    with tmp.open("wb") as stream:
+        stream.write(data)
         stream.flush()
         os.fsync(stream.fileno())
     tmp.replace(path)
+
+
+def save(path, value):
+    save_bytes(path, (json.dumps(value, indent=2, sort_keys=True) + "\n").encode())
 
 
 def write_once(path, value):
@@ -58,10 +65,11 @@ def workspace_lock(root=ROOT):
     path = Path(root)/"data/state/controller.lock"
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a+") as lock:
-        try:
-            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError:
-            raise RuntimeError("Another qualification/mutation controller is active") from None
+        with measurement.span('workspace.lock.acquire', 'locks'):
+            try:
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError:
+                raise RuntimeError("Another qualification/mutation controller is active") from None
         try:
             yield
         finally:
@@ -100,18 +108,32 @@ def require_execution_guard(execution_guard):
         raise ValueError('External execution readiness guard refused command progress')
 
 
+def checks_command_boundaries(guard):
+    """Opt in only when both command hooks run the full readiness check."""
+    return (getattr(guard, 'checks_command_boundaries', False) is True
+            and callable(getattr(guard, 'before_command', None))
+            and callable(getattr(guard, 'after_command', None)))
+
+
 def begin_command(guard, name, command, cwd, timeout):
-    require_execution_guard(guard)
+    if not checks_command_boundaries(guard):
+        require_execution_guard(guard)
     if guard is not None and hasattr(guard, 'before_command'):
-        if guard.before_command(name, [str(x) for x in command], str(Path(cwd or Path.cwd())), timeout) is not True:
+        allowed = guard.before_command(name, [str(x) for x in command], str(Path(cwd or Path.cwd())), timeout)
+        if allowed is True:
+            return timeout
+        if type(allowed) not in (int, float) or not 0 < allowed or (timeout is not None and allowed > timeout):
             raise ValueError('Scoped command authorization refused')
+        return allowed
+    return timeout
 
 
 def end_command(guard, record):
     if guard is not None and hasattr(guard, 'after_command'):
         if guard.after_command(record) is not True:
             raise ValueError('Scoped command accounting refused')
-    require_execution_guard(guard)
+    if not checks_command_boundaries(guard):
+        require_execution_guard(guard)
 
 
 def environment(*, execution_guard=None):
@@ -119,12 +141,13 @@ def environment(*, execution_guard=None):
                 "verilator": ["--version"], "git": ["--version"], "patch": ["--version"]}
     tools = {}
     for name, args in commands.items():
-        require_execution_guard(execution_guard)
+        if not checks_command_boundaries(execution_guard):
+            require_execution_guard(execution_guard)
         exe = shutil.which(name)
         if not exe:
             raise RuntimeError(f"Missing required tool: {name}")
-        begin_command(execution_guard, 'version_'+name, [exe, *args], None, 15)
-        result = subprocess.run([exe, *args], capture_output=True, text=True, timeout=15)
+        timeout = begin_command(execution_guard, 'version_'+name, [exe, *args], None, 15)
+        result = subprocess.run([exe, *args], capture_output=True, text=True, timeout=timeout)
         end_command(execution_guard, {'id': 'version_'+name, 'returncode': result.returncode,
                                       'timed_out': False, 'interrupted': False})
         output = result.stdout + result.stderr
@@ -137,8 +160,25 @@ def environment(*, execution_guard=None):
             "tools": tools, "locale": "C", "timezone": "UTC"}
 
 
+def _stop_group(proc, supervised):
+    if proc.poll() is None:
+        try:
+            if supervised:
+                # Let the subreaper outlive ordinary termination and finish its receipt.
+                proc.terminate()
+                try:
+                    return proc.wait(timeout=1)
+                except subprocess.TimeoutExpired:
+                    pass
+            os.killpg(proc.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+    return proc.wait()
+
+
 class Runner:
-    def __init__(self, out, limits, *, execution_guard=None):
+    def __init__(self, out, limits, *, execution_guard=None, supervise_tree=False):
+        self.supervise_tree = supervise_tree and sys.platform == "linux"
         self.execution_guard = execution_guard
         self.guard()
         self.out = Path(out)
@@ -156,12 +196,13 @@ class Runner:
         elapsed = time.monotonic() - self.started
         cpu = resource.getrusage(resource.RUSAGE_CHILDREN)
         used_cpu = cpu.ru_utime + cpu.ru_stime - self.cpu_start.ru_utime - self.cpu_start.ru_stime
-        if elapsed >= self.limits["campaign_seconds"] or used_cpu >= self.limits["cpu_seconds"]:
+        wall, cpu_limit = self.limits["campaign_seconds"], self.limits["cpu_seconds"]
+        if (wall is not None and elapsed >= wall) or (cpu_limit is not None and used_cpu >= cpu_limit):
             raise RuntimeError("Campaign resource budget exhausted")
         used_disk = sum(p.stat().st_size for p in self.out.rglob("*") if p.is_file())
         if used_disk >= self.limits["disk_bytes"]:
             raise RuntimeError("Campaign disk budget exhausted")
-        limit = min(timeout, self.limits["campaign_seconds"] - elapsed)
+        limit = min((n for n in (timeout, wall-elapsed if wall is not None else None) if n is not None), default=None)
         directory = self.out/"commands"/name
         directory.mkdir(parents=True, exist_ok=False)
         command = [str(x) for x in command]
@@ -170,35 +211,56 @@ class Runner:
             if set(env_extra) - {'SDKROOT', 'CC', 'CXX', 'PYTHONDONTWRITEBYTECODE'}:
                 raise ValueError('Unsupported build environment key')
             env.update(env_extra)
-        start = time.monotonic()
-        started_at = datetime.now(timezone.utc).isoformat()
-        before = resource.getrusage(resource.RUSAGE_CHILDREN)
-        save(directory/"started.json", {"id": name, "command": command, "cwd": str(cwd),
-                                       "started_at": started_at, "timeout_seconds": limit})
         # Each command is its own process group, so timeouts terminate tool children too.
         memory = self.limits.get('memory_bytes')
         memory_supported = sys.platform.startswith('linux') and hasattr(resource, 'RLIMIT_AS')
         def limit_memory():
             resource.setrlimit(resource.RLIMIT_AS, (memory, memory))
         with (directory/"stdout.log").open("wb") as stdout, (directory/"stderr.log").open("wb") as stderr:
-            begin_command(self.execution_guard, name, command, cwd, limit)
-            proc = subprocess.Popen(command, cwd=cwd, stdout=stdout, stderr=stderr,
-                                    env=env, start_new_session=True,
-                                    preexec_fn=limit_memory if memory and memory_supported else None)
-            save(directory/"process.json", {"pid": proc.pid})
-            timed_out = False
-            interrupted = False
-            try:
-                rc = proc.wait(timeout=limit)
-            except subprocess.TimeoutExpired:
-                timed_out = True
-                os.killpg(proc.pid, signal.SIGKILL)
-                rc = proc.wait()
-            except BaseException:
-                interrupted = True
-                if proc.poll() is None:
-                    os.killpg(proc.pid, signal.SIGKILL)
-                rc = proc.wait()
+            limit = begin_command(self.execution_guard, name, command, cwd, limit)
+            with measurement.span(name, measurement.command_category(name), output_bytes_before=used_disk):
+                # The command budget starts after its execution checks return.
+                start = time.monotonic()
+                started_at = datetime.now(timezone.utc).isoformat()
+                before = resource.getrusage(resource.RUSAGE_CHILDREN)
+                start_record = {"id": name, "command": command, "cwd": str(cwd),
+                                "started_at": started_at, "timeout_seconds": limit}
+                if self.supervise_tree:
+                    exit_key = os.urandom(32)
+                    start_record["tree_launch_id"] = digest(exit_key)
+                save(directory/"started.json", start_record)
+                if self.supervise_tree:
+                    child = command_tree.launch(directory, command, cwd, stdout, stderr, env, memory, exit_key, limit)
+                else:
+                    proc = subprocess.Popen(command, cwd=cwd, stdout=stdout, stderr=stderr,
+                                            env=env, start_new_session=True,
+                                            preexec_fn=limit_memory if memory and memory_supported else None)
+                    child = nullcontext((proc, {"pid": proc.pid}))
+                with child as (proc, process_record):
+                    try:
+                        save(directory/"process.json", process_record)
+                    except BaseException:
+                        _stop_group(proc, self.supervise_tree)
+                        raise
+                    timed_out = False
+                    interrupted = False
+                    try:
+                        wait_limit = max(0, limit - (time.monotonic() - start)) if self.supervise_tree and limit is not None else limit
+                        rc = proc.wait(timeout=wait_limit)
+                    except subprocess.TimeoutExpired:
+                        timed_out = True
+                    except BaseException:
+                        interrupted = True
+                    if timed_out or interrupted:
+                        rc = _stop_group(proc, self.supervise_tree)
+                    if self.supervise_tree:
+                        # Without a positive observation, leave the attempt unfinished.
+                        if rc != 0:
+                            raise OSError("Process-tree supervisor lost before durable exit evidence")
+                        try:
+                            rc, _ = command_tree.exit_receipt(directory)
+                        except (OSError, ValueError) as exc:
+                            raise OSError("Invalid process-tree exit evidence") from exc
         after = resource.getrusage(resource.RUSAGE_CHILDREN)
         record = {"id": name, "command": command, "cwd": str(cwd), "started_at": started_at,
                   "returncode": rc, "timed_out": timed_out, "timeout_seconds": limit,
@@ -218,7 +280,8 @@ class Runner:
         end_command(self.execution_guard, record)
         if interrupted:
             raise KeyboardInterrupt("Command interrupted; logs and process outcome preserved")
-        self.guard()
+        if not checks_command_boundaries(self.execution_guard):
+            self.guard()
         return record
 
     def require(self, name, command, cwd, timeout, *, env_extra=None):

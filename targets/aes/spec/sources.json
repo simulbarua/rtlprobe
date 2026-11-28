@@ -1,0 +1,29 @@
+{
+  "fips197": {
+    "title": "Advanced Encryption Standard (AES)",
+    "publisher": "NIST",
+    "url": "https://doi.org/10.6028/NIST.FIPS.197-upd1",
+    "version": "May 2023 update",
+    "license": "US Government work",
+    "redistributable": true,
+    "sections_of_interest": ["5.1", "5.2", "5.3"]
+  },
+  "sp800-38a": {
+    "title": "Recommendation for Block Cipher Modes of Operation",
+    "publisher": "NIST",
+    "url": "https://doi.org/10.6028/NIST.SP.800-38A",
+    "version": "December 2001",
+    "license": "US Government work",
+    "redistributable": true,
+    "sections_of_interest": ["F.1"]
+  },
+  "secworks-aes": {
+    "title": "secworks AES core usage",
+    "publisher": "Secworks",
+    "url": "https://github.com/secworks/aes/blob/cd8a599ed6830bd50830350899f5fd2a624ed1d3/README.md",
+    "version": "cd8a599ed6830bd50830350899f5fd2a624ed1d3",
+    "license": "BSD-2-Clause",
+    "redistributable": true,
+    "sections_of_interest": ["Usage", "Core Usage"]
+  }
+}

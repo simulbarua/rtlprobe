@@ -240,6 +240,35 @@ class CurationTests(unittest.TestCase):
             self.approve("human")
         self.assertEqual(treehashes(self.root), before)
 
+    def test_interrupted_publication_recovers_exact_bytes_across_human_transitions(self):
+        ordinal = 0
+        recover = curation._recover_publications
+        for initial in ('pending', 'auto'):
+            for decision in ('approve', 'reject'):
+                for boundary in range(4):
+                    with self.subTest(initial=initial, decision=decision, boundary=boundary):
+                        ordinal += 1
+                        cid = f'fixture-{ordinal}'
+                        self.case(cid, ordinal)
+                        if initial == 'auto':
+                            curation.promote_auto(self.root, first_n=0)
+                        paths = curation._publication_files(self.root, cid)
+                        before = [p.read_bytes() if p.exists() else None for p in paths]
+                        def interrupt(path, value):
+                            if path == paths[boundary]:
+                                raise OSError('fixture interruption')
+                            save(path, value)
+                        # Suppress in-process cleanup to exercise the restart path.
+                        with patch.object(curation, 'save', interrupt), patch.object(curation, '_recover_publications'):
+                            with self.assertRaisesRegex(OSError, 'fixture interruption'):
+                                self.approve(cid, decision)
+                        with workspace_lock(self.root):
+                            recover(self.root)
+                        self.assertEqual([p.read_bytes() if p.exists() else None for p in paths], before)
+                        summary = self.approve(cid, decision)
+                        self.assertEqual(summary['state'], 'rejected' if decision == 'reject' else 'accepted_core')
+                        verify_index(self.root, summary)
+
     def test_rejection_and_receipt_bindings(self):
         self.case("rejected", 1)
         summary = self.approve("rejected", "reject")

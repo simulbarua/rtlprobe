@@ -35,6 +35,37 @@ The tiny checker under `tests/fixtures/` is only a software regression fixture.
 Use `scripts/rtlprobe.py --data-root /absolute/data --target-config /absolute/target.json qualify`.
 There is no default target or data-root override. See [execution layout](../docs/execution-layout.md).
 
+## secworks AES suites
+
+[Upstream](aes/config.json) and [extended v1](aes/extended/config.json) use the
+same pinned core revision and dataset split group. The extended bench is a
+hash-bound runner asset with ten checkpoint windows for alternating encryption
+and decryption under a reused key, rekeying from AES-128 to AES-256 and back to
+a different AES-128 key, and resetting during key expansion and block processing.
+Expected results use [NIST ECB examples](https://doi.org/10.6028/NIST.SP.800-38A)
+and the [AES-128 example](https://doi.org/10.6028/NIST.FIPS.197-upd1).
+
+A complete transcript with a known block mismatch produces a functional failure
+signature. Protocol aborts and unknown results preserve their diagnostic reason as
+incomplete evidence in v1, and cycle watchdogs are reported as timeouts. Trace
+capture samples each completed result against `tb_aes_extended.dut.result`.
+
+[Extended v2](aes/extended_v2/config.json) retains the same revision and checkpoint
+sequence. Protocol violations and in-simulation cycle limits produce a named
+terminal failure at the active checkpoint, with an expected and an observed value
+for `ready` or `result_valid`. A block result containing `X` or `Z` produces a
+comparison failure. Capture checks those values against the waveform. Simulator
+process timeouts remain infrastructure outcomes.
+
+Stage the extended manifest as `targets/aes/config.json` in a separate scoped
+runner with its own data root. Use the [extended requirement mapping](aes/extended/requirements.jsonl)
+as `targets/aes/spec/requirements.jsonl` in that runner. The upstream suite and
+its qualification receipt continue to identify the initial 20-case baseline.
+Measure incremental detection with a separately approved comparison before using
+the extended suite for collection. Stage v2 in its own scoped runner and data
+root so each suite resolves to its original evidence. The v2 manifest allows
+900 seconds per operation and retains the individual command limits.
+
 ## OpenTitan original-only manifests
 
 All three targets pin `3a7f6947247254fcc2fd05143c18a2646f75c7ee`, share lineage

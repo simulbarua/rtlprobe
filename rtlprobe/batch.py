@@ -24,7 +24,7 @@ def operator_for(proposal):
     return matches[0]
 
 
-def preflight(proposal, config, fp):
+def preflight(proposal, config, fp, *, root=None):
     pilot.schema(proposal, "proposal")
     path = str(safe_path(proposal["path"]))
     if path not in config["rtl"]:
@@ -35,7 +35,11 @@ def preflight(proposal, config, fp):
             raise ValueError('Operator target path differs from proposal path')
         if target.get('reset_identifiers') != sorted(set(config.get('reset_identifiers', []))):
             raise ValueError('Operator reset policy differs from manifest')
-    before = (ROOT/config["vendor"]/path).read_bytes()
+    data = Path(ROOT if root is None else root).resolve()
+    source = (data/safe_path(config["vendor"])/path).resolve()
+    if not source.is_relative_to(data):
+        raise ValueError('Mutation source escapes the selected data root')
+    before = source.read_bytes()
     after = apply(before, proposal["target"], operator_for(proposal))
     key = mutation_key(config, fp["inputs"]["files"], path, sha(after))
     return key, before, after
@@ -51,7 +55,8 @@ def review_text(record):
              f"Exact token: `{p['target']['before']}` → `{p['target']['after']}`. See mutation.patch.", "",
              "| Gate | Observed result |", "|---|---|"]
     for name in ("original", "restored"):
-        lines.append(f"| {name} | {(record.get(name) or {}).get('outcome', 'not_run')} |")
+        provenance = ' (reused qualification)' if name == 'original' and record.get('original_reuse') else ''
+        lines.append(f"| {name}{provenance} | {(record.get(name) or {}).get('outcome', 'not_run')} |")
     for i, result in enumerate(record["mutants"], 1):
         lines.append(f"| mutant {i} | {result['outcome']} |")
     lines += [f"| structural checks | {record['structural']['buggy']['status']} |",
@@ -66,12 +71,20 @@ def review_text(record):
 
 
 def execute(proposal, config, fp, design, key, before, after, out, remaining, *, execution_guard=None):
-    runner = Runner(out, {**config["limits"], "campaign_seconds": remaining}, execution_guard=execution_guard)
+    validation = pilot.validation_plan(config, proposal)
+    scope = getattr(execution_guard, 'scope', {})
+    legacy_aes = (config.get('target_id') == 'aes' and scope.get('target_id') == 'aes'
+                  and scope.get('validation_policy') == 'aes-fresh-three-v1')
+    if legacy_aes:
+        validation = {'original': 'fresh', 'mutant_runs': 3}
+    runner = Runner(out, {**config["limits"], "campaign_seconds": remaining}, execution_guard=execution_guard,
+                    supervise_tree=True)
     save(out/"proposal.json", proposal)
     save(out/"fingerprint.json", fp)
     path = proposal["path"]
     original, buggy, restored = [out/p for p in ("rtl/original", "rtl/buggy", "rtl/restored")]
     record = {"schema_version": "pilot-2", "case_id": config["case_prefix"]+"-"+key[:16], "mutation_key": key,
+              "validation_policy": pilot.CURRENT_VALIDATION_POLICY, "original_reuse": None,
               "state": "needs_review", "automated_validation": "fail", "design_id": config["design_id"],
               "proposal": proposal, "fingerprint": fp["sha256"], "track": config["track"],
               "original": None, "mutants": [], "restored": None, "checks": {},
@@ -82,30 +95,39 @@ def execute(proposal, config, fp, design, key, before, after, out, remaining, *,
                                "statement": proposal["target"]["statement"], "edit": proposal["target"],
                                "lineage_id": proposal["lineage_id"], "review_status": "pending_human"},
               "access": "curator_only; no localization-model export implemented"}
+    if legacy_aes:
+        record['validation_policy'] = pilot.LEGACY_VALIDATION_POLICY
+        record.pop('original_reuse')
     try:
         pilot.snapshot(config, original)
-        if (original/path).read_bytes() != before:
+        if (original/path).read_bytes() != before or treehashes(original) != fp['inputs']['files']:
             raise ValueError("Source changed after preflight")
+        if validation['original'] == 'reuse_qualification':
+            record['original'], record['original_reuse'] = pilot.verified_original(
+                ROOT/safe_path(design['evidence']), fp, design=design)
+        else:
+            record['original'] = pilot.simulate(runner, config, 'original', original,
+                                               pilot.compile_design(runner, config, 'original', original))
+            if record['original']['outcome'] != 'pass':
+                raise RuntimeError('Test-specific original/checker failure; stop campaign')
         shutil.copytree(original, buggy)
         (buggy/path).write_bytes(after)
         patch = out/"mutation.patch"
         patch.write_text("".join(difflib.unified_diff(before.decode().splitlines(True), after.decode().splitlines(True),
                                                    fromfile="a/"+path, tofile="b/"+path)))
-        record["original"] = pilot.simulate(runner, config, "original", original,
-                                             pilot.compile_design(runner, config, "original", original))
-        if record["original"]["outcome"] != "pass":
-            raise RuntimeError("Shared original/checker failure; stop campaign")
         binary = pilot.compile_design(runner, config, "mutant", buggy)
         record["mutants"].append(pilot.simulate(runner, config, "mutant_1", buggy, binary))
         if record["mutants"][0]["outcome"] == "functional_fail":
-            for i in (2, 3):
-                record["mutants"].append(pilot.simulate(runner, config, f"mutant_{i}", buggy, binary))
+            for i in range(2, validation['mutant_runs']+1):
+                record['mutants'].append(pilot.simulate(runner, config, f'mutant_{i}', buggy, binary))
         shutil.copytree(buggy, restored)
         runner.require("reverse_patch", ["patch", "-p1", "-R", "-i", patch], restored, 10)
+        if treehashes(restored) != fp['inputs']['files']:
+            raise ValueError('Reverse patch did not restore the original source bytes')
         record["restored"] = pilot.simulate(runner, config, "restored", restored,
                                              pilot.compile_design(runner, config, "restored", restored))
         checks = pilot.gates(record["original"], record["mutants"], record["restored"],
-                             treehashes(original) == treehashes(restored))
+                             treehashes(original) == treehashes(restored), record=record)
         record["checks"] = checks
         first = record["mutants"][0]["outcome"]
         if first == "pass":
@@ -113,7 +135,7 @@ def execute(proposal, config, fp, design, key, before, after, out, remaining, *,
             record["prediction_agreement"] = "not_exposed"
         elif first != "functional_fail":
             record["state"] = "infrastructure_error"
-        elif not checks["three_consistent_mutant_failures"]:
+        elif not checks[pilot.repeatability_check(record)]:
             record["state"] = "flaky"
         elif all(checks.values()):
             record["structural"]["buggy"] = pilot.structure(runner, config, "mutant", buggy)
@@ -150,7 +172,8 @@ def execute(proposal, config, fp, design, key, before, after, out, remaining, *,
             p.parent.name: load(p)['walltime_seconds'] for p in out.glob('*_build/build.json')}
         record['cost']['simulation_wall_seconds'] = {
             r['run_id']: r['run_wall_seconds'] for r in
-            [record['original'], *record['mutants'], record['restored']] if r is not None}
+            [record['original'] if validation['original'] == 'fresh' else None,
+             *record['mutants'], record['restored']] if r is not None}
     pilot.schema(record, "case")
     save(out/"case.json", record)
     (out/"REVIEW.md").write_text(review_text(record))
@@ -215,9 +238,11 @@ def run(proposal_path, cap=10, validate_plan=None, *, execution_guard=None):
                 _, key, before, after = by_id[proposal["proposal_id"]]
                 # Charge preserved attempts, including interrupted work, against this bounded campaign.
                 elapsed, cpu, disk = campaign_usage([k for _, k, _, _ in prepared])
-                remaining = min(config["limits"]["campaign_seconds"]-elapsed,
-                                config["limits"]["campaign_seconds"]-(time.monotonic()-started))
-                if remaining <= 0 or cpu >= config["limits"]["cpu_seconds"] or disk >= config["limits"]["disk_bytes"]:
+                wall = config["limits"]["campaign_seconds"]
+                cpu_limit = config["limits"]["cpu_seconds"]
+                remaining = None if wall is None else wall - max(elapsed, time.monotonic()-started)
+                if ((remaining is not None and remaining <= 0) or (cpu_limit is not None and cpu >= cpu_limit)
+                        or disk >= config["limits"]["disk_bytes"]):
                     raise RuntimeError("Campaign resource budget exhausted; completed cases preserved")
                 permitted()
                 state, out, recovered = reserve_attempt(ROOT, key, fp["sha256"], lambda: pilot.new_output("cases", config["case_prefix"]+"-"+key[:16], config))
@@ -272,8 +297,11 @@ def campaign_usage(keys):
                     cpu += rec["cpu_seconds"]
                 else:
                     # Conservatively reserve the whole command limit when completion is unknown.
-                    elapsed += load(start)["timeout_seconds"]
-                    cpu += load(start)["timeout_seconds"]
+                    limit = load(start)["timeout_seconds"]
+                    if limit is None:
+                        raise ValueError("Reconcile unfinished command before starting another mutation")
+                    elapsed += limit
+                    cpu += limit
             disk += sum(p.stat().st_size for p in out.rglob("*") if p.is_file())
     return elapsed, cpu, disk
 

@@ -1,0 +1,85 @@
+{
+  "schema_version": "pilot-1",
+  "design_id": "secworks_sha1_core",
+  "repository_url": "https://github.com/secworks/sha1.git",
+  "revision": "50f82f4ca2f8194fd47d8360270ac7dd141d53d1",
+  "vendor": "tools/dataset/vendor/sha1",
+  "top": "sha1_core",
+  "test_top": "tb_sha1_extended",
+  "test_id": "sha1_extended_v1",
+  "rtl": [
+    "src/rtl/sha1_core.v",
+    "src/rtl/sha1_w_mem.v"
+  ],
+  "testbench": "targets/sha1/extended/tb_sha1_extended.v",
+  "collateral": [
+    "README.md",
+    "LICENSE",
+    "sha1.core",
+    "src/tb/tb_sha1_core.v"
+  ],
+  "compile_flags": [
+    "-g2005"
+  ],
+  "defines": [],
+  "parameters": {},
+  "seed": null,
+  "stimulus": "Pre-padded abc, standard double-block vector, empty message, 55 ascending bytes, 128 patterned bytes, and binary data after a mid-compression reset.",
+  "track": "synthesizable",
+  "limits": {
+    "compile_seconds": null,
+    "simulation_seconds": null,
+    "synthesis_seconds": null,
+    "campaign_seconds": null,
+    "cpu_seconds": null,
+    "disk_bytes": 268435456,
+    "workers": 1,
+    "max_candidates": 10,
+    "fallback_tests": 0
+  },
+  "specification": {
+    "url": "https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf",
+    "version": "FIPS 180-4, August 2015",
+    "section": "6.1",
+    "classification": "documented_requirement",
+    "requirement": "The core processes pre-padded 512-bit blocks using five 32-bit state words and returns the 160-bit digest."
+  },
+  "control": {
+    "path": "src/rtl/sha1_core.v",
+    "line": 235,
+    "lhs": "H0_new",
+    "rhs_tail": "a_reg",
+    "statement": "H0_new = H0_reg + a_reg;",
+    "operator": {
+      "id": "unsigned32_root_add_to_sub",
+      "version": "1.0"
+    }
+  },
+  "coverage": {
+    "status": "unavailable",
+    "reason": "No per-test RTL coverage instrumentation in this initial slice; no coverage or Ochiai eligibility claimed."
+  },
+  "target_id": "sha1",
+  "case_prefix": "sha1",
+  "split_group": "secworks_sha1",
+  "checker": {
+    "path": "targets/sha1/extended/checker.py"
+  },
+  "scope": "sha1_core and sha1_w_mem with the RTLProbe extended deterministic core suite",
+  "test_metadata": {
+    "checker": "Seven 160-bit digest comparisons on the DUT output, across six deterministic message tests.",
+    "checkpoints": [
+      "tc1",
+      "tc2_block1",
+      "tc2_block2",
+      "empty",
+      "boundary55",
+      "chain128",
+      "restart"
+    ],
+    "coverage": "unavailable",
+    "source_mapping": "semantic assignment/checker relation, not measured coverage"
+  },
+  "dossier_notes": "Upstream RTL and the archived upstream bench are unchanged at the pinned BSD-2-Clause revision. RTLProbe supplies a separately hash-bound testbench. It independently compares the final digest after the second block. Inputs arrive pre-padded. Bus interface, padding generation and per-line coverage are outside this scope.",
+  "testbench_asset_sha256": "7306e7cf20daf014311586409b098234a8372dd3a77f4a504e6c0197b72fa18e"
+}

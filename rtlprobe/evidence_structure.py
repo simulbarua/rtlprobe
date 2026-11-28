@@ -66,16 +66,17 @@ def memory_capture_reason(ranges, remaining=MAX_MEMORY_WORDS):
     return None
 
 
-def declarations(source, module):
+def declarations(source, module, elaboration=None):
     result = {}
     for node in walk(module):
-        if kind(node) != 'Declarator' or inside_function(node):
+        if (kind(node) != 'Declarator' or inside_function(node)
+                or elaboration is not None and not elaboration.active(source, node)):
             continue
         parent = node.parent
         if kind(parent) not in {'DataDeclaration', 'NetDeclaration', 'ImplicitAnsiPort', 'ParameterDeclaration'}:
             continue
         name = node.name.valueText
-        prefix = blocks(node)
+        prefix = elaboration.prefix(source, node) if elaboration else blocks(node)
         key = '.'.join((*prefix, name))
         if key in result:
             raise ValueError('ambiguous declaration ' + key)
@@ -92,28 +93,34 @@ def declarations(source, module):
         if not IDENT.fullmatch(name) or any(not IDENT.fullmatch(part) for part in prefix):
             missing.append('escaped or unsupported identifier')
         try:
-            dimensions = range_bounds(source, node.dimensions)
-            reason = memory_capture_reason(dimensions)
-            if reason:
-                missing.append(reason)
-            packed = range_bounds(source, getattr(dtype, 'dimensions', []))
-            if len(packed) > 1:
-                raise ValueError('multidimensional packed type')
-            widths = {'IntegerType': 32, 'IntType': 32, 'ByteType': 8, 'ShortIntType': 16,
-                      'LongIntType': 64, 'TimeType': 64, 'RegType': 1, 'LogicType': 1,
-                      'BitType': 1, 'ImplicitType': 1}
-            if packed:
-                width = abs(packed[0][0] - packed[0][1]) + 1
-            elif kind(parent) == 'ParameterDeclaration' and node.initializer is not None:
-                literal = source.text(node.initializer.expr).strip()
-                sized = re.fullmatch(r"(\d+)'[sS]?[bBoOdDhH][0-9a-fA-F_xXzZ]+", literal)
-                width = int(sized[1]) if sized else (32 if re.fullmatch(r'[0-9_]+', literal) else None)
-                if width is None:
-                    raise ValueError('constant expression width unresolved')
-            elif dtype is not None and kind(dtype) in widths:
-                width = widths[kind(dtype)]
+            if elaboration is not None:
+                width, dimensions = elaboration.types[key]
+                reason = memory_capture_reason(dimensions)
+                if reason:
+                    missing.append(reason)
             else:
-                raise ValueError('unsupported or unresolved declaration type')
+                dimensions = range_bounds(source, node.dimensions)
+                reason = memory_capture_reason(dimensions)
+                if reason:
+                    missing.append(reason)
+                packed = range_bounds(source, getattr(dtype, 'dimensions', []))
+                if len(packed) > 1:
+                    raise ValueError('multidimensional packed type')
+                widths = {'IntegerType': 32, 'IntType': 32, 'ByteType': 8, 'ShortIntType': 16,
+                          'LongIntType': 64, 'TimeType': 64, 'RegType': 1, 'LogicType': 1,
+                          'BitType': 1, 'ImplicitType': 1}
+                if packed:
+                    width = abs(packed[0][0] - packed[0][1]) + 1
+                elif kind(parent) == 'ParameterDeclaration' and node.initializer is not None:
+                    literal = source.text(node.initializer.expr).strip()
+                    sized = re.fullmatch(r"(\d+)'[sS]?[bBoOdDhH][0-9a-fA-F_xXzZ]+", literal)
+                    width = int(sized[1]) if sized else (32 if re.fullmatch(r'[0-9_]+', literal) else None)
+                    if width is None:
+                        raise ValueError('constant expression width unresolved')
+                elif dtype is not None and kind(dtype) in widths:
+                    width = widths[kind(dtype)]
+                else:
+                    raise ValueError('unsupported or unresolved declaration type')
         except (ValueError, AttributeError) as error:
             missing.append(str(error))
         result[key] = {'name': name, 'local_name': key, 'path': None, 'line': source.line(node),
@@ -149,7 +156,80 @@ def function_summary(source, function):
             'semantics': 'conservative dependence on supplied arguments; no bit evaluation'}
 
 
-def build_structure(sources, *, top, dut_scope):
+def pure_function_lines(source, function, earlier):
+    """Return the assignment lines of a checked straight-line call tree."""
+    if str(function.prototype.lifetime).strip() != 'automatic':
+        return None
+    name = name_value(function.prototype.name)
+    inputs = [n.declarator.name.valueText for n in walk(function) if kind(n) == 'FunctionPort']
+    if not inputs or len(set(inputs)) != len(inputs) or name in inputs:
+        return None
+    ports = [n for n in walk(function) if kind(n) == 'FunctionPort']
+    if any(str(port.direction).strip() not in {'', 'input'} or port.declarator.dimensions
+           or port.declarator.initializer is not None for port in ports):
+        return None
+    items = list(function.items)
+    if not items or kind(items[-1]) != 'SequentialBlockStatement' or items[-1].blockName is not None:
+        return None
+    locals_ = set()
+    for declaration in items[:-1]:
+        if kind(declaration) != 'DataDeclaration':
+            return None
+        for local in declaration.declarators:
+            if not isinstance(local, SyntaxNode):
+                continue
+            local_name = local.name.valueText
+            if local_name in locals_ or local_name in inputs or local_name == name:
+                return None
+            if local.initializer is not None or local.dimensions:
+                return None
+            locals_.add(local_name)
+    initialized = set(inputs)
+    lines = set()
+    allowed = {'ArgumentList', 'BinaryAndExpression', 'BinaryXorExpression',
+               'BitSelect', 'ConcatenationExpression', 'ElementSelect', 'IdentifierName',
+               'IdentifierSelectName', 'IntegerLiteralExpression', 'IntegerVectorExpression',
+               'InvocationExpression', 'MultipleConcatenationExpression', 'OrderedArgument',
+               'ParenthesizedExpression', 'SimplePropertyExpr', 'SimpleRangeSelect', 'SimpleSequenceExpr'}
+    statements = list(items[-1].items)
+    for index, statement in enumerate(statements):
+        if kind(statement) != 'ExpressionStatement' or kind(statement.expr) != 'AssignmentExpression':
+            return None
+        assignment = statement.expr
+        if kind(assignment.left) != 'IdentifierName':
+            return None
+        lhs = assignment.left.identifier.valueText
+        if lhs == name:
+            if index != len(statements) - 1:
+                return None
+        elif lhs not in locals_:
+            return None
+        dependencies = set()
+        for call in walk(assignment.right):
+            call_kind = kind(call)
+            if call_kind not in allowed:
+                return None
+            if call_kind in {'IdentifierName', 'IdentifierSelectName'} and not (
+                    kind(call.parent) == 'InvocationExpression' and call.parent.left is call):
+                dependencies.add(call.identifier.valueText)
+            if call_kind != 'InvocationExpression':
+                continue
+            if kind(call.left) != 'IdentifierName' or call.arguments is None:
+                return None
+            called = call.left.identifier.valueText
+            args = [a for a in call.arguments.parameters if isinstance(a, SyntaxNode)]
+            if (called not in earlier or called in initialized or called in locals_
+                    or len(args) != earlier[called][0] or any(kind(a) != 'OrderedArgument' for a in args)):
+                return None
+            lines.update(earlier[called][1])
+        if dependencies - initialized:
+            return None
+        initialized.add(lhs)
+        lines.add(source.line(assignment))
+    return lines if name in initialized else None
+
+
+def build_structure(sources, *, top, dut_scope, testbench=None):
     if not IDENT.fullmatch(top) or not SCOPE.fullmatch(dut_scope):
         raise ValueError('simple top and static DUT scope required')
     parsed, modules, syntax, unsupported = {}, {}, [], []
@@ -178,15 +258,49 @@ def build_structure(sources, *, top, dut_scope):
     if top not in modules:
         raise ValueError('top module missing from buggy sources')
     nodes, edges, instances, functions, candidate_signals = {}, set(), [], [], defaultdict(set)
+    unreachable = {}
 
     def visit(module_name, scope, ancestry=()):
         if module_name in ancestry or module_name not in modules:
             unsupported.append({'path': None, 'line': None, 'kind': 'hierarchy', 'reason': 'recursive or absent module ' + module_name})
             return
         path, source, module = modules[module_name]
-        decls = declarations(source, module)
+        elaboration = None
+        if testbench is not None:
+            from .fixed_elaboration import FixedElaboration
+            if len(sources) != 1:
+                raise ValueError('Fixed elaboration requires one declared RTL source')
+            elaboration = FixedElaboration(source, testbench, top=module_name, dut_scope=scope)
+        decls = declarations(source, module, elaboration)
         function_nodes = [n for n in walk(module) if kind(n) == 'FunctionDeclaration']
-        summaries = {name_value(n.prototype.name): function_summary(source, n) for n in function_nodes}
+        summaries = {}
+        function_lines = {}
+        for function in function_nodes:
+            summary = function_summary(source, function)
+            name = summary['name']
+            if top == 'aes_core':
+                lines = pure_function_lines(source, function, function_lines)
+                if lines is not None:
+                    function_lines[name] = (len(summary['inputs']), lines)
+                    summary['status'] = 'supported_pure_static'
+                else:
+                    summary['status'] = 'unsupported'
+            elif summary['status'] == 'supported_pure_static':
+                function_lines[name] = (len(summary['inputs']),
+                    {source.line(node) for node in walk(function) if kind(node) in ASSIGNMENTS})
+            summaries[name] = summary
+        if top == 'aes_core' and function_lines:
+            used = set()
+            for node in walk(module):
+                if (kind(node) == 'InvocationExpression' and not inside_function(node)
+                        and kind(node.left) == 'IdentifierName'):
+                    summary = function_lines.get(node.left.identifier.valueText)
+                    if summary:
+                        used.update(summary[1])
+            # A pure function with no path from a module call cannot produce a signal.
+            defined = set().union(*(summary[1] for summary in function_lines.values()))
+            unreachable.update({(path, module_name, line, scope): 'pure function has no call path from the DUT instance'
+                                for line in defined - used})
         instances.append({'instance': scope, 'module': module_name, 'path': path})
         for summary in summaries.values():
             functions.append({**summary, 'instance': scope, 'path': path})
@@ -196,7 +310,7 @@ def build_structure(sources, *, top, dut_scope):
             signal = scope + '.' + local
             nodes[signal] = {**declaration, 'signal': signal, 'path': path, 'module': module_name, 'instance': scope}
         def resolve(name, at):
-            prefix = blocks(at)
+            prefix = elaboration.prefix(source, at) if elaboration else blocks(at)
             for length in range(len(prefix), -1, -1):
                 local = '.'.join((*prefix[:length], name))
                 if local in decls:
@@ -213,9 +327,12 @@ def build_structure(sources, *, top, dut_scope):
             return values
         for node in walk(module):
             k = kind(node)
-            if k in UNSUPPORTED:
+            if elaboration and not elaboration.active(source, node):
+                continue
+            if k in UNSUPPORTED and not (elaboration and k in {'IfGenerate', 'GenerateRegion'}):
                 unsupported.append({'path': path, 'line': source.line(node), 'kind': k, 'reason': 'unsupported elaboration/control construct'})
-            if not inside_function(node) and k == 'InvocationExpression':
+            if (not inside_function(node) and k == 'InvocationExpression'
+                    and not (elaboration and elaboration.supports_invocation(node))):
                 summary = summaries.get(node.left.identifier.valueText) if kind(node.left) == 'IdentifierName' else None
                 if not summary or summary['status'] != 'supported_pure_static':
                     unsupported.append({'path': path, 'line': source.line(node), 'kind': 'invocation',
@@ -223,6 +340,12 @@ def build_structure(sources, *, top, dut_scope):
             if k.endswith('AssignmentExpression') and k not in ASSIGNMENTS:
                 unsupported.append({'path': path, 'line': source.line(node), 'kind': k,
                                     'reason': 'compound assignment effects not mapped'})
+            if (elaboration and k == 'Declarator' and kind(node.parent) in {'NetDeclaration', 'DataDeclaration'}
+                    and node.initializer is not None):
+                output = resolve(node.name.valueText, node)
+                if output:
+                    for incoming in resolved(node.initializer.expr, node):
+                        edges.add((incoming, output, 'data', path, source.line(node)))
             if k in ASSIGNMENTS and not inside_function(node):
                 # Select indices are dependencies, not additional assignment targets.
                 if kind(node.left) in {'IdentifierName', 'IdentifierSelectName'}:
@@ -263,10 +386,8 @@ def build_structure(sources, *, top, dut_scope):
                     if kind(call) == 'InvocationExpression' and kind(call.left) == 'IdentifierName':
                         summary = summaries.get(call.left.identifier.valueText)
                         if summary and summary['status'] == 'supported_pure_static':
-                            function = next(f for f in function_nodes if name_value(f.prototype.name) == summary['name'])
-                            for inner in walk(function):
-                                if kind(inner) in ASSIGNMENTS:
-                                    candidate_signals[(path, module_name, source.line(inner), scope)].update(outputs | data | controls)
+                            for line in function_lines[summary['name']][1]:
+                                candidate_signals[(path, module_name, line, scope)].update(outputs | data | controls)
                         else:
                             unsupported.append({'path': path, 'line': source.line(node), 'kind': 'function_call', 'reason': 'unresolved or unsupported function'})
             if k == 'HierarchyInstantiation':
@@ -305,8 +426,12 @@ def build_structure(sources, *, top, dut_scope):
             if candidate['module'] != module_name:
                 continue
             key = path, module_name, candidate['line'], scope
+            if elaboration and not elaboration.active_line(source, candidate['line']):
+                unreachable[key] = 'inactive conditional generate in the fixed DUT build'
+                continue
             for node in source.nodes:
-                if owner(node) is module and source.line(node) == candidate['line'] and not inside_function(node):
+                if (owner(node) is module and source.line(node) == candidate['line'] and not inside_function(node)
+                        and (not elaboration or elaboration.active(source, node))):
                     for name in set(candidate['lhs']) | set(candidate['dependencies']):
                         signal = resolve(name, node)
                         if signal:
@@ -331,17 +456,20 @@ def build_structure(sources, *, top, dut_scope):
         for instance in instances:
             if (instance['path'], instance['module']) != (candidate['path'], candidate['module']):
                 continue
-            signals = sorted(candidate_signals[(candidate['path'], candidate['module'], candidate['line'], instance['instance'])])
+            location = (candidate['path'], candidate['module'], candidate['line'], instance['instance'])
+            signals = sorted(candidate_signals[location])
+            inactive = location in unreachable and graph['status'] == 'complete'
             mappings.append({'candidate_id': candidate.get('candidate_id', identity(candidate)), 'path': candidate['path'],
                              'module': candidate['module'], 'line': candidate['line'], 'instance': instance['instance'],
-                             'signals': signals, 'status': 'mapped' if signals else 'unavailable',
-                             'reason': None if signals else 'no supported physical signal relation'})
+                             'signals': signals, 'status': 'mapped' if signals else 'unreachable' if inactive else 'unavailable',
+                             'reason': None if signals else unreachable[location] if inactive
+                             else 'no supported physical signal relation'})
             found = True
         if not found:
             mappings.append({'candidate_id': candidate.get('candidate_id', identity(candidate)), 'path': candidate['path'],
                              'module': candidate['module'], 'line': candidate['line'], 'instance': None, 'signals': [],
                              'status': 'unavailable', 'reason': 'module not in supported static DUT hierarchy'})
-    missing = [m for m in mappings if m['status'] != 'mapped']
+    missing = [m for m in mappings if m['status'] == 'unavailable']
     alignment = {'schema_version': 'buggy-alignment-1', 'inventory_id': inventory.get('inventory_id'),
                  'source_hashes': {p: sha(t.encode()) for p, t in sorted(sources.items())},
                  'mappings': mappings, 'missingness': missing,

@@ -26,7 +26,7 @@ PRIVATE_KEYS = {'case_id', 'case_path', 'proposal_id', 'mutation_key', 'operator
                 'label', 'labels', 'patch', 'mutation_patch', 'original', 'restored', 'golden',
                 'golden_trace', 'original_trace', 'curator_path', 'curator_root'}
 PRIVATE_TEXT = re.compile(r'(?:/(?:(?:Users|home|private|tmp|var|srv|opt|mnt|root|workspace|data)/)|(?<![A-Za-z0-9_])[A-Za-z]:[\\/]|'
-                          r'\b(?:sha256|chacha|opentitan_[a-z0-9_]+)-[0-9a-f]{16}\b|'
+                          r'\b(?:sha1|sha256|chacha|aes|opentitan_[a-z0-9_]+)-[0-9a-f]{16}\b|'
                           r'\b(?:planner|plan)-[0-9a-f]{16}\b|'
                           r'\b(?:accepted_core|accepted_auto|validated_pending_review)\b)')
 EVIDENCE_KEYS = {'buggy_sources', 'source_hashes', 'candidates', 'graph', 'alignment', 'trace', 'checker'}

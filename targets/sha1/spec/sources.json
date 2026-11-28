@@ -1,0 +1,20 @@
+{
+  "fips180-4": {
+    "title": "Secure Hash Standard (SHS), FIPS PUB 180-4",
+    "url": "https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf",
+    "version": "August 2015",
+    "publisher": "NIST",
+    "license": "US Government work; public domain in the United States",
+    "redistributable": true,
+    "retrieval_date": "2026-10-23",
+    "sha256": "0455b406d89648d20cbde375561e19c245b9815e894164c2670772e3d54deb82",
+    "sections_of_interest": [
+      "4.1.1",
+      "4.2.1",
+      "5.3.1",
+      "6.1.1",
+      "6.1.2"
+    ],
+    "status": "SHA-1 algorithm requirements restated from the archived standard."
+  }
+}

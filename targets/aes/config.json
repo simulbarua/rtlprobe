@@ -1,0 +1,68 @@
+{
+  "schema_version": "pilot-1",
+  "target_id": "aes",
+  "case_prefix": "aes",
+  "split_group": "secworks_aes",
+  "design_id": "secworks_aes_core",
+  "repository_url": "https://github.com/secworks/aes.git",
+  "revision": "cd8a599ed6830bd50830350899f5fd2a624ed1d3",
+  "vendor": "tools/dataset/vendor/aes",
+  "top": "aes_core",
+  "test_top": "tb_aes_core",
+  "test_id": "aes_core_upstream",
+  "rtl": [
+    "src/rtl/aes_core.v",
+    "src/rtl/aes_key_mem.v",
+    "src/rtl/aes_encipher_block.v",
+    "src/rtl/aes_decipher_block.v",
+    "src/rtl/aes_sbox.v",
+    "src/rtl/aes_inv_sbox.v"
+  ],
+  "testbench": "src/tb/tb_aes_core.v",
+  "collateral": ["LICENSE", "README.md", "aes.core", "toolruns/Makefile"],
+  "compile_flags": ["-g2005"],
+  "defines": [],
+  "parameters": {},
+  "seed": null,
+  "stimulus": "Twenty deterministic, single-block known-answer comparisons using the pinned upstream bench.",
+  "track": "synthesizable",
+  "limits": {
+    "compile_seconds": 30,
+    "simulation_seconds": 15,
+    "synthesis_seconds": 120,
+    "campaign_seconds": 300,
+    "cpu_seconds": 240,
+    "disk_bytes": 268435456,
+    "workers": 1,
+    "max_candidates": 1,
+    "fallback_tests": 0
+  },
+  "scope": "AES core key expansion, block encryption and block decryption for 128-bit and 256-bit keys.",
+  "checker": {"path": "targets/aes/checker.py"},
+  "test_metadata": {
+    "checker": "The upstream bench compares the 128-bit result against each expected block and reports a numbered verdict and aggregate count.",
+    "checkpoints": [
+      "tc_01", "tc_02", "tc_03", "tc_04", "tc_05", "tc_06", "tc_07", "tc_08", "tc_09", "tc_0a",
+      "tc_10", "tc_11", "tc_12", "tc_13", "tc_14", "tc_15", "tc_16", "tc_17", "tc_18", "tc_19"
+    ]
+  },
+  "specification": {
+    "url": "https://csrc.nist.gov/pubs/fips/197/final",
+    "version": "FIPS 197, May 2023 update",
+    "section": "5.1–5.3",
+    "classification": "documented_requirement",
+    "requirement": "Cipher and inverse cipher transform 128-bit blocks using the expanded key for the selected key length."
+  },
+  "coverage": {
+    "status": "unavailable",
+    "reason": "The pinned checker reports known-answer comparisons. Per-test execution coverage has not been measured."
+  },
+  "control": {
+    "path": "src/rtl/aes_core.v",
+    "line": 243,
+    "statement": "if (encdec)",
+    "operator": {"id": "condition_invert", "version": "1.0"},
+    "reset_identifiers": ["reset_n"]
+  },
+  "dossier_notes": "The proposed checker control requires scoped runner support and exact approval. The bus wrapper and AES-192 are outside this configuration. The two S-box files are build dependencies."
+}

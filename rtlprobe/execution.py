@@ -1,5 +1,6 @@
 """Execute reviewed mutation proposals, with sealed inputs and separate review receipts."""
 import json
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from . import batch
@@ -37,7 +38,7 @@ def verify_bundle(directory):
     return sealed
 
 
-def review_decisions(directory, proposals, expected_manifest_sha256=None):
+def review_decisions(directory, proposals, expected_manifest_sha256=None, *, root=None):
     """Return rejected proposal IDs; missing, incomplete and stale reviews fail closed."""
     directory = Path(directory)
     digest = filehash(directory/'manifest.json')
@@ -46,7 +47,7 @@ def review_decisions(directory, proposals, expected_manifest_sha256=None):
     path = directory/'plan_review.json'
     if not path.is_file():
         raise ValueError('A recorded pre-injection plan review is required')
-    verify_review_not_revoked(directory)
+    verify_review_not_revoked(directory, root=root)
     def unique(pairs):
         result = {}
         for key, value in pairs:
@@ -59,6 +60,8 @@ def review_decisions(directory, proposals, expected_manifest_sha256=None):
             or review['schema_version'] != 'plan-review-1' or review['plan_manifest_sha256'] != digest
             or not isinstance(review['reviewer'], str) or not review['reviewer'].strip()):
         raise ValueError('Invalid or stale plan review')
+    if review['reviewer'].startswith('campaign-ai:'):
+        raise ValueError('This plan requires a fresh human review')
     try:
         when = datetime.fromisoformat(review['reviewed_at'].replace('Z', '+00:00'))
         if when.tzinfo is None or when > datetime.now(timezone.utc):
@@ -75,6 +78,9 @@ def review_decisions(directory, proposals, expected_manifest_sha256=None):
                 or not isinstance(item['decision'], str) or item['decision'] not in {'approve', 'reject', 'edit'}
                 or not isinstance(item['note'], str)):
             raise ValueError('Invalid or duplicate plan review decision')
+        # Earlier mixed receipts attributed automatic rows to the curator.
+        if item['decision'] == 'approve' and re.match(r'^AI review [0-9a-f]{64} · ', item['note']):
+            raise ValueError('Every approved proposal requires an explicit human decision')
         decisions[item['proposal_id']] = item['decision']
     if set(decisions) != set(ids):
         raise ValueError('Plan review must decide every proposal exactly once')

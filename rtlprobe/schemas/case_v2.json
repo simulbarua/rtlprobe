@@ -25,6 +25,22 @@
     "mutation_key"
   ],
   "properties": {
+    "validation_policy": {
+      "enum": ["mutation-validation-v1", "mutation-validation-v2"]
+    },
+    "original_reuse": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "required": ["qualification_manifest_sha256"],
+          "additionalProperties": false,
+          "properties": {
+            "qualification_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+          }
+        }
+      ]
+    },
     "schema_version": {
       "const": "pilot-2"
     },
@@ -79,5 +95,23 @@
         }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": ["validation_policy"],
+        "properties": {"validation_policy": {"const": "mutation-validation-v2"}}
+      },
+      "then": {
+        "required": ["original_reuse"],
+        "if": {"properties": {"automated_validation": {"const": "pass"}}},
+        "then": {
+          "properties": {
+            "mutants": {"minItems": 2}
+          }
+        }
+      },
+      "else": {"not": {"required": ["original_reuse"]}}
+    }
+  ]
 }

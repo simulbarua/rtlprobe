@@ -1,0 +1,92 @@
+{
+  "schema_version": "pilot-1",
+  "target_id": "aes",
+  "case_prefix": "aes",
+  "split_group": "secworks_aes",
+  "design_id": "secworks_aes_core",
+  "repository_url": "https://github.com/secworks/aes.git",
+  "revision": "cd8a599ed6830bd50830350899f5fd2a624ed1d3",
+  "vendor": "tools/dataset/vendor/aes",
+  "top": "aes_core",
+  "test_top": "tb_aes_extended",
+  "test_id": "aes_core_extended_v1",
+  "rtl": [
+    "src/rtl/aes_core.v",
+    "src/rtl/aes_key_mem.v",
+    "src/rtl/aes_encipher_block.v",
+    "src/rtl/aes_decipher_block.v",
+    "src/rtl/aes_sbox.v",
+    "src/rtl/aes_inv_sbox.v"
+  ],
+  "testbench": "targets/aes/extended/tb_aes_extended.v",
+  "collateral": [
+    "LICENSE",
+    "README.md",
+    "aes.core",
+    "toolruns/Makefile"
+  ],
+  "compile_flags": [
+    "-g2005"
+  ],
+  "defines": [],
+  "parameters": {},
+  "seed": null,
+  "stimulus": "Ordered block encryption and decryption with AES-128/AES-256 key reuse, rekeying without reset, and recovery after resetting during key expansion and block processing.",
+  "track": "synthesizable",
+  "limits": {
+    "compile_seconds": 30,
+    "simulation_seconds": 15,
+    "synthesis_seconds": 120,
+    "campaign_seconds": 300,
+    "cpu_seconds": 240,
+    "disk_bytes": 268435456,
+    "workers": 1,
+    "max_candidates": 1,
+    "fallback_tests": 0
+  },
+  "scope": "AES core block results and ready/result_valid sequencing across reused keys, key length changes, and resets while busy.",
+  "checker": {
+    "path": "targets/aes/extended/checker.py"
+  },
+  "test_metadata": {
+    "checker": "Ten ordered 128-bit known-answer comparisons. Cycle-bounded ready/result_valid checks govern transaction completion and reset recovery.",
+    "checkpoints": [
+      "key128_encrypt_first",
+      "key128_reuse_decrypt",
+      "key128_reuse_encrypt",
+      "key128_reuse_decrypt_again",
+      "rekey_128_to_256",
+      "key256_reuse_decrypt",
+      "key256_reuse_encrypt",
+      "rekey_256_to_128",
+      "reset_during_key_expansion",
+      "reset_during_block"
+    ]
+  },
+  "specification": {
+    "url": "https://csrc.nist.gov/pubs/fips/197/final",
+    "version": "FIPS 197, May 2023 update",
+    "section": "5.1\u20135.3",
+    "classification": "documented_requirement",
+    "requirement": "Cipher and inverse cipher transform 128-bit blocks using the expanded key for the selected key length."
+  },
+  "coverage": {
+    "status": "unavailable",
+    "reason": "The suite exercises explicit transaction sequences. Incremental fault detection and execution coverage require separate measurement."
+  },
+  "control": {
+    "path": "src/rtl/aes_core.v",
+    "line": 243,
+    "statement": "if (encdec)",
+    "operator": {
+      "id": "condition_invert",
+      "version": "1.0"
+    },
+    "reset_identifiers": [
+      "reset_n"
+    ]
+  },
+  "dossier_notes": "RTLProbe-owned extended suite for the pinned AES core; the upstream qualification is a separate baseline. Protocol aborts and unknowns are retained as incomplete evidence; the cycle watchdogs are separate from completed block mismatches.",
+  "test_scope": "test_specific",
+  "testbench_asset_sha256": "bc07839911bed2740279764cf1bd00783a3f7142859d82706286542970c9fe47"
+}

@@ -143,7 +143,33 @@ checks. New auto/rejected branches check receipt and sealed-evidence bindings;
 auto verification also recomputes sealed gate holds. Pair policies govern future
 promotion rather than invalidating previously issued receipts.
 
-All curation data stays in `data/reviews/`, `data/labels/`, and `data/manifests/`.
+The current index, label and review records stay in `data/manifests/`,
+`data/labels/` and `data/reviews/`. During publication, a temporary journal in
+`data/state/curation/` binds the prior bytes and intended hashes. The next
+locked curation write reconciles an interrupted publication. A conflicting
+record requires operator inspection. Legacy partial writes without a journal
+also require inspection. Preserve immutable cases and prior review history.
+
+Linux case commands run under an independent child subreaper. The start record
+contains a fresh commitment for that command. The supervisor holds a lock on the
+start record and keeps the corresponding private key until the kernel confirms
+that its worker and all adopted descendants have exited. This includes a child
+that starts another session. The native worker PID and supervisor group ID are
+recorded separately when the PID write succeeds.
+
+On an explicitly requested retry, the normal workspace reservation checks each
+supervised command’s `tree-exited.json` against its start record and directory.
+A verified exit can reconcile a missing `process.json`, even if an unrelated
+process now has the old PID. The interrupted-attempt receipt retains the hash of
+the exit evidence. The original input fingerprint, retry budget, review and
+other caller-owned admission checks still apply. If the supervisor dies before
+publishing evidence, or a historical start-only attempt has no such evidence,
+the attempt stays blocked. The operator should preserve those records for
+independent investigation. Reconciliation establishes process exit only.
+
+Historical plan reviews produced
+by the automated campaign reviewer, including identifiable mixed receipts,
+cannot authorize new execution. Retain those receipts for historical review.
 These are evaluator-only records, excluded from localizer inputs along with the
 original RTL, mutation patch, operator metadata, case IDs, and acceptance records.
 
@@ -243,14 +269,28 @@ Presence of `data/reviews/revocations/plan-<manifest-sha256>.json` or
 root refuses progress. Malformed or dangling markers still revoke; symlinked
 revocation paths refuse. Review replacement cannot renew a running batch, and
 future-dated reviews refuse. These markers deny work; they never issue approval.
+Embedded callers serving multiple workspaces must pass the selected data root
+explicitly as `review_decisions(..., root=data_root)`. Omitting it uses the
+process data root, suitable only for a runner dedicated to that workspace.
+Use `target.configuration(..., root=data_root)` and
+`batch.preflight(..., root=data_root)` in the same way to bind vendor-path
+validation and source reads to the selected workspace.
+For a staged case audit, `pilot.audit(path, data_root=data_root, emit=False)`
+reads qualification evidence from the selected workspace and returns the audit
+result without printing or dispatching any native commands. Cases carrying
+recovery provenance require human review in curation.
 Command outcomes are retained before a post-command guard can refuse progress.
 An active child retains its enforced timeout; no immediate cancellation is
 implied. Application launch holds and scoped permissions remain caller policy.
 
-Guard objects may additionally implement `before_command(name, argv, cwd,
-timeout)` and `after_command(record)`, returning literal `True`. Runner commands
-and qualification Git/version probes call these hooks for exact command
-allowlisting and accounting. Native outcomes are durable before the after hook.
+Guard objects may implement `before_command(name, argv, cwd, timeout)` and
+`after_command(record)` for exact command allowlisting and accounting. The
+before hook can return `True` or a tighter positive timeout. The after hook
+must return `True`, and native outcomes are durable before it runs. When both
+hooks perform full readiness checks, the guard can declare
+`checks_command_boundaries = True` to avoid repeating those checks immediately
+around the hooks. `Runner` still checks before preparing command logs. Guards
+without this opt-in retain the default checks.
 A guarded qualifier may supply `destination=` for a fresh explicit path under
 `DATA/outputs/TARGET/qualification/`; the default path behavior is unchanged.
 `qualified(execution_guard=...)` guards its freshness probes.

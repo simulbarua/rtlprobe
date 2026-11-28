@@ -17,6 +17,19 @@ def receipt(bundle, decisions):
 
 
 class ExecutionTests(unittest.TestCase):
+    def test_explicit_workspace_root_overrides_process_revocation_root(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp).resolve();primary=root/'primary';secondary=root/'secondary'
+            bundle=secondary/'plan';bundle.mkdir(parents=True)
+            (bundle/'mutations.jsonl').write_text('{"proposal_id":"p1"}\n')
+            manifest(bundle);receipt(bundle,{'p1':'approve'})
+            marker=secondary/'data/reviews/revocations'/('plan-'+filehash(bundle/'manifest.json')+'.json')
+            save(marker,{})
+            with patch.object(execution,'ROOT',primary):
+                self.assertEqual(execution.review_decisions(bundle,[{'proposal_id':'p1'}]),set())
+                with self.assertRaisesRegex(ValueError,'revoked'):
+                    execution.review_decisions(bundle,[{'proposal_id':'p1'}],root=secondary)
+
     def test_review_hash_revocation_and_changed_reviewer_stop_running_guard(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp).resolve();bundle=root/'bundle';bundle.mkdir()
@@ -33,6 +46,23 @@ class ExecutionTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError,'changed'):execution_guard()
             with patch.object(execution,'ROOT',root),patch.object(execution.batch,'run',side_effect=run):
                 execution.run(bundle)
+
+    def test_retired_automatic_and_mixed_reviews_cannot_authorize_a_new_run(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            bundle = Path(tmp)
+            proposals = [{'proposal_id': 'p1'}]
+            manifest(bundle)
+            for reviewer, note in [('campaign-ai:fixture', 'advisory'),
+                                   ('basic:fixture', 'AI review ' + 'a'*64 + ' · historical decision')]:
+                with self.subTest(reviewer=reviewer):
+                    receipt(bundle, {'p1': 'approve'})
+                    path = bundle/'plan_review.json'
+                    review = json.loads(path.read_text())
+                    review['reviewer'] = reviewer
+                    review['decisions'][0]['note'] = note
+                    save(path, review)
+                    with self.assertRaisesRegex(ValueError, 'human'):
+                        execution.review_decisions(bundle, proposals, root=bundle.resolve())
 
     def test_future_dated_review_cannot_authorize_execution(self):
         with tempfile.TemporaryDirectory() as tmp:
