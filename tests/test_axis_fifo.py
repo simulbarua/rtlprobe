@@ -4,8 +4,10 @@ from pathlib import Path
 from runpy import run_path
 import unittest
 
+from rtlprobe.evidence import load
 from rtlprobe.evidence_capture import resolve_dut_scope
 from rtlprobe.evidence_observer import instrument_testbench, reset_failure_window
+from rtlprobe.pilot import validation_plan
 
 TARGET = Path(__file__).resolve().parents[1]/'targets/axis_fifo'
 CHECKER = run_path(str(TARGET/'checker.py'))
@@ -42,6 +44,15 @@ class AxisFifoTests(unittest.TestCase):
             resolve_dut_scope(bench, **args)
         with self.assertRaisesRegex(ValueError, 'literal named'):
             resolve_dut_scope(bench.replace('.DEPTH(16)', '.DEPTH(WIDTH)'), **args, fixed_parameters=True)
+
+    def test_fixed_suite_reuses_baseline_and_requires_a_reason_for_a_third_mutant_run(self):
+        config = load(TARGET/'config.json')
+        proposal = dict(primary_test=config['test_id'], fallback_tests=[], prediction={})
+        self.assertEqual(validation_plan(config, proposal),
+                         {'original': 'reuse_qualification', 'mutant_runs': 2})
+        proposal['prediction']['third_run_reason'] = 'Confirm repeatability of a reset-boundary observation.'
+        self.assertEqual(validation_plan(config, proposal),
+                         {'original': 'reuse_qualification', 'mutant_runs': 3})
 
     def test_active_high_reset_window(self):
         trace = {'signals': [{'normalized_reference':'tb_axis_fifo.dut.rst',

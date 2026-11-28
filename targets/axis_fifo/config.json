@@ -95,6 +95,6 @@
       "rst"
     ]
   },
-  "test_scope": "test_specific",
+  "test_scope": "shared",
   "testbench_asset_sha256": "aa6e65d6649e03195d5eb5cd1197b37bbb414a29b0c325c23b4220f0935ac2b5"
 }
