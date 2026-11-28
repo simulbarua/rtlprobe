@@ -79,28 +79,8 @@ Guest CPU busy excludes steal and iowait; guest counters alone cannot establish
 credit balance, recovery, throttling cause or runnable CPU demand.
 
 The host summary uses elapsed counter deltas for aggregate CPU and reports
-busy, steal and I/O wait by Hostinger status. Each cgroup's busy percentage
-uses all allocated logical CPUs as the denominator. The summary reports
-cgroup coverage and intervals missing a usable counter. A parent cgroup's
-figures include its sampled descendants, so sum only disjoint groups.
-The rolling-window counts describe guest telemetry.
-
-The current Hostinger measurement policy has two modes across **all services**:
-
-- Throttled or uncertain recovery: strictly below 30% of full allocation.
-- Hostinger-confirmed recovery with fresh telemetry: target 50%, maximum 55%.
-
-Status defaults to `unknown`. The optional status JSON records `status`
-(`unknown`, `throttled`, `recovered`), timezone-aware `observed_at`, `valid_until`
-and a `confirmation` evidence reference. The host sampler re-reads it for each
-sample; missing, invalid or expired status returns to unknown. Its freshness
-expiry is not a simulation deadline. The worker records the status at session
-start from `RTLPROBE_HOST_STATUS_FILE`; the separate sampler establishes changes
-during the run. A rolling window spanning unknown/throttled observations uses the
-recovery limit. A status file annotates evidence; it does not independently
-authenticate hPanel or control resources.
-
-Do not claim provider-window compliance without the actual reporting interval,
-fresh Hostinger status, and reconciled provider/guest measurements. Whole-host
-budget enforcement, service membership checks, concurrent tree memory peaks,
-24-hour workload baselines and overlap trials require separate staging.
+busy, steal, and I/O wait. Each cgroup's busy percentage uses all allocated
+logical CPUs as the denominator. The summary reports cgroup coverage and
+intervals missing a usable counter. A parent cgroup includes its sampled
+descendants, so sum only disjoint groups. The rolling-window counts describe
+guest telemetry.

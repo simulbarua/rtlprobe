@@ -136,8 +136,8 @@ The Verilator manifests request a 12 GiB per-process address-space ceiling.
 Runner records explicitly identify whether it is enforced: Linux RLIMIT_AS is
 supported; this Mac records it as unavailable. This is not a claim of a total
 process-tree memory cap. Wall-clock process-group timeouts and campaign CPU/disk
-accounting are inherited from the runner. Native BaruaLabs qualification must
-validate its resource settings before production.
+accounting are inherited from the runner. Validate resource settings during
+native target qualification.
 
 A saved proof binds its source, executable, checker, implementation and tool
 fingerprints. Historical runs may refer to a frozen controller copy recorded
